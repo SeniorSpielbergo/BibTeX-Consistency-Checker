@@ -3,7 +3,7 @@
 <plugin>
 	<extension point="org.eclipse.emf.ecore.generated_package">
 		<package 
-			uri = "http://www.david_wille.de/bibtexconsistencychecker/bibtex/BCCBibTeX"
+			uri = "http://www.david-wille.de/bibtexconsistencychecker/bibtex/BCCBibTeX"
 			class = "de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBibTeXPackage"
 			genModel = "model/generated/BCCBibTeX.genmodel" />
 	</extension>
