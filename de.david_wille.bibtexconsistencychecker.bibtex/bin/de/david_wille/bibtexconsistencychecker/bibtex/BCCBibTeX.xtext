@@ -1,0 +1,241 @@
+grammar de.david_wille.bibtexconsistencychecker.bibtex.BCCBibTeX hidden(WS, SL_COMMENT)
+
+generate bCCBibTeX "http://www.david_wille.de/bibtexconsistencychecker/bibtex/BCCBibTeX"
+
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+
+BCCBibTeXFile:
+	(entries += BCCAbstractBibTeXFileEntry)*;
+
+BCCAbstractBibTeXFileEntry:
+	BCCAbstractBibTeXEntry | BCCReplacePatternEntry;
+
+BCCReplacePatternEntry:
+	'@string' '{' replaceKey = ReplaceKey '=' replacementFieldValue = ReplacementFieldValue '}';
+
+BCCAbstractBibTeXEntry:
+	BCCInProceedingsEntry | BCCBookEntry | BCCArticleEntry | BCCStandardEntry |
+	BCCInBookEntry | BCCReportEntry | BCCThesisEntry | BCCInCollectionEntry | BCCProceedingsEntry |
+	BCCBookletEntry | BCCConferenceEntry | BCCManualEntry | BCCMasterthesisEntry | BCCMiscEntry |
+	BCCPhdThesisEntry | BCCTechReportEntry | BCCUnpublishedEntry;
+
+BCCInProceedingsEntry:
+	'@inproceedings' entryBody = BCCEntryBody;
+
+BCCBookEntry:
+	'@book' entryBody = BCCEntryBody;
+
+BCCBookletEntry:
+	'@booklet' entryBody = BCCEntryBody;
+
+BCCConferenceEntry:
+	'@conference' entryBody = BCCEntryBody;
+
+BCCManualEntry:
+	'@manual' entryBody = BCCEntryBody;
+
+BCCMasterthesisEntry:
+	'@masterthesis' entryBody = BCCEntryBody;
+
+BCCMiscEntry:
+	'@misc' entryBody = BCCEntryBody;
+
+BCCPhdThesisEntry:
+	'@phdthesis' entryBody = BCCEntryBody;
+
+BCCArticleEntry:
+	'@article' entryBody = BCCEntryBody;
+
+BCCStandardEntry:
+	'@standard' entryBody = BCCEntryBody;
+
+BCCInBookEntry:
+	'@inbook' entryBody = BCCEntryBody;
+
+BCCReportEntry:
+	'@report' entryBody = BCCEntryBody;
+
+BCCTechReportEntry:
+	'@techreport' entryBody = BCCEntryBody;
+
+BCCUnpublishedEntry:
+	'@unpublished' entryBody = BCCEntryBody;
+
+BCCThesisEntry:
+	'@thesis' entryBody = BCCEntryBody;
+
+BCCInCollectionEntry:
+	'@incollection' entryBody = BCCEntryBody;
+
+BCCProceedingsEntry:
+	'@proceedings' entryBody = BCCEntryBody;
+
+BCCEntryBody:
+	'{' entryKey = EntryKey
+		(',' fields += BCCAbstractEntryBodyField)*
+	'}';
+
+BCCAbstractEntryBodyField:
+	BCCAbstractPersonField | BCCAbstractGenericField | BCCMonthField | BCCDateField | BCCYearField |
+	BCCPagesField;
+
+BCCAbstractGenericField:
+	BCCTitleField | BCCEditionField | BCCUrlField | BCCInstitutionField | BCCOrganizationField | BCCRevisionField | BCCIsbnField |
+	BCCDoiField | BCCAddressField | BCCTypeField | BCCNumberField | BCCVolumeField | BCCKeywordsField | BCCNoteField | BCCPublisherField |
+	BCCJournalField | BCCBooktitleField | BCCSchoolField | BCCSeriesField | BCCChapterField | BCCVersionField | BCCHowPublishedField;
+
+BCCTitleField:
+	'title' '=' fieldValue = GenericFieldValue;
+
+BCCEditionField:
+	'edition' '=' fieldValue = GenericFieldValue;
+
+BCCInstitutionField:
+	'institution' '=' fieldValue = GenericFieldValue;
+
+BCCOrganizationField:
+	'organization' '=' fieldValue = GenericFieldValue;
+
+BCCRevisionField:
+	'revision' '=' fieldValue = GenericFieldValue;
+
+BCCUrlField:
+	'url' '=' fieldValue = GenericFieldValue;
+
+BCCDoiField:
+	'doi' '=' fieldValue = GenericFieldValue;
+
+BCCTypeField:
+	'type' '=' fieldValue = GenericFieldValue;
+
+BCCIsbnField:
+	'isbn' '=' fieldValue = GenericFieldValue;
+
+BCCAddressField:
+	'address' '=' fieldValue = GenericFieldValue;
+
+BCCHowPublishedField:	
+	'howpublished' '=' fieldValue = GenericFieldValue;
+
+BCCNumberField:
+	'number' '=' fieldValue = GenericFieldValue;
+
+BCCVolumeField:
+	'volume' '=' fieldValue = GenericFieldValue;
+
+BCCNoteField:
+	'note' '=' fieldValue = GenericFieldValue;
+
+BCCSchoolField:
+	'school' '=' fieldValue = GenericFieldValue;
+
+BCCKeywordsField:
+	'keywords' '=' fieldValue = GenericFieldValue;
+
+BCCBooktitleField:
+	'booktitle' '=' fieldValue = GenericFieldValue;
+
+BCCSeriesField:
+	'series' '=' fieldValue = GenericFieldValue;
+
+BCCPublisherField:
+	'publisher' '=' fieldValue = GenericFieldValue;
+
+BCCJournalField:
+	'journal' '=' fieldValue = GenericFieldValue;
+
+BCCChapterField:
+	'chapter' '=' fieldValue = GenericFieldValue;
+
+BCCVersionField:
+	'version' '=' fieldValue = GenericFieldValue;
+
+BCCAbstractPersonField:
+	BCCAuthorField | BCCEditorField;
+
+BCCAuthorField:
+	'author' '=' personFieldBody = BCCPersonFieldBody;
+
+BCCEditorField:
+	'editor' '=' personFieldBody = BCCPersonFieldBody;
+
+BCCYearField:
+	'year' '=' '{' year = INT '}';
+
+BCCDateField:
+	'date' '=' '{' date = INT '}';
+
+BCCMonthField:
+	'month' '=' '{' month = INT '}';
+
+BCCPagesField:
+	'pages' '=' '{' pages = BCCPages '}';
+
+BCCPages hidden():
+	startPage = PagesValue '--' endPage = PagesValue;
+
+BCCPersonFieldBody:
+	'{' persons += BCCPerson ('and' persons += BCCPerson)* '}';
+
+BCCPerson:
+	lastName = NameValue (',' firstName = NameValue)?;
+
+PagesValue:
+	INT (':' | INT)*;
+
+GenericFieldValue:
+	(ValidID | INT | SpecialCharacterWithCommaWithQuote | Bracket | EscapedSpecialCharacter | ParenthesizedFieldValue)*;
+
+ParenthesizedFieldValue:
+	'{' GenericFieldValue '}';
+
+ReplacementFieldValue:
+	'"' ReplacementFieldValueContents '"';
+
+ReplacementFieldValueContents:
+	(ValidID | INT | SpecialCharacterWithComma | Bracket | EscapedSpecialCharacter | ParenthesizedReplacementFieldValue)*;
+
+ParenthesizedReplacementFieldValue:
+	'{' ReplacementFieldValueContents '}';
+	
+NameValue:
+	(Bracket | EscapedSpecialCharacter | SpecialCharacter | ParenthesizedNameValue | ID)*;
+
+ParenthesizedNameValue:
+	'{' NameValue '}';
+
+SpecialCharacter:
+	'!' | '?' | '#' | '$' | '*' | '~' | '/' | '.' | '+' | '-' | '--' | '_' | '//' | ';' | ':' | '^' | '@';
+
+SpecialCharacterWithComma:
+	SpecialCharacter | ',';
+
+SpecialCharacterWithCommaWithQuote:
+	SpecialCharacter | ',' | '"';
+
+EscapedSpecialCharacter:
+	'\\\"' | '\\\'' | '\\`'| '\\~' | '\\´' | '\\^' | '\'' | '\\&' | '\\-' | '\\';
+
+Bracket:
+	'(' | ')' | '[' | ']';
+
+EntryKey:
+	ID (':' | '+' | '-' | ID | INT)*;
+
+ReplaceKey:
+	ID (':' | '_' | '-' | '+' | INT | ID)*;
+
+ValidID:
+	ID | 'and';
+
+terminal ID:
+	('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
+
+terminal INT returns ecore::EInt:
+	('0'..'9')+;
+
+terminal SL_COMMENT:
+	'%' !('\n' | '\r')* ('\r'? '\n')?;
+
+terminal WS:
+	(' '|'\t'|'\r'|'\n')+;
