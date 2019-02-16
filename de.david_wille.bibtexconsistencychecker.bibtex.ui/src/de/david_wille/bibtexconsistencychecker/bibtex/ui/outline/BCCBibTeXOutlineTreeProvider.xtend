@@ -2,12 +2,13 @@ package de.david_wille.bibtexconsistencychecker.bibtex.ui.outline
 
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractBibTeXEntry
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractBibTeXFileEntry
+import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractEntryBodyField
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractGenericField
-import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractPersonField
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAddressField
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCArticleEntry
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAuthorField
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBibTeXFile
+import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBibTeXPackage
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBookEntry
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBookletEntry
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBooktitleField
@@ -17,6 +18,7 @@ import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCDateField
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCDoiField
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCEditionField
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCEditorField
+import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCEntryBody
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCHowPublishedField
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCInBookEntry
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCInCollectionEntry
@@ -65,13 +67,13 @@ import org.eclipse.xtext.ui.editor.outline.impl.EObjectNode
 class BCCBibTeXOutlineTreeProvider extends DefaultOutlineTreeProvider {
 	
 	protected def _createNode(DocumentRootNode parentNode, BCCBibTeXFile file) {
-		var Object text = textDispatcher.invoke(file);
+		var Object text = textDispatcher.invoke(file)
 		if (text === null) {
-			text = file.eResource().getURI().trimFileExtension().lastSegment();
+			text = file.eResource().getURI().trimFileExtension().lastSegment()
 		}
 		var String stringRepresentation = "BibTeX File \"" + text + "\""
-		var Image image = imageDispatcher.invoke(file);
-		var IOutlineNode childNode = new EObjectNode(file, parentNode, image, stringRepresentation, false);
+		var Image image = imageDispatcher.invoke(file)
+		var IOutlineNode childNode = new EObjectNode(file, parentNode, image, stringRepresentation, false)
 		createChildren(childNode, file)
 		
 		childNode
@@ -136,44 +138,51 @@ class BCCBibTeXOutlineTreeProvider extends DefaultOutlineTreeProvider {
 		}
 		
 		if (fileEntry instanceof BCCAbstractBibTeXEntry) {
-			var Image image = imageDispatcher.invoke(fileEntry);
-			var IOutlineNode childNode = new EObjectNode(fileEntry, parentNode, image, stringRepresentation, false);
+			var Image image = imageDispatcher.invoke(fileEntry)
+			var IOutlineNode childNode = new EObjectNode(fileEntry, parentNode, image, stringRepresentation, false)
 			createChildren(childNode, fileEntry.entryBody)
 			
 			childNode
 		}
 		else {
-			var Image image = imageDispatcher.invoke(fileEntry);
-			new EObjectNode(fileEntry, parentNode, image, stringRepresentation, true);
+			var Image image = imageDispatcher.invoke(fileEntry)
+			new EObjectNode(fileEntry, parentNode, image, stringRepresentation, true)
 		}
 	}
 	
-	protected def _createNode(IOutlineNode parentNode, BCCAbstractPersonField personField) {
-		var String stringRepresentation = ""
-		
-		if (personField instanceof BCCAuthorField) {
-			stringRepresentation += "author"
+	protected def _createChildren(IOutlineNode parentNode, BCCEntryBody entryBody) {
+		for (BCCAbstractEntryBodyField entryBodyField : entryBody.fields) {
+			var Image image = imageDispatcher.invoke(entryBodyField)
+			
+			if (entryBodyField instanceof BCCPagesField) {
+				createEStructuralFeatureNode(parentNode, entryBodyField, BCCBibTeXPackage.Literals.BCC_PAGES_FIELD__PAGES,
+					image, "pages", true);
+			}
+			else if (entryBodyField instanceof BCCAuthorField) {
+				createEStructuralFeatureNode(parentNode, entryBodyField, BCCBibTeXPackage.Literals.BCC_ABSTRACT_PERSON_FIELD__PERSON_FIELD_BODY,
+					image, "author", true);
+			}
+			else if (entryBodyField instanceof BCCEditorField) {
+				createEStructuralFeatureNode(parentNode, entryBodyField, BCCBibTeXPackage.Literals.BCC_ABSTRACT_PERSON_FIELD__PERSON_FIELD_BODY,
+					image, "editor", true);
+			}
+			else if (entryBodyField instanceof BCCAbstractGenericField) {
+				createEStructuralFeatureNode(parentNode, entryBodyField, BCCBibTeXPackage.Literals.BCC_ABSTRACT_GENERIC_FIELD__FIELD_VALUE,
+					image, generateAbstractGenericFieldRepresentation(entryBodyField), true);
+			}
+			else if (entryBodyField instanceof BCCYearField) {
+				createEStructuralFeatureNode(parentNode, entryBodyField, BCCBibTeXPackage.Literals.BCC_YEAR_FIELD__YEAR,
+					image, "year", true);
+			}
+			else if (entryBodyField instanceof BCCMonthField) {
+				createEStructuralFeatureNode(parentNode, entryBodyField, BCCBibTeXPackage.Literals.BCC_MONTH_FIELD__MONTH,
+					image,"month", true);
+			}
+			else if (entryBodyField instanceof BCCDateField) {
+				createEStructuralFeatureNode(parentNode, entryBodyField, BCCBibTeXPackage.Literals.BCC_DATE_FIELD__DATE,
+					image, "date", true);
+			}
 		}
-		else if (personField instanceof BCCEditorField) {
-			stringRepresentation += "editor"
-		}
-		
-		var Image image = imageDispatcher.invoke(personField);
-		new EObjectNode(personField, parentNode, image, stringRepresentation, true);
-	}
-	
-	protected def _createNode(IOutlineNode parentNode, BCCPagesField pagesField) {
-		var String stringRepresentation = "pages"
-		
-		var Image image = imageDispatcher.invoke(pagesField);
-		new EObjectNode(pagesField, parentNode, image, stringRepresentation, true);
-	}
-	
-	protected def _createNode(IOutlineNode parentNode, BCCAbstractGenericField genericField) {
-		var String stringRepresentation = generateAbstractGenericFieldRepresentation(genericField)
-		
-		var Image image = imageDispatcher.invoke(genericField);
-		new EObjectNode(genericField, parentNode, image, stringRepresentation, true);
 	}
 	
 	protected def String generateAbstractGenericFieldRepresentation(BCCAbstractGenericField genericField) {
@@ -246,27 +255,6 @@ class BCCBibTeXOutlineTreeProvider extends DefaultOutlineTreeProvider {
 		else if (genericField instanceof BCCVersionField) {
 			"version"
 		}
-	}
-	
-	protected def _createNode(IOutlineNode parentNode, BCCYearField yearField) {
-		var String stringRepresentation = "year"
-		
-		var Image image = imageDispatcher.invoke(yearField);
-		new EObjectNode(yearField, parentNode, image, stringRepresentation, true);
-	}
-	
-	protected def _createNode(IOutlineNode parentNode, BCCMonthField monthField) {
-		var String stringRepresentation = "month"
-		
-		var Image image = imageDispatcher.invoke(monthField);
-		new EObjectNode(monthField, parentNode, image, stringRepresentation, true);
-	}
-	
-	protected def _createNode(IOutlineNode parentNode, BCCDateField dateField) {
-		var String stringRepresentation = "date"
-		
-		var Image image = imageDispatcher.invoke(dateField);
-		new EObjectNode(dateField, parentNode, image, stringRepresentation, true);
 	}
 	
 }
