@@ -7,5 +7,23 @@ Bundle-SymbolicName: de.david_wille.bibtexconsistencychecker.executionmodel; sin
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.xtext,
  org.eclipse.xtext.xbase,
- org.eclipse.equinox.common;bundle-version="3.5.0"
+ org.eclipse.equinox.common;bundle-version="3.5.0",
+ org.eclipse.emf.ecore,
+ org.eclipse.xtext.xbase.lib,
+ org.antlr.runtime,
+ org.eclipse.xtext.util,
+ org.eclipse.xtend.lib,
+ org.eclipse.emf.common
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.impl,
+ de.david_wille.bibtexconsistencychecker.executionmodel.scoping,
+ de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.util,
+ de.david_wille.bibtexconsistencychecker.executionmodel.parser.antlr,
+ de.david_wille.bibtexconsistencychecker.executionmodel.services,
+ de.david_wille.bibtexconsistencychecker.executionmodel,
+ de.david_wille.bibtexconsistencychecker.executionmodel.generator,
+ de.david_wille.bibtexconsistencychecker.executionmodel.validation,
+ de.david_wille.bibtexconsistencychecker.executionmodel.parser.antlr.internal,
+ de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel,
+ de.david_wille.bibtexconsistencychecker.executionmodel.serializer
+Import-Package: org.apache.log4j
