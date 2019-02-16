@@ -19,7 +19,7 @@ class BCCBibTeXQuickfixProvider extends DefaultQuickfixProvider {
 
 	@Fix(BCCBibTeXValidator.NO_DOUBLE_BRACES)
 	def addAdditionalBraces(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, 'Add leading and trailing braces', 'Add leading and trailing braces.', '',
+		acceptor.accept(issue, 'Add opening and closing braces', 'Add opening and closing braces.', '',
 			new ISemanticModification() {
 				override apply(EObject element, IModificationContext context) throws Exception {
 					(element as BCCTitleField).fieldValue = "{" + (element as BCCTitleField).fieldValue + "}"

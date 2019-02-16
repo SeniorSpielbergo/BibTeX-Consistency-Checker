@@ -17,8 +17,8 @@ class BCCBibTeXValidator extends AbstractBCCBibTeXValidator {
 	
 	public static val String NO_DOUBLE_BRACES = "NO_DOUBLE_BRACES"
 	public static val String SAME_FIELD_MULTIPLE_TIMES = "SAME_FIELD_MULTIPLE_TIMES"
-	private static String OPENING_BRACE = "{"
-	private static String CLOSING_BRACE = "}"
+	private static val String OPENING_BRACE = "{"
+	private static val String CLOSING_BRACE = "}"
 	
 	@Check
 	def void checkTitleFieldStartsAndEndsWithDoubleParenthesis(BCCTitleField titleField) {
