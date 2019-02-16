@@ -1,0 +1,19 @@
+grammar de.david_wille.bibtexconsistencychecker.executionmodel.BCCExecutionModel with org.eclipse.xtext.common.Terminals
+
+generate bCCExecutionModel "http://www.david-wille.de/bibtexconsistencychecker/executionmodel/BCCExecutionModel"
+
+BCCExecutionModel:
+	settingsEntry = BCCSettingsEntry;
+
+BCCSettingsEntry:
+	'settings' '{'
+		'name' name = STRING
+		(ensureAlphbeticOrderActivated ?= EnsureAlphabeticOrderKeyword)? &
+		(ensureShortHarvardStyleActivated ?= EnsureShortHarvardStyle)?
+	'}';
+
+EnsureAlphabeticOrderKeyword:
+	'ensure' 'alphabetic' 'order';
+
+EnsureShortHarvardStyle:
+	'ensure' 'short' 'harvard' 'style';
