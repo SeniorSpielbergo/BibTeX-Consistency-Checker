@@ -21,6 +21,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 
+import de.david_wille.bibtexconsistencychecker.executionmodel.BCCExecutionModelStandaloneSetup;
 import de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.BCCExecutionModel;
 import de.david_wille.bibtexconsistencychecker.util.BCCResourceUtil;
 import de.david_wille.bibtexconsistencychecker.util.BCCUtil;
@@ -63,7 +64,7 @@ public class BCCLaunchShortCut implements ILaunchShortcut {
 
 	private void executeBibTeXAnalyzer(IFile selectedFile) {
 		if (fileIsExecutionModel(selectedFile)) {
-			BCCExecutionModel executionModel = BCCResourceUtil.parseModel(selectedFile);
+			BCCExecutionModel executionModel = BCCResourceUtil.parseModel(new BCCExecutionModelStandaloneSetup(), selectedFile);
 			
 			BCCLauncher launcher = new BCCLauncher();
 			launcher.launch(executionModel);

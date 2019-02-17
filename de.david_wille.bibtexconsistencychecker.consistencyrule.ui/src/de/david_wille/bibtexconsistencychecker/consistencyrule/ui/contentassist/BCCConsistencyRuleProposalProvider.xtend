@@ -16,7 +16,7 @@ import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
 class BCCConsistencyRuleProposalProvider extends AbstractBCCConsistencyRuleProposalProvider {
 	@Inject extension BCCConsistencyRuleGrammarAccess
 	
-	private static String SEPARATOR = " "
+	private static val String SEPARATOR = " "
 	
 	override complete_ConsistencyRuleKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		consistencyRuleKeywordAccess.group.createKeywordProposalWithTrailingSeparator(context, acceptor)

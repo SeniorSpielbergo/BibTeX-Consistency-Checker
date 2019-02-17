@@ -19,18 +19,17 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.xtext.ISetup;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
 
 import com.google.inject.Injector;
 
-import de.david_wille.bibtexconsistencychecker.bibtex.BCCBibTeXStandaloneSetup;
-
 public class BCCResourceUtil {
 
 	@SuppressWarnings("unchecked")
-	public static <T> T parseModel(IFile file) {
-		Injector injector = new BCCBibTeXStandaloneSetup().createInjectorAndDoEMFRegistration();
+	public static <T> T parseModel(ISetup setup, IFile file) {
+		Injector injector = setup.createInjectorAndDoEMFRegistration();
 		XtextResourceSet resourceSet = injector.getInstance(XtextResourceSet.class);
 		resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
 
@@ -137,10 +136,10 @@ public class BCCResourceUtil {
 		return resource;
 	}
 
-	public static <T> List<T> parseModels(List<IFile> files) {
+	public static <T> List<T> parseModels(ISetup setup, List<IFile> files) {
 		List<T> parsedModels = new ArrayList<>();
 		for (IFile file : files) {
-			T parsedModel = parseModel(file);
+			T parsedModel = parseModel(setup, file);
 			parsedModels.add(parsedModel);
 		}
 		return parsedModels;

@@ -1,21 +1,14 @@
-package de.david_wille.bibtexconsistencychecker.util;
+package de.david_wille.bibtexconsistencychecker.bibtex.util;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Shell;
 
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractBibTeXEntry;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractBibTeXFileEntry;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractEntryBodyField;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBibTeXFile;
 
-public class BCCUtil {
-
-	public static void openErrorDialog(String message) {
-		MessageDialog.openError(new Shell(), "Error", message);
-	}
+public class BCCBibTeXUtil {
 
 	@SuppressWarnings("unchecked")
 	public static <T> T identifyField(BCCAbstractBibTeXEntry bibTeXEntry, Class<T> type) {
@@ -49,5 +42,5 @@ public class BCCUtil {
 		
 		return bibTeXEntries;
 	}
-
+	
 }

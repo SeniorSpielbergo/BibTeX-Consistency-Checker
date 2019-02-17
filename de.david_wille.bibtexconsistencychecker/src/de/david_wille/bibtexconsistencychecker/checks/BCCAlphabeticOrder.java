@@ -11,9 +11,9 @@ import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractBibTe
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBibTeXFile;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBibTeXPackage;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCEntryBody;
+import de.david_wille.bibtexconsistencychecker.bibtex.util.BCCBibTeXUtil;
 import de.david_wille.bibtexconsistencychecker.util.BCCMarkerHandling;
 import de.david_wille.bibtexconsistencychecker.util.BCCResourceUtil;
-import de.david_wille.bibtexconsistencychecker.util.BCCUtil;
 
 public class BCCAlphabeticOrder {
 	
@@ -24,7 +24,7 @@ public class BCCAlphabeticOrder {
 	}
 
 	private static void checkAlphabeticOrder(BCCBibTeXFile bibTeXFile) {
-		List<BCCAbstractBibTeXEntry> bibTeXEntries = BCCUtil.collectAbstractBibTeXEntries(bibTeXFile);
+		List<BCCAbstractBibTeXEntry> bibTeXEntries = BCCBibTeXUtil.collectAbstractBibTeXEntries(bibTeXFile);
 		List<String> entryKeys = collectAllEntryKeys(bibTeXEntries);
 		
 		Collections.sort(entryKeys, new Comparator<String>() {

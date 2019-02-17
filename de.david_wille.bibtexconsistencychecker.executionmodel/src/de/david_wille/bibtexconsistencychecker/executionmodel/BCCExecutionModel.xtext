@@ -3,17 +3,34 @@ grammar de.david_wille.bibtexconsistencychecker.executionmodel.BCCExecutionModel
 generate bCCExecutionModel "http://www.david-wille.de/bibtexconsistencychecker/executionmodel/BCCExecutionModel"
 
 BCCExecutionModel:
-	settingsEntry = BCCSettingsEntry;
+	settingsEntry = BCCSettingsEntry
+	(rules = BCCConsistencyRulesEntry)?;
 
 BCCSettingsEntry:
 	'settings' '{'
 		'name' name = STRING
 		(ensureAlphbeticOrderActivated ?= EnsureAlphabeticOrderKeyword)? &
-		(ensureShortHarvardStyleActivated ?= EnsureShortHarvardStyle)?
+		(ensureShortHarvardStyleActivated ?= EnsureShortHarvardStyleKeyword)?
 	'}';
+
+BCCConsistencyRulesEntry:
+	ConsistencyRulesKeyword '{'
+		(consistencyRuleEntries += BCCConsistencyRuleEntry)+
+	'}';
+
+BCCConsistencyRuleEntry:
+	'rule' rulePath = BCCRulePath
+;
+
+BCCRulePath:
+	path = STRING
+;
 
 EnsureAlphabeticOrderKeyword:
 	'ensure' 'alphabetic' 'order';
 
-EnsureShortHarvardStyle:
+EnsureShortHarvardStyleKeyword:
 	'ensure' 'short' 'harvard' 'style';
+
+ConsistencyRulesKeyword:
+	'consistency' 'rules';

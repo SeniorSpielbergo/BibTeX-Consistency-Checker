@@ -19,10 +19,10 @@ import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCEntryBody;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCPerson;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCTitleField;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCYearField;
+import de.david_wille.bibtexconsistencychecker.bibtex.util.BCCBibTeXUtil;
 import de.david_wille.bibtexconsistencychecker.util.BCCMarkerHandling;
 import de.david_wille.bibtexconsistencychecker.util.BCCResourceUtil;
 import de.david_wille.bibtexconsistencychecker.util.BCCSpecialCharacterHandling;
-import de.david_wille.bibtexconsistencychecker.util.BCCUtil;
 
 public class BCCShortHarvardStyle {
 	
@@ -87,8 +87,8 @@ public class BCCShortHarvardStyle {
 					@Override
 					public int compare(BCCAbstractBibTeXEntry arg0, BCCAbstractBibTeXEntry arg1) {
 						if (bibTeXEntryContainsAuthorTitleAndYear(arg0) && bibTeXEntryContainsAuthorTitleAndYear(arg1)) {
-							BCCTitleField titleField0 = BCCUtil.identifyField(arg0, BCCTitleField.class);
-							BCCTitleField titleField1 = BCCUtil.identifyField(arg1, BCCTitleField.class);
+							BCCTitleField titleField0 = BCCBibTeXUtil.identifyField(arg0, BCCTitleField.class);
+							BCCTitleField titleField1 = BCCBibTeXUtil.identifyField(arg1, BCCTitleField.class);
 							
 							return titleField0.getFieldValue().compareToIgnoreCase(titleField1.getFieldValue());
 						}
@@ -134,8 +134,8 @@ public class BCCShortHarvardStyle {
 				BCCAbstractBibTeXEntry bibTeXEntry = (BCCAbstractBibTeXEntry) abstractFileEntry;
 				
 				if (bibTeXEntryContainsAuthorAndYear(bibTeXEntry)) {
-					BCCAuthorField authorField = BCCUtil.identifyField(bibTeXEntry, BCCAuthorField.class);
-					BCCYearField yearField = BCCUtil.identifyField(bibTeXEntry, BCCYearField.class);
+					BCCAuthorField authorField = BCCBibTeXUtil.identifyField(bibTeXEntry, BCCAuthorField.class);
+					BCCYearField yearField = BCCBibTeXUtil.identifyField(bibTeXEntry, BCCYearField.class);
 					
 					String expectedShortHarvardStyle = generateShortHarvardStyle(authorField, yearField);
 					safeAddExpectedBibTeXEntryShortHarvardStyle(expectedBibTeXEntryShortHarvardStyles, expectedShortHarvardStyle, bibTeXEntry);
@@ -161,7 +161,7 @@ public class BCCShortHarvardStyle {
 	}
 
 	private static boolean bibTeXEntryContainsAuthorAndYear(BCCAbstractBibTeXEntry bibTeXEntry) {
-		return BCCUtil.bibTeXEntryContainsField(bibTeXEntry, BCCAuthorField.class) && BCCUtil.bibTeXEntryContainsField(bibTeXEntry, BCCYearField.class);
+		return BCCBibTeXUtil.bibTeXEntryContainsField(bibTeXEntry, BCCAuthorField.class) && BCCBibTeXUtil.bibTeXEntryContainsField(bibTeXEntry, BCCYearField.class);
 	}
 
 	private static String generateShortHarvardStyle(BCCAuthorField authorField, BCCYearField yearField) {
@@ -246,7 +246,7 @@ public class BCCShortHarvardStyle {
 	}
 	
 	private static boolean bibTeXEntryContainsAuthorTitleAndYear(BCCAbstractBibTeXEntry bibTeXEntry) {
-		return BCCUtil.bibTeXEntryContainsField(bibTeXEntry, BCCTitleField.class) && bibTeXEntryContainsAuthorAndYear(bibTeXEntry);
+		return BCCBibTeXUtil.bibTeXEntryContainsField(bibTeXEntry, BCCTitleField.class) && bibTeXEntryContainsAuthorAndYear(bibTeXEntry);
 	}
 	
 }

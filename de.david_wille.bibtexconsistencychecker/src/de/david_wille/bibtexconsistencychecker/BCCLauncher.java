@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 
+import de.david_wille.bibtexconsistencychecker.bibtex.BCCBibTeXStandaloneSetup;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBibTeXFile;
 import de.david_wille.bibtexconsistencychecker.checks.BCCAlphabeticOrder;
 import de.david_wille.bibtexconsistencychecker.checks.BCCShortHarvardStyle;
@@ -24,7 +24,7 @@ public class BCCLauncher {
 		try {
 			List<IFile> identifiedBibliographyFiles = identifyRelevantBibliographyFiles(executionModel);
 			
-			List<BCCBibTeXFile> parsedBibTeXFiles = BCCResourceUtil.parseModels(identifiedBibliographyFiles);
+			List<BCCBibTeXFile> parsedBibTeXFiles = BCCResourceUtil.parseModels(new BCCBibTeXStandaloneSetup(), identifiedBibliographyFiles);
 			
 			BCCMarkerHandling.clearAllExistingErrorMarkers(identifiedBibliographyFiles);
 			
