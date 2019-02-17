@@ -1,0 +1,210 @@
+grammar de.david_wille.bibtexconsistencychecker.consistencyrule.BCCConsistencyRule with org.eclipse.xtext.common.Terminals
+
+generate bCCConsistencyRule "http://www.david-wille.de/bibtexconsistencychecker/consistencyrule/BCCConsistencyRule"
+
+ConsistencyRule:
+	ConsistencyRuleKeyword '{'
+		ruleBody = RuleBody
+	'}';
+
+RuleBody:
+	'name' name = STRING
+	(
+		(AppliesToEntriesKeyword (appliesToEntryTypes += BCCAbstractBibTeXEntryType)+)?
+		AnalyzesFieldsKeyword analyzesFields += BCCEntryField (',' analyzesFields += BCCEntryField)*
+		ChecksThatKeyword expression = Expression
+	);
+
+BCCAbstractBibTeXEntryType:
+	BCCInProceedingsEntryType | BCCBookEntryType | BCCArticleEntryType | BCCStandardEntryType |
+	BCCInBookEntryType | BCCReportEntryType | BCCThesisEntryType | BCCInCollectionEntryType | BCCProceedingsEntryType |
+	BCCBookletEntryType | BCCConferenceEntryType | BCCManualEntryType | BCCMasterthesisEntryType | BCCMiscEntryType |
+	BCCPhdThesisEntryType | BCCTechReportEntryType | BCCUnpublishedEntryType;
+	
+BCCEntryField:
+	BCCTitleEntryField | BCCEditionEntryField | BCCUrlEntryField | BCCInstitutionEntryField | BCCOrganizationEntryField | BCCRevisionEntryField | BCCIsbnEntryField |
+	BCCDoiEntryField | BCCAddressEntryField | BCCTypeEntryField | BCCNumberEntryField | BCCVolumeEntryField | BCCKeywordsEntryField | BCCNoteEntryField | BCCPublisherEntryField |
+	BCCJournalEntryField | BCCBooktitleEntryField | BCCSchoolEntryField | BCCSeriesEntryField | BCCChapterEntryField | BCCVersionEntryField | BCCHowPublishedEntryField |
+	BCCMonthEntryField | BCCDateEntryField | BCCYearEntryField | BCCPagesEntryField | BCCAuthorEntryField | BCCEditorEntryField;
+
+Expression:
+	OrExpression;
+
+OrExpression returns Expression:
+	AndExpression ({OrExpression.left = current} 'OR' right = AndExpression)*;
+	
+AndExpression returns Expression:
+	RelationalExpression ({AndExpression.left = current} 'AND' right = RelationalExpression)*;
+	
+RelationalExpression returns Expression:
+	HasCharacteristicExpression ({RelationalExpression.left = current} operator = RelationalOperator right = HasCharacteristicExpression)*;
+	
+HasCharacteristicExpression returns Expression:
+	UnaryExpression ({HasCharacteristicExpression.left = current} 'has' right = UnaryExpression)*;
+	
+UnaryExpression returns Expression:
+	SelectionElement | StringElement | IntegerElement | ParenthesesExpression;
+
+SelectionElement:
+	{SelectionElement} 'selection';		// TODO: selection = [BCCBookEntryType]
+
+ParenthesesExpression:
+	'(' expression = Expression ')';
+
+BCCInProceedingsEntryType:
+	'inproceedings';
+
+BCCBookEntryType:
+	'book';
+
+BCCBookletEntryType:
+	'booklet';
+
+BCCConferenceEntryType:
+	'conference';
+
+BCCManualEntryType:
+	'manual';
+
+BCCMasterthesisEntryType:
+	'masterthesis';
+
+BCCMiscEntryType:
+	'misc';
+
+BCCPhdThesisEntryType:
+	'phdthesis';
+
+BCCArticleEntryType:
+	'article';
+
+BCCStandardEntryType:
+	'standard';
+
+BCCInBookEntryType:
+	'inbook';
+
+BCCReportEntryType:
+	'report';
+
+BCCTechReportEntryType:
+	'techreport';
+
+BCCUnpublishedEntryType:
+	'unpublished';
+
+BCCThesisEntryType:
+	'thesis';
+
+BCCInCollectionEntryType:
+	'incollection';
+
+BCCProceedingsEntryType:
+	'proceedings';
+
+BCCTitleEntryField:
+	'title';
+
+BCCEditionEntryField:
+	'edition';
+
+BCCInstitutionEntryField:
+	'institution';
+
+BCCOrganizationEntryField:
+	'organization';
+
+BCCRevisionEntryField:
+	'revision';
+
+BCCUrlEntryField:
+	'url';
+
+BCCDoiEntryField:
+	'doi';
+
+BCCTypeEntryField:
+	'type';
+
+BCCIsbnEntryField:
+	'isbn';
+
+BCCAddressEntryField:
+	'address';
+
+BCCHowPublishedEntryField:	
+	'howpublished';
+
+BCCNumberEntryField:
+	'number';
+
+BCCVolumeEntryField:
+	'volume';
+
+BCCNoteEntryField:
+	'note';
+
+BCCSchoolEntryField:
+	'school';
+
+BCCKeywordsEntryField:
+	'keywords';
+
+BCCBooktitleEntryField:
+	'booktitle';
+
+BCCSeriesEntryField:
+	'series';
+
+BCCPublisherEntryField:
+	'publisher';
+
+BCCJournalEntryField:
+	'journal';
+
+BCCChapterEntryField:
+	'chapter';
+
+BCCVersionEntryField:
+	'version';
+
+BCCAuthorEntryField:
+	'author';
+
+BCCEditorEntryField:
+	'editor';
+
+BCCYearEntryField:
+	'year';
+
+BCCDateEntryField:
+	'date';
+
+BCCMonthEntryField:
+	'month';
+
+BCCPagesEntryField:
+	'pages';
+
+ConsistencyRuleKeyword:
+	'consistency' 'rule';
+
+AppliesToEntriesKeyword:
+	'applies' 'to' 'entries';
+
+AnalyzesFieldsKeyword:
+	'analyzes' 'fields';
+
+ChecksThatKeyword:
+	'checks' 'that';
+
+IntegerElement:
+	value = INT;
+
+StringElement:
+	value = STRING;
+
+enum RelationalOperator:
+	EQUAL = '=' | NOT_EQUAL = '!=' |
+	SMALLER = '<' | SMALLER_OR_EQUAL = '<=' |
+	GREATER = '>' | GREATER_OR_EQUAL = '>=';
