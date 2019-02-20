@@ -77,7 +77,6 @@ public class BCCSpecialCharacterHandling {
 	private static final String EMPTY_STRING = "";
 	
 	public static String replaceSpecialLatexCharacters(String value) {
-
 		if (value.contains(ESCAPED_HASH)) {
 			value = value.replace(ESCAPED_HASH, EMPTY_STRING);
 		}

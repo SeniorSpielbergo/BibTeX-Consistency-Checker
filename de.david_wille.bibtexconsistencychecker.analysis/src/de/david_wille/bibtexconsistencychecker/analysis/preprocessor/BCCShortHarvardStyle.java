@@ -1,4 +1,4 @@
-package de.david_wille.bibtexconsistencychecker.checks;
+package de.david_wille.bibtexconsistencychecker.analysis.preprocessor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,13 +34,19 @@ public class BCCShortHarvardStyle {
 	private static final String VAN = "van";
 	private static final String DA = "da";
 
-	public static void checkShortHarvardStyle(List<BCCBibTeXFile> parsedBibTeXFiles) {
+	public static boolean checkShortHarvardStyle(List<BCCBibTeXFile> parsedBibTeXFiles) {
+		boolean noErrorsDetected = true;
+		
 		for (BCCBibTeXFile bibTeXFile : parsedBibTeXFiles) {
-			checkShortHarvardStyle(bibTeXFile);
+			boolean noNewErrorsDetected = checkShortHarvardStyle(bibTeXFile);
+			noErrorsDetected = noErrorsDetected && noNewErrorsDetected;
 		}
+		
+		return noErrorsDetected;
 	}
 
-	private static void checkShortHarvardStyle(BCCBibTeXFile bibTeXFile) {
+	private static boolean checkShortHarvardStyle(BCCBibTeXFile bibTeXFile) {
+		boolean noErrorsDetected = true;
 		List<BCCAbstractBibTeXFileEntry> bibTeXFileEntries = bibTeXFile.getEntries();
 		Map<BCCAbstractBibTeXEntry, String> expectedBibTeXEntryShortHarvardStyles = generateExpectedShortHarvardStyles(bibTeXFileEntries);
 		
@@ -55,8 +61,11 @@ public class BCCShortHarvardStyle {
 				
 				BCCMarkerHandling factory = new BCCMarkerHandling();
 				factory.createErrorMarker(resource, errorMessage, entryBody, BCCBibTeXPackage.Literals.BCC_ENTRY_BODY__ENTRY_KEY);
+				noErrorsDetected = noErrorsDetected && false;
 			}
 		}
+		
+		return noErrorsDetected;
 	}
 	
 	private static boolean entryKeyUsesCorrectShortHarvardStyle(Entry<BCCAbstractBibTeXEntry, String> mapEntry) {

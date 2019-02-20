@@ -22,16 +22,40 @@ class BCCConsistencyRuleProposalProvider extends AbstractBCCConsistencyRulePropo
 		consistencyRuleKeywordAccess.group.createKeywordProposalWithTrailingSeparator(context, acceptor)
 	}
 	
-	override complete_AppliesToEntriesKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		appliesToEntriesKeywordAccess.group.createKeywordProposalWithTrailingSeparator(context, acceptor)
-	}
-	
-	override complete_AnalyzesFieldsKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		analyzesFieldsKeywordAccess.group.createKeywordProposalWithTrailingSeparator(context, acceptor)
+	override complete_AppliesToKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		appliesToKeywordAccess.group.createKeywordProposalWithTrailingSeparator(context, acceptor)
 	}
 	
 	override complete_ChecksThatKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		checksThatKeywordAccess.group.createKeywordProposalWithTrailingSeparator(context, acceptor)
+	}
+	
+	override complete_ExcludedEntryKeysKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		excludedEntryKeysKeywordAccess.group.createKeywordProposalWithTrailingSeparator(context, acceptor)
+	}
+	
+	override complete_ExceptForKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		exceptForKeywordAccess.group.createKeywordProposalWithTrailingSeparator(context, acceptor)
+	}
+	
+	override complete_FieldExistsKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		fieldExistsKeywordAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
+	}
+	
+	override complete_FieldsExistKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		fieldsExistKeywordAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
+	}
+	
+	override complete_UsesReplacePatternKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		usesReplacePatternKeywordAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
+	}
+	
+	override complete_UseReplacePatternKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		useReplacePatternKeywordAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
+	}
+	
+	override complete_BCCUsesReplacePatternExpression(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		BCCUsesReplacePatternExpressionAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
 	}
 	
 	def createKeywordProposalWithTrailingSeparator(Group group, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
@@ -49,4 +73,5 @@ class BCCConsistencyRuleProposalProvider extends AbstractBCCConsistencyRulePropo
 		val proposalString = group.elements.filter(Keyword).map[value].join(SEPARATOR)
 		acceptor.accept(createCompletionProposal(proposalString, proposalString, null, context))
 	}
+	
 }

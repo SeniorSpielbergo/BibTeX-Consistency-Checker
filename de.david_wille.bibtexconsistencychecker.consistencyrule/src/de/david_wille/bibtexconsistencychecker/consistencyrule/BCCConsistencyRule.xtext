@@ -2,209 +2,413 @@ grammar de.david_wille.bibtexconsistencychecker.consistencyrule.BCCConsistencyRu
 
 generate bCCConsistencyRule "http://www.david-wille.de/bibtexconsistencychecker/consistencyrule/BCCConsistencyRule"
 
-ConsistencyRule:
+BCCConsistencyRule:
 	ConsistencyRuleKeyword '{'
-		ruleBody = RuleBody
+		ruleBody = BCCRuleBody
 	'}';
 
-RuleBody:
+BCCRuleBody:
 	'name' name = STRING
-	(
-		(AppliesToEntriesKeyword (appliesToEntryTypes += BCCAbstractBibTeXEntryType)+)?
-		AnalyzesFieldsKeyword analyzesFields += BCCEntryField (',' analyzesFields += BCCEntryField)*
-		ChecksThatKeyword expression = Expression
-	);
+	(AppliesToKeyword appliesToBody = BCCAbstractSelectorBody (ExceptForKeyword exceptForBody = BCCAbstractSelectorBody)?)
+	(ChecksThatKeyword checksThatExpression = BCCExpression)
+	(ExcludedEntryKeysKeyword excludedEntryKeysBody = BCCAbstractExcludedEntryKeyBody)?;
 
-BCCAbstractBibTeXEntryType:
-	BCCInProceedingsEntryType | BCCBookEntryType | BCCArticleEntryType | BCCStandardEntryType |
-	BCCInBookEntryType | BCCReportEntryType | BCCThesisEntryType | BCCInCollectionEntryType | BCCProceedingsEntryType |
-	BCCBookletEntryType | BCCConferenceEntryType | BCCManualEntryType | BCCMasterthesisEntryType | BCCMiscEntryType |
-	BCCPhdThesisEntryType | BCCTechReportEntryType | BCCUnpublishedEntryType;
+BCCAbstractSelectorBody:
+	BCCSingleEntrySelectorBody | BCCMultiEntrySelectorBody;
+
+BCCAbstractExcludedEntryKeyBody:
+	BCCSingleEntryExcludedEntryKeysBody | BCCMultiEntryExcludedEntryKeysBody;
+
+BCCSingleEntrySelectorBody:
+	selector = BCCAbstractSelector;
+
+BCCMultiEntrySelectorBody:
+	selectors += BCCAbstractSelector (',' selectors += BCCAbstractSelector)* 'and' selectors += BCCAbstractSelector;
+
+BCCSingleEntryExcludedEntryKeysBody:
+	excludedEntryKey = EntryKey;
+
+BCCMultiEntryExcludedEntryKeysBody:
+	excludedEntryKeys += EntryKey (',' excludedEntryKeys += EntryKey)* 'and' excludedEntryKeys += EntryKey;
+
+BCCExpression:
+	BCCOrExpression;
+
+BCCOrExpression returns BCCExpression:
+	BCCAndExpression ({BCCOrExpression.left = current} 'OR' right = BCCAndExpression)*;
 	
-BCCEntryField:
-	BCCTitleEntryField | BCCEditionEntryField | BCCUrlEntryField | BCCInstitutionEntryField | BCCOrganizationEntryField | BCCRevisionEntryField | BCCIsbnEntryField |
-	BCCDoiEntryField | BCCAddressEntryField | BCCTypeEntryField | BCCNumberEntryField | BCCVolumeEntryField | BCCKeywordsEntryField | BCCNoteEntryField | BCCPublisherEntryField |
-	BCCJournalEntryField | BCCBooktitleEntryField | BCCSchoolEntryField | BCCSeriesEntryField | BCCChapterEntryField | BCCVersionEntryField | BCCHowPublishedEntryField |
-	BCCMonthEntryField | BCCDateEntryField | BCCYearEntryField | BCCPagesEntryField | BCCAuthorEntryField | BCCEditorEntryField;
-
-Expression:
-	OrExpression;
-
-OrExpression returns Expression:
-	AndExpression ({OrExpression.left = current} 'OR' right = AndExpression)*;
+BCCAndExpression returns Expression:
+	BCCIntegerRelationalExpression ({BCCAndExpression.left = current} 'AND' right = BCCIntegerRelationalExpression)*;
 	
-AndExpression returns Expression:
-	RelationalExpression ({AndExpression.left = current} 'AND' right = RelationalExpression)*;
+BCCIntegerRelationalExpression returns Expression:
+	BCCStringRelationalExpression ({BCCIntegerRelationalExpression.left = current} operator = IntegerRelationalOperator right = BCCStringRelationalExpression)*;
 	
-RelationalExpression returns Expression:
-	HasCharacteristicExpression ({RelationalExpression.left = current} operator = RelationalOperator right = HasCharacteristicExpression)*;
+BCCStringRelationalExpression returns Expression:
+	BCCNoKeywordExpression ({BCCStringRelationalExpression.left = current} operator = StringRelationalOperator right = BCCNoKeywordExpression)*;
 	
-HasCharacteristicExpression returns Expression:
-	UnaryExpression ({HasCharacteristicExpression.left = current} 'has' right = UnaryExpression)*;
+BCCNoKeywordExpression returns Expression:
+	BCCUnaryExpression ({BCCNoKeywordExpression.left = current} right = BCCUnaryExpression)*;
 	
-UnaryExpression returns Expression:
-	SelectionElement | StringElement | IntegerElement | ParenthesesExpression;
+BCCUnaryExpression returns Expression:
+	BCCAbstractFieldSelectionExpression | BCCFieldExistsExpression | BCCFieldsExistExpression | BCCStringExpression |
+	BCCIntegerExpression | BCCUsesReplacePatternExpression | BCCUseReplacePatternExpression | BCCNotExpression | BCCParenthesesExpression;
 
-SelectionElement:
-	{SelectionElement} 'selection';		// TODO: selection = [BCCBookEntryType]
+BCCAbstractFieldSelectionExpression:
+	BCCSingleFieldSelectionExpression | BCCMultiFieldSelectionExpression;
 
-ParenthesesExpression:
-	'(' expression = Expression ')';
+BCCFieldExistsExpression:
+	{BCCFieldExistsExpression} FieldExistsKeyword;
 
-BCCInProceedingsEntryType:
+BCCFieldsExistExpression:
+	{BCCFieldsExistExpression} FieldsExistKeyword;
+
+BCCUsesReplacePatternExpression:
+	{BCCUsesReplacePatternExpression} UsesReplacePatternKeyword;
+
+BCCUseReplacePatternExpression:
+	{BCCUseReplacePatternExpression} UseReplacePatternKeyword;
+
+BCCSingleFieldSelectionExpression:
+	selection = BCCAbstractSpecificFieldSelector;
+
+BCCMultiFieldSelectionExpression:
+	selections += BCCAbstractSpecificFieldSelector (',' selections += BCCAbstractSpecificFieldSelector)* 'and' selections += BCCAbstractSpecificFieldSelector;
+
+BCCParenthesesExpression:
+	'(' expression = BCCExpression ')';
+
+BCCNotExpression:
+	'not' expression = BCCParenthesesExpression;
+
+BCCAbstractSelector:
+	BCCAllSelector | BCCAbstractSpecificBibTeXEntrySelector;
+
+BCCAllSelector:
+	{BCCAllSelector} '*';
+
+BCCAbstractSpecificBibTeXEntrySelector:
+	BCCInProceedingsEntrySelector | BCCBookEntrySelector | BCCArticleEntrySelector | BCCStandardEntrySelector |
+	BCCInBookEntrySelector | BCCReportEntrySelector | BCCThesisEntrySelector | BCCInCollectionEntrySelector | BCCProceedingsEntrySelector |
+	BCCBookletEntrySelector | BCCConferenceEntrySelector | BCCManualEntrySelector | BCCMasterthesisEntrySelector | BCCMiscEntrySelector |
+	BCCPhdThesisEntrySelector | BCCTechReportEntrySelector | BCCUnpublishedEntrySelector;
+
+BCCInProceedingsEntrySelector:
+	{BCCInProceedingsEntrySelector} INPROCEEDINGS;
+
+BCCBookEntrySelector:
+	{BCCBookEntrySelector} BOOK;
+
+BCCBookletEntrySelector:
+	{BCCBookletEntrySelector} BOOKLET;
+
+BCCConferenceEntrySelector:
+	{BCCConferenceEntrySelector} CONFERENCE;
+
+BCCManualEntrySelector:
+	{BCCManualEntrySelector} MANUAL;
+
+BCCMasterthesisEntrySelector:
+	{BCCMasterthesisEntrySelector} MASTERTHESIS;
+
+BCCMiscEntrySelector:
+	{BCCMiscEntrySelector} MISC;
+
+BCCPhdThesisEntrySelector:
+	{BCCPhdThesisEntrySelector} PHDTHESIS;
+
+BCCArticleEntrySelector:
+	{BCCArticleEntrySelector} ARTICLE;
+
+BCCStandardEntrySelector:
+	{BCCStandardEntrySelector} STANDARD;
+
+BCCInBookEntrySelector:
+	{BCCInBookEntrySelector} INBOOK;
+
+BCCReportEntrySelector:
+	{BCCReportEntrySelector} REPORT;
+
+BCCTechReportEntrySelector:
+	{BCCTechReportEntrySelector} TECHREPORT;
+
+BCCUnpublishedEntrySelector:
+	{BCCUnpublishedEntrySelector} UNPUBLISHED;
+
+BCCThesisEntrySelector:
+	{BCCThesisEntrySelector} THESIS;
+
+BCCInCollectionEntrySelector:
+	{BCCInCollectionEntrySelector} INCOLLECTION;
+
+BCCProceedingsEntrySelector:
+	{BCCProceedingsEntrySelector} PROCEEDINGS;
+
+BCCAbstractSpecificFieldSelector:
+	BCCTitleFieldSelector | BCCEditionFieldSelector | BCCUrlFieldSelector | BCCInstitutionFieldSelector | BCCOrganizationFieldSelector | BCCRevisionFieldSelector | BCCIsbnFieldSelector |
+	BCCDoiFieldSelector | BCCAddressFieldSelector | BCCTypeFieldSelector | BCCNumberFieldSelector | BCCVolumeFieldSelector | BCCKeywordsFieldSelector | BCCNoteFieldSelector | BCCPublisherFieldSelector |
+	BCCJournalFieldSelector | BCCBooktitleFieldSelector | BCCSchoolFieldSelector | BCCSeriesFieldSelector | BCCChapterFieldSelector | BCCVersionFieldSelector | BCCHowPublishedFieldSelector |
+	BCCMonthFieldSelector | BCCDateFieldSelector | BCCYearFieldSelector | BCCPagesFieldSelector | BCCAuthorFieldSelector | BCCEditorFieldSelector;
+
+BCCTitleFieldSelector:
+	fieldKeyword = TITLE;
+
+BCCEditionFieldSelector:
+	fieldKeyword = EDITION;
+
+BCCInstitutionFieldSelector:
+	fieldKeyword = INSTITUTION;
+
+BCCOrganizationFieldSelector:
+	fieldKeyword = ORGANIZATION;
+
+BCCRevisionFieldSelector:
+	fieldKeyword = REVISION;
+
+BCCUrlFieldSelector:
+	fieldKeyword = URL;
+
+BCCDoiFieldSelector:
+	fieldKeyword = DOI;
+
+BCCTypeFieldSelector:
+	fieldKeyword = TYPE;
+
+BCCIsbnFieldSelector:
+	fieldKeyword = ISBN;
+
+BCCAddressFieldSelector:
+	fieldKeyword = ADDRESS;
+
+BCCHowPublishedFieldSelector:	
+	fieldKeyword = HOWPUBLISHED;
+
+BCCNumberFieldSelector:
+	fieldKeyword = NUMBER;
+
+BCCVolumeFieldSelector:
+	fieldKeyword = VOLUME;
+
+BCCNoteFieldSelector:
+	fieldKeyword = NOTE;
+
+BCCSchoolFieldSelector:
+	fieldKeyword = SCHOOL;
+
+BCCKeywordsFieldSelector:
+	fieldKeyword = KEYWORDS;
+
+BCCBooktitleFieldSelector:
+	fieldKeyword = BOOKTITLE;
+
+BCCSeriesFieldSelector:
+	fieldKeyword = SERIES;
+
+BCCPublisherFieldSelector:
+	fieldKeyword = PUBLISHER;
+
+BCCJournalFieldSelector:
+	fieldKeyword = JOURNAL;
+
+BCCChapterFieldSelector:
+	fieldKeyword = CHAPTER;
+
+BCCVersionFieldSelector:
+	fieldKeyword = VERSION;
+
+BCCAuthorFieldSelector:
+	fieldKeyword = AUTHOR;
+
+BCCEditorFieldSelector:
+	fieldKeyword = EDITOR;
+
+BCCYearFieldSelector:
+	fieldKeyword = YEAR;
+
+BCCDateFieldSelector:
+	fieldKeyword = DATE;
+
+BCCMonthFieldSelector:
+	fieldKeyword = MONTH;
+
+BCCPagesFieldSelector:
+	fieldKeyword = PAGES;
+
+BCCIntegerExpression:
+	value = INT;
+
+BCCStringExpression:
+	value = STRING;
+
+enum IntegerRelationalOperator:
+	EQUAL = '=' | NOT_EQUAL = '!=' |
+	SMALLER = '<' | SMALLER_OR_EQUAL = '<=' |
+	GREATER = '>' | GREATER_OR_EQUAL = '>=';
+
+enum StringRelationalOperator:
+	EQUALS = 'equals' | STARTS_WITH = 'starts with' |
+	ENDS_WITH = 'ends with' | CONTAINS = 'contains';
+
+EntryKey:
+	ID (':' | '+' | '-' | ID | INT)*;
+
+terminal INPROCEEDINGS:
 	'inproceedings';
 
-BCCBookEntryType:
+terminal BOOK:
 	'book';
 
-BCCBookletEntryType:
+terminal BOOKLET:
 	'booklet';
 
-BCCConferenceEntryType:
+terminal CONFERENCE:
 	'conference';
 
-BCCManualEntryType:
+terminal MANUAL:
 	'manual';
 
-BCCMasterthesisEntryType:
+terminal MASTERTHESIS:
 	'masterthesis';
 
-BCCMiscEntryType:
+terminal MISC:
 	'misc';
 
-BCCPhdThesisEntryType:
+terminal PHDTHESIS:
 	'phdthesis';
 
-BCCArticleEntryType:
+terminal ARTICLE:
 	'article';
 
-BCCStandardEntryType:
+terminal STANDARD:
 	'standard';
 
-BCCInBookEntryType:
+terminal INBOOK:
 	'inbook';
 
-BCCReportEntryType:
+terminal REPORT:
 	'report';
 
-BCCTechReportEntryType:
+terminal TECHREPORT:
 	'techreport';
 
-BCCUnpublishedEntryType:
+terminal UNPUBLISHED:
 	'unpublished';
 
-BCCThesisEntryType:
+terminal THESIS:
 	'thesis';
 
-BCCInCollectionEntryType:
+terminal INCOLLECTION:
 	'incollection';
 
-BCCProceedingsEntryType:
+terminal PROCEEDINGS:
 	'proceedings';
 
-BCCTitleEntryField:
+terminal TITLE:
 	'title';
 
-BCCEditionEntryField:
+terminal EDITION:
 	'edition';
 
-BCCInstitutionEntryField:
+terminal INSTITUTION:
 	'institution';
 
-BCCOrganizationEntryField:
+terminal ORGANIZATION:
 	'organization';
 
-BCCRevisionEntryField:
+terminal REVISION:
 	'revision';
 
-BCCUrlEntryField:
+terminal URL:
 	'url';
 
-BCCDoiEntryField:
+terminal DOI:
 	'doi';
 
-BCCTypeEntryField:
+terminal TYPE:
 	'type';
 
-BCCIsbnEntryField:
+terminal ISBN:
 	'isbn';
 
-BCCAddressEntryField:
+terminal ADDRESS:
 	'address';
 
-BCCHowPublishedEntryField:	
+terminal HOWPUBLISHED:	
 	'howpublished';
 
-BCCNumberEntryField:
+terminal NUMBER:
 	'number';
 
-BCCVolumeEntryField:
+terminal VOLUME:
 	'volume';
 
-BCCNoteEntryField:
+terminal NOTE:
 	'note';
 
-BCCSchoolEntryField:
+terminal SCHOOL:
 	'school';
 
-BCCKeywordsEntryField:
+terminal KEYWORDS:
 	'keywords';
 
-BCCBooktitleEntryField:
+terminal BOOKTITLE:
 	'booktitle';
 
-BCCSeriesEntryField:
+terminal SERIES:
 	'series';
 
-BCCPublisherEntryField:
+terminal PUBLISHER:
 	'publisher';
 
-BCCJournalEntryField:
+terminal JOURNAL:
 	'journal';
 
-BCCChapterEntryField:
+terminal CHAPTER:
 	'chapter';
 
-BCCVersionEntryField:
+terminal VERSION:
 	'version';
 
-BCCAuthorEntryField:
+terminal AUTHOR:
 	'author';
 
-BCCEditorEntryField:
+terminal EDITOR:
 	'editor';
 
-BCCYearEntryField:
+terminal YEAR:
 	'year';
 
-BCCDateEntryField:
+terminal DATE:
 	'date';
 
-BCCMonthEntryField:
+terminal MONTH:
 	'month';
 
-BCCPagesEntryField:
+terminal PAGES:
 	'pages';
 
 ConsistencyRuleKeyword:
 	'consistency' 'rule';
 
-AppliesToEntriesKeyword:
-	'applies' 'to' 'entries';
-
-AnalyzesFieldsKeyword:
-	'analyzes' 'fields';
-
 ChecksThatKeyword:
 	'checks' 'that';
 
-IntegerElement:
-	value = INT;
+AppliesToKeyword:
+	'applies' 'to';
 
-StringElement:
-	value = STRING;
+ExcludedEntryKeysKeyword:
+	'excluded' 'entry' 'keys';
 
-enum RelationalOperator:
-	EQUAL = '=' | NOT_EQUAL = '!=' |
-	SMALLER = '<' | SMALLER_OR_EQUAL = '<=' |
-	GREATER = '>' | GREATER_OR_EQUAL = '>=';
+ExceptForKeyword:
+	'except' 'for';
+
+FieldExistsKeyword:
+	'field' 'exists';
+
+FieldsExistKeyword:
+	'fields' 'exist';
+
+UsesReplacePatternKeyword:
+	'uses' 'replace' 'pattern';
+
+UseReplacePatternKeyword:
+	'use' 'replace' 'pattern';

@@ -1,4 +1,4 @@
-package de.david_wille.bibtexconsistencychecker.checks;
+package de.david_wille.bibtexconsistencychecker.analysis.preprocessor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,13 +17,18 @@ import de.david_wille.bibtexconsistencychecker.util.BCCResourceUtil;
 
 public class BCCAlphabeticOrder {
 	
-	public static void checkAlphabeticOrder(List<BCCBibTeXFile> parsedBibTeXFiles) {
+	public static boolean checkAlphabeticOrder(List<BCCBibTeXFile> parsedBibTeXFiles) {
+		boolean noErrorsDetected = true;
+		
 		for (BCCBibTeXFile bibTeXFile : parsedBibTeXFiles) {
-			checkAlphabeticOrder(bibTeXFile);
+			boolean noNewErrorsDetected = checkAlphabeticOrder(bibTeXFile);
+			noErrorsDetected = noErrorsDetected && noNewErrorsDetected;
 		}
+		
+		return noErrorsDetected;
 	}
 
-	private static void checkAlphabeticOrder(BCCBibTeXFile bibTeXFile) {
+	private static boolean checkAlphabeticOrder(BCCBibTeXFile bibTeXFile) {
 		List<BCCAbstractBibTeXEntry> bibTeXEntries = BCCBibTeXUtil.collectAbstractBibTeXEntries(bibTeXFile);
 		List<String> entryKeys = collectAllEntryKeys(bibTeXEntries);
 		
@@ -46,9 +51,11 @@ public class BCCAlphabeticOrder {
 				BCCMarkerHandling factory = new BCCMarkerHandling();
 				factory.createErrorMarker(resource, errorMessage, entryBody, BCCBibTeXPackage.Literals.BCC_ENTRY_BODY__ENTRY_KEY);
 				
-				return;
+				return false;
 			}
 		}
+		
+		return true;
 	}
 
 	private static boolean entryKeysAreEqual(String expectedEntryKey, String foundEntryKey) {

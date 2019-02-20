@@ -28,7 +28,9 @@ import de.david_wille.bibtexconsistencychecker.util.BCCUtil;
 
 public class BCCLaunchShortCut implements ILaunchShortcut {
 
+	private static final String BIB_FILE = "bib";
 	private static final String BCC_FILE = "bcc";
+	private static final String BCC_RULE_FILE = "bcc_rule";
 	private IWorkspaceRoot workspaceRoot;
 	
 	public BCCLaunchShortCut() {
@@ -54,11 +56,11 @@ public class BCCLaunchShortCut implements ILaunchShortcut {
 				executeBibTeXAnalyzer(selectedFile);
 			}
 			else {
-				BCCUtil.openErrorDialog("Please select a single execution model file (*." + BCC_FILE + ")!");
+				BCCUtil.openErrorDialog("Please provide a single valid execution model file (*." + BCC_FILE + ")!");
 			}
 		}
 		else {
-			BCCUtil.openErrorDialog("Please select a single execution model file (*." + BCC_FILE + ")!");
+			BCCUtil.openErrorDialog("Please provide a single valid execution model file (*." + BCC_FILE + ")!");
 		}
 	}
 
@@ -69,8 +71,20 @@ public class BCCLaunchShortCut implements ILaunchShortcut {
 			BCCLauncher launcher = new BCCLauncher();
 			launcher.launch(executionModel);
 		}
+		else if (fileIsBibTeXFile(selectedFile) || fileIsConsistencyRule(selectedFile)) {
+			if (singleExecutionModelExists(selectedFile)) {
+				IFile executionModelFile = findExecutionModel(selectedFile);
+				BCCExecutionModel executionModel = BCCResourceUtil.parseModel(new BCCExecutionModelStandaloneSetup(), executionModelFile);
+				
+				BCCLauncher launcher = new BCCLauncher();
+				launcher.launch(executionModel);
+			}
+			else {
+				BCCUtil.openErrorDialog("No / multiple execution models (*." + BCC_FILE + ") were found!");
+			}
+		}
 		else {
-			BCCUtil.openErrorDialog("Please select a valid execution model file (*." + BCC_FILE + ")!");
+			BCCUtil.openErrorDialog("Please provide a single valid execution model file (*." + BCC_FILE + ")!");
 		}
 	}
 
@@ -130,8 +144,58 @@ public class BCCLaunchShortCut implements ILaunchShortcut {
 		executeBibTeXAnalyzer(editorFile);
 	}
 
-	private boolean fileIsExecutionModel(IFile editorFile) {
-		return editorFile.getFileExtension().equals(BCC_FILE);
+	private boolean singleExecutionModelExists(IFile selectedFile) {
+		IResource executionModel = null;
+		IContainer parentContainer = selectedFile.getParent();
+		try {
+			for (IResource resource : parentContainer.members()) {
+				if (resource.getFileExtension().equals(BCC_FILE)) {
+					if (executionModel == null) {
+						executionModel = resource;
+					}
+					else {
+						return false;
+					}
+				}
+			}
+		}
+		catch (CoreException e) {
+			e.printStackTrace();
+		}
+		
+		if (executionModel != null) {
+			return true;
+		}
+		
+		return false;
+	}
+
+	private IFile findExecutionModel(IFile selectedFile) {
+		IContainer parentContainer = selectedFile.getParent();
+		try {
+			for (IResource resource : parentContainer.members()) {
+				if (resource.getFileExtension().equals(BCC_FILE)) {
+					return (IFile) resource;
+				}
+			}
+		}
+		catch (CoreException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+
+	private boolean fileIsExecutionModel(IFile selectedFile) {
+		return selectedFile.getFileExtension().equals(BCC_FILE);
+	}
+
+	private boolean fileIsBibTeXFile(IFile selectedFile) {
+		return selectedFile.getFileExtension().equals(BIB_FILE);
+	}
+
+	private boolean fileIsConsistencyRule(IFile selectedFile) {
+		return selectedFile.getFileExtension().equals(BCC_RULE_FILE);
 	}
 
 	private IFile getCurrentEditorFile(IEditorPart editor) {

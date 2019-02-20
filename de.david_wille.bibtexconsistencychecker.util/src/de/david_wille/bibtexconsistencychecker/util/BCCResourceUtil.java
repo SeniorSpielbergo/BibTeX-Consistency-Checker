@@ -34,9 +34,13 @@ public class BCCResourceUtil {
 		resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
 
 		Resource resource = getResource(file);
-		T parsedModel = (T) resource.getContents().get(0);
 		
-		return parsedModel;
+		if (resource.getContents().size() > 0) {
+			T parsedModel = (T) resource.getContents().get(0);
+			return parsedModel;
+		}
+		
+		return null;
 	}
 	
 	public static boolean resourceIsFolder(IResource resource) {
@@ -140,7 +144,9 @@ public class BCCResourceUtil {
 		List<T> parsedModels = new ArrayList<>();
 		for (IFile file : files) {
 			T parsedModel = parseModel(setup, file);
-			parsedModels.add(parsedModel);
+			if (parsedModel != null) {
+				parsedModels.add(parsedModel);
+			}
 		}
 		return parsedModels;
 	}

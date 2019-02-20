@@ -22,17 +22,30 @@ class BCCExecutionModelProposalProvider extends AbstractBCCExecutionModelProposa
 	
 	private static val String SEPARATOR = " "
 	private static val String BCC_RULE_FILE_ENDING = "bcc_rule"
+	private static val String BIB_FILE_ENDING = "bib"
 	
-	override complete_EnsureAlphabeticOrderKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		ensureAlphabeticOrderKeywordAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
+	override complete_AlphabeticOrderKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		alphabeticOrderKeywordAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
 	}
 	
-	override complete_EnsureShortHarvardStyleKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		ensureShortHarvardStyleKeywordAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
+	override complete_ShortHarvardStyleKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		shortHarvardStyleKeywordAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
+	}
+	
+	override complete_ReplacePatternExistKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		replacePatternExistKeywordAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
+	}
+	
+	override complete_NoContradictingReplacePatternExistKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		noContradictingReplacePatternExistKeywordAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
 	}
 	
 	override complete_ConsistencyRulesKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		consistencyRulesKeywordAccess.group.createKeywordProposalWithTrailingSeparator(context, acceptor)
+	}
+	
+	override complete_BibTeXFilesKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		bibTeXFilesKeywordAccess.group.createKeywordProposalWithTrailingSeparator(context, acceptor)
 	}
 	
 	override complete_BCCRulePath(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
@@ -44,7 +57,23 @@ class BCCExecutionModelProposalProvider extends AbstractBCCExecutionModelProposa
 				var IFile childFile = childResource as IFile
 				
 				if (childFile.fileExtension.equals(BCC_RULE_FILE_ENDING)) {
-					val proposalString = "\"" + childFile.name + "\""
+					val proposalString = childFile.name
+					acceptor.accept(createCompletionProposal(proposalString, proposalString, null, context))
+				}
+			}
+		}
+	}
+	
+	override complete_BCCBibTeXPath(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		var IFile modelFile = BCCResourceUtil.getIFile(model)
+		var IContainer parentResource = modelFile.parent
+		
+		for (IResource childResource : parentResource.members) {
+			if (BCCResourceUtil.resourceIsFile(childResource)) {
+				var IFile childFile = childResource as IFile
+				
+				if (childFile.fileExtension.equals(BIB_FILE_ENDING)) {
+					val proposalString = childFile.name
 					acceptor.accept(createCompletionProposal(proposalString, proposalString, null, context))
 				}
 			}

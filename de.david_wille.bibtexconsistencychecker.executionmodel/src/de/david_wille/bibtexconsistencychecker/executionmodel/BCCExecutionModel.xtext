@@ -4,13 +4,18 @@ generate bCCExecutionModel "http://www.david-wille.de/bibtexconsistencychecker/e
 
 BCCExecutionModel:
 	settingsEntry = BCCSettingsEntry
-	(rules = BCCConsistencyRulesEntry)?;
+	(rulesEntry = BCCConsistencyRulesEntry)? &
+	(bibTeXFilesEntry = BCCBibTeXFilesEntry)?;
 
 BCCSettingsEntry:
 	'settings' '{'
 		'name' name = STRING
-		(ensureAlphbeticOrderActivated ?= EnsureAlphabeticOrderKeyword)? &
-		(ensureShortHarvardStyleActivated ?= EnsureShortHarvardStyleKeyword)?
+		('ensure' '{'
+			(ensureAlphbeticOrderActivated ?= AlphabeticOrderKeyword)? &
+			(ensureShortHarvardStyleActivated ?= ShortHarvardStyleKeyword)? &
+			(ensureReplacePatternExistActivated ?= ReplacePatternExistKeyword)? &
+			(ensureNoContradictingReplacePatternExistActivated ?= NoContradictingReplacePatternExistKeyword)?
+		'}')?
 	'}';
 
 BCCConsistencyRulesEntry:
@@ -18,19 +23,43 @@ BCCConsistencyRulesEntry:
 		(consistencyRuleEntries += BCCConsistencyRuleEntry)+
 	'}';
 
+BCCBibTeXFilesEntry:
+	BibTeXFilesKeyword '{'
+		(bibTeXFileEntries += BCCBibTeXFileEntry)+
+	'}';
+
 BCCConsistencyRuleEntry:
-	'rule' rulePath = BCCRulePath
-;
+	'rule' rulePath = BCCRulePath;
+
+BCCBibTeXFileEntry:
+	'file' filePath = BCCBibTeXPath;
 
 BCCRulePath:
-	path = STRING
-;
+	path = RULE_PATH;
 
-EnsureAlphabeticOrderKeyword:
-	'ensure' 'alphabetic' 'order';
+BCCBibTeXPath:
+	path = BIBTEX_PATH;
 
-EnsureShortHarvardStyleKeyword:
-	'ensure' 'short' 'harvard' 'style';
+terminal RULE_PATH:
+	('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|'-'|'_'|'0'..'9')* '.bcc_rule';
+
+terminal BIBTEX_PATH:
+	('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|'-'|'_'|'0'..'9')* '.bib';
+
+AlphabeticOrderKeyword:
+	'alphabetic' 'order';
+
+ShortHarvardStyleKeyword:
+	'short' 'harvard' 'style';
+
+ReplacePatternExistKeyword:
+	'replace' 'pattern' 'exist';
+
+NoContradictingReplacePatternExistKeyword:
+	'no' 'contradicting' 'replace' 'pattern' 'exist';
 
 ConsistencyRulesKeyword:
 	'consistency' 'rules';
+
+BibTeXFilesKeyword:
+	'bibtex' 'files';
