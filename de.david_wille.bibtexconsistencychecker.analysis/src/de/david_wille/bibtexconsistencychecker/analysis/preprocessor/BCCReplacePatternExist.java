@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IResource;
 
+import de.david_wille.bibtexconsistencychecker.analysis.BCCAnalysis;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractBibTeXEntry;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractBibTeXFileEntry;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractEntryBodyField;
@@ -12,7 +13,6 @@ import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBibTeXFile;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBibTeXPackage;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCReplacePatternEntry;
 import de.david_wille.bibtexconsistencychecker.bibtex.util.BCCBibTeXUtil;
-import de.david_wille.bibtexconsistencychecker.util.BCCMarkerHandling;
 import de.david_wille.bibtexconsistencychecker.util.BCCResourceUtil;
 
 public class BCCReplacePatternExist {
@@ -69,8 +69,7 @@ public class BCCReplacePatternExist {
 			String errorMessage = "The specified replace pattern does not exist.";
 			IResource resource = BCCResourceUtil.getIFile(field);
 			
-			BCCMarkerHandling factory = new BCCMarkerHandling();
-			factory.createErrorMarker(resource, errorMessage, field, BCCBibTeXPackage.Literals.BCC_ABSTRACT_GENERIC_FIELD__FIELD_VALUE);
+			BCCAnalysis.createConsistencyProblemErrorMarker(resource, errorMessage, field, BCCBibTeXPackage.Literals.BCC_ABSTRACT_GENERIC_FIELD__FIELD_VALUE);
 			
 			return false;
 		}

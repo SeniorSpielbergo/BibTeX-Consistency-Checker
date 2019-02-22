@@ -55,7 +55,17 @@ public class BCCBibTeXUtil {
 		return !fieldValue.startsWith(OPENING_BRACE) && !fieldValue.endsWith(CLOSING_BRACE);
 	}
 
-	public static List<BCCAbstractBibTeXEntry> collectAbstractBibTeXEntries(BCCBibTeXFile bibTeXFile) {
+	public static List<BCCAbstractBibTeXEntry> collectAllAbstractBibTeXEntries(List<BCCBibTeXFile> parsedBibTeXFiles) {
+		List<BCCAbstractBibTeXEntry> bibTeXEntries = new ArrayList<>();
+		for (BCCBibTeXFile parsedBibTeXFile : parsedBibTeXFiles) {
+			List<BCCAbstractBibTeXEntry> fileReplacePattern = collectAllAbstractBibTeXEntries(parsedBibTeXFile);
+			bibTeXEntries.addAll(fileReplacePattern);
+		}
+		
+		return bibTeXEntries;
+	}
+
+	public static List<BCCAbstractBibTeXEntry> collectAllAbstractBibTeXEntries(BCCBibTeXFile bibTeXFile) {
 		List<BCCAbstractBibTeXEntry> bibTeXEntries = new ArrayList<>();
 		
 		for (BCCAbstractBibTeXFileEntry abstractFileEntry : bibTeXFile.getEntries()) {

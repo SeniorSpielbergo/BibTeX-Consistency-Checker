@@ -39,7 +39,12 @@ class BCCExecutionModelHyperlinkHelper extends HyperlinkHelper {
 			
 			var XtextHyperlink hyperlink = hyperlinkProvider.get()
 			hyperlink.setHyperlinkRegion(new Region(node.getOffset(), node.getLength()))
-			hyperlink.setHyperlinkText("Open referenced consistency rule")
+			if (eObject instanceof BCCBibTeXPath) {
+				hyperlink.setHyperlinkText("Open referenced consistency rule")
+			}
+			else if (eObject instanceof BCCRulePath) {
+				hyperlink.setHyperlinkText("Open referenced BibTeX file")
+			}
 			
 			var IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot()
 			var IProject currentProject = root.getProject(eObject.eResource().getURI().segment(1))

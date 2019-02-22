@@ -68,6 +68,12 @@ class BCCExecutionModelOutlineTreeProvider extends DefaultOutlineTreeProvider {
 			createEStructuralFeatureNode(parentNode, settingsEntry, BCCExecutionModelPackage.Literals.BCC_SETTINGS_ENTRY__ENSURE_NO_CONTRADICTING_REPLACE_PATTERN_EXIST_ACTIVATED,
 				ensureShortHarvardStyleActivatedImage, "ensure no contradicting replace pattern exist", true);
 		}
+		
+		if (settingsEntry.ensureNoConflictingEntryKeysExistActivated) {
+			var Image ensureShortHarvardStyleActivatedImage = imageDispatcher.invoke(settingsEntry)
+			createEStructuralFeatureNode(parentNode, settingsEntry, BCCExecutionModelPackage.Literals.BCC_SETTINGS_ENTRY__ENSURE_NO_CONFLICTING_ENTRY_KEYS_EXIST_ACTIVATED,
+				ensureShortHarvardStyleActivatedImage, "ensure no conflicting entry keys exist", true);
+		}
 	}
 	
 	protected def _createNode(IOutlineNode parentNode, BCCConsistencyRulesEntry rulesEntry) {

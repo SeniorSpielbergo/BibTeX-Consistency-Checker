@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IResource;
 
+import de.david_wille.bibtexconsistencychecker.analysis.BCCAnalysis;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractBibTeXEntry;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractBibTeXFileEntry;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAuthorField;
@@ -20,7 +21,6 @@ import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCPerson;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCTitleField;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCYearField;
 import de.david_wille.bibtexconsistencychecker.bibtex.util.BCCBibTeXUtil;
-import de.david_wille.bibtexconsistencychecker.util.BCCMarkerHandling;
 import de.david_wille.bibtexconsistencychecker.util.BCCResourceUtil;
 import de.david_wille.bibtexconsistencychecker.util.BCCSpecialCharacterHandling;
 
@@ -59,8 +59,7 @@ public class BCCShortHarvardStyle {
 				String errorMessage = "The entry does not use the Short Harvard Style. Found \"" + foundEntryKey + "\" instead of \"" + expectedEntryKey + "\".";
 				IResource resource = BCCResourceUtil.getIFile(bibTeXFile);
 				
-				BCCMarkerHandling factory = new BCCMarkerHandling();
-				factory.createErrorMarker(resource, errorMessage, entryBody, BCCBibTeXPackage.Literals.BCC_ENTRY_BODY__ENTRY_KEY);
+				BCCAnalysis.createConsistencyProblemWarningMarker(resource, errorMessage, entryBody, BCCBibTeXPackage.Literals.BCC_ENTRY_BODY__ENTRY_KEY);
 				noErrorsDetected = noErrorsDetected && false;
 			}
 		}

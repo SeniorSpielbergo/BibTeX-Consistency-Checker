@@ -186,15 +186,15 @@ public class BCCLaunchShortCut implements ILaunchShortcut {
 		return null;
 	}
 
-	private boolean fileIsExecutionModel(IFile selectedFile) {
+	public static boolean fileIsExecutionModel(IFile selectedFile) {
 		return selectedFile.getFileExtension().equals(BCC_FILE);
 	}
 
-	private boolean fileIsBibTeXFile(IFile selectedFile) {
+	public static boolean fileIsBibTeXFile(IFile selectedFile) {
 		return selectedFile.getFileExtension().equals(BIB_FILE);
 	}
 
-	private boolean fileIsConsistencyRule(IFile selectedFile) {
+	public static boolean fileIsConsistencyRule(IFile selectedFile) {
 		return selectedFile.getFileExtension().equals(BCC_RULE_FILE);
 	}
 

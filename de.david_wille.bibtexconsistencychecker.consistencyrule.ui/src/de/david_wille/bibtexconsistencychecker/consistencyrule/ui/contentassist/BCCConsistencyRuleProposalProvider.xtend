@@ -1,11 +1,22 @@
 package de.david_wille.bibtexconsistencychecker.consistencyrule.ui.contentassist
 
+import de.david_wille.bibtexconsistencychecker.bibtex.BCCBibTeXStandaloneSetup
+import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractBibTeXEntry
+import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBibTeXFile
+import de.david_wille.bibtexconsistencychecker.bibtex.util.BCCBibTeXUtil
+import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCEntryKeyObject
 import de.david_wille.bibtexconsistencychecker.consistencyrule.services.BCCConsistencyRuleGrammarAccess
+import de.david_wille.bibtexconsistencychecker.util.BCCResourceUtil
+import java.util.ArrayList
+import java.util.List
 import javax.inject.Inject
+import org.eclipse.core.resources.IContainer
+import org.eclipse.core.resources.IFile
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.Group
 import org.eclipse.xtext.Keyword
 import org.eclipse.xtext.RuleCall
+import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
 
@@ -18,44 +29,78 @@ class BCCConsistencyRuleProposalProvider extends AbstractBCCConsistencyRulePropo
 	
 	private static val String SEPARATOR = " "
 	
-	override complete_ConsistencyRuleKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		consistencyRuleKeywordAccess.group.createKeywordProposalWithTrailingSeparator(context, acceptor)
+	override complete_BCCConsistencyRuleKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		BCCConsistencyRuleKeywordAccess.group.createKeywordProposalWithTrailingSeparator(context, acceptor)
 	}
 	
-	override complete_AppliesToKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		appliesToKeywordAccess.group.createKeywordProposalWithTrailingSeparator(context, acceptor)
+	override complete_BCCAppliesToKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		BCCAppliesToKeywordAccess.group.createKeywordProposalWithTrailingSeparator(context, acceptor)
 	}
 	
-	override complete_ChecksThatKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		checksThatKeywordAccess.group.createKeywordProposalWithTrailingSeparator(context, acceptor)
+	override complete_BCCChecksThatKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		BCCChecksThatKeywordAccess.group.createKeywordProposalWithTrailingSeparator(context, acceptor)
 	}
 	
-	override complete_ExcludedEntryKeysKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		excludedEntryKeysKeywordAccess.group.createKeywordProposalWithTrailingSeparator(context, acceptor)
+	override complete_BCCExcludedEntryKeysKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		BCCExcludedEntryKeysKeywordAccess.group.createKeywordProposalWithTrailingSeparator(context, acceptor)
 	}
 	
-	override complete_ExceptForKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		exceptForKeywordAccess.group.createKeywordProposalWithTrailingSeparator(context, acceptor)
+	override complete_BCCExceptForKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		BCCExceptForKeywordAccess.group.createKeywordProposalWithTrailingSeparator(context, acceptor)
 	}
 	
-	override complete_FieldExistsKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		fieldExistsKeywordAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
+	override complete_BCCFieldExistsKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		BCCFieldExistsKeywordAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
 	}
 	
-	override complete_FieldsExistKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		fieldsExistKeywordAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
+	override complete_BCCFieldsExistKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		BCCFieldsExistKeywordAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
 	}
 	
-	override complete_UsesReplacePatternKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		usesReplacePatternKeywordAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
+	override complete_BCCUsesReplacePatternKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		BCCUsesReplacePatternKeywordAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
 	}
 	
-	override complete_UseReplacePatternKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		useReplacePatternKeywordAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
+	override complete_BCCUseReplacePatternKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		BCCUseReplacePatternKeywordAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
 	}
 	
 	override complete_BCCUsesReplacePatternExpression(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		BCCUsesReplacePatternExpressionAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
+	}
+	
+	override complete_BCCEntryKeyObject(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		var EObject contextNode = NodeModelUtils.findActualSemanticObjectFor(context.currentNode)
+		if (contextNode instanceof BCCEntryKeyObject) {
+			var String fieldValue = contextNode.entryKey
+			var List<BCCAbstractBibTeXEntry> relevantBibTeXEntries = identifyAllBibTeXEntryKeysContainingValue(model, fieldValue)
+			
+			for (BCCAbstractBibTeXEntry relevantBibTeXEntry : relevantBibTeXEntries) {
+				val proposalString = relevantBibTeXEntry.entryBody.entryKey
+				acceptor.accept(createCompletionProposal(proposalString, proposalString, null, context))
+			}
+		}
+	}
+	
+	def identifyAllBibTeXEntryKeysContainingValue(EObject model, String fieldValue) {
+		var IFile modelFile = BCCResourceUtil.getIFile(model)
+		var IContainer container = modelFile.parent
+		
+		var List<IFile> allBibTeXFiles = BCCResourceUtil.collectAllFilesInContainer(container, "bib")
+		
+		var List<BCCBibTeXFile> parsedBibTeXFiles = BCCResourceUtil.parseModels(new BCCBibTeXStandaloneSetup(), allBibTeXFiles)
+		
+		var List<BCCAbstractBibTeXEntry> allBibTeXEntries = BCCBibTeXUtil.collectAllAbstractBibTeXEntries(parsedBibTeXFiles)
+		
+		var List<BCCAbstractBibTeXEntry> relevantBibTeXEntries = new ArrayList<BCCAbstractBibTeXEntry>()
+		
+		for (BCCAbstractBibTeXEntry bibTeXEntry : allBibTeXEntries) {
+			if (bibTeXEntry.entryBody.entryKey.contains(fieldValue)) {
+				relevantBibTeXEntries.add(bibTeXEntry)
+			}
+		}
+		
+		relevantBibTeXEntries
 	}
 	
 	def createKeywordProposalWithTrailingSeparator(Group group, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {

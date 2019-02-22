@@ -4,6 +4,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
+import de.david_wille.bibtexconsistencychecker.analysis.BCCAnalysis;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractBibTeXEntry;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractEntryBodyField;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractGenericField;
@@ -55,6 +56,7 @@ import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRul
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCHowPublishedFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCInstitutionFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCIntegerRelationalExpression;
+import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCIntegerRelationalOperator;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCIsbnFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCJournalFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCKeywordsFieldSelector;
@@ -74,6 +76,7 @@ import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRul
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCSeriesFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCSingleFieldSelectionExpression;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCStringRelationalExpression;
+import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCStringRelationalOperator;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCTitleFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCTypeFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCUrlFieldSelector;
@@ -82,18 +85,16 @@ import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRul
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCVersionFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCVolumeFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCYearFieldSelector;
-import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.IntegerRelationalOperator;
-import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.StringRelationalOperator;
-import de.david_wille.bibtexconsistencychecker.util.BCCMarkerHandling;
+import de.david_wille.bibtexconsistencychecker.util.BCCProblemMarkerHandling;
 import de.david_wille.bibtexconsistencychecker.util.BCCResourceUtil;
 
 public class BCCExpressionEvaluator {
 	
-	private BCCMarkerHandling markerFactory;
+	private BCCProblemMarkerHandling markerFactory;
 	private BCCConsistencyRule evaluatedConsistencyRule;
 	
 	public BCCExpressionEvaluator() {
-		markerFactory = new BCCMarkerHandling();
+		markerFactory = new BCCProblemMarkerHandling();
 	}
 
 	public void evaluateExpression(BCCConsistencyRule evaluatedConsistencyRule, BCCAbstractBibTeXEntry bibTeXEntry) {
@@ -273,13 +274,13 @@ public class BCCExpressionEvaluator {
 	private void generateErrorMarker(BCCAbstractBibTeXEntry bibTeXEntry, EObject errorMarkerEObject, EStructuralFeature markedFeature, String errorMessage) {
 		IResource problematicResource = BCCResourceUtil.getIFile(bibTeXEntry);
 		IResource identifyingRuleResource = BCCResourceUtil.getIFile(evaluatedConsistencyRule);
-		markerFactory.createErrorMarker(problematicResource, identifyingRuleResource.getName() + ": " + errorMessage, errorMarkerEObject, markedFeature);
+		markerFactory.createCustomProblemErrorMarker(BCCAnalysis.CONSISTENCY_PROBLEM_MARKER_ID, problematicResource, identifyingRuleResource.getName() + ": " + errorMessage, errorMarkerEObject, markedFeature);
 	}
 
 	private void generateErrorMarker(BCCAbstractBibTeXEntry bibTeXEntry, EObject errorMarkerEObject, EStructuralFeature markedFeature, int listPosition, String errorMessage) {
 		IResource problematicResource = BCCResourceUtil.getIFile(bibTeXEntry);
 		IResource identifyingRuleResource = BCCResourceUtil.getIFile(evaluatedConsistencyRule);
-		markerFactory.createErrorMarker(problematicResource, identifyingRuleResource.getName() + ": " + errorMessage, errorMarkerEObject, markedFeature, listPosition);
+		markerFactory.createCustomProblemErrorMarker(BCCAnalysis.CONSISTENCY_PROBLEM_MARKER_ID, problematicResource, identifyingRuleResource.getName() + ": " + errorMessage, errorMarkerEObject, markedFeature, listPosition);
 	}
 
 	private boolean identifyWhetherSelectedFieldExists(BCCAbstractSpecificFieldSelector selector,
@@ -464,20 +465,20 @@ public class BCCExpressionEvaluator {
 		}
 	}
 	
-	private boolean evaluateIntegerRelation(int leftSideInteger, IntegerRelationalOperator operator, int rightSideInteger) {
-		if (operator == IntegerRelationalOperator.GREATER) {
+	private boolean evaluateIntegerRelation(int leftSideInteger, BCCIntegerRelationalOperator operator, int rightSideInteger) {
+		if (operator == BCCIntegerRelationalOperator.GREATER) {
 			return leftSideInteger > rightSideInteger;
 		}
-		else if (operator == IntegerRelationalOperator.SMALLER) {
+		else if (operator == BCCIntegerRelationalOperator.SMALLER) {
 			return leftSideInteger < rightSideInteger;
 		}
-		else if (operator == IntegerRelationalOperator.GREATER_OR_EQUAL) {
+		else if (operator == BCCIntegerRelationalOperator.GREATER_OR_EQUAL) {
 			return leftSideInteger >= rightSideInteger;
 		}
-		else if (operator == IntegerRelationalOperator.SMALLER_OR_EQUAL) {
+		else if (operator == BCCIntegerRelationalOperator.SMALLER_OR_EQUAL) {
 			return leftSideInteger <= rightSideInteger;
 		}
-		else if (operator == IntegerRelationalOperator.EQUAL) {
+		else if (operator == BCCIntegerRelationalOperator.EQUAL) {
 			return leftSideInteger == rightSideInteger;
 		}
 		else {
@@ -485,14 +486,14 @@ public class BCCExpressionEvaluator {
 		}
 	}
 
-	private boolean evaluateStringRelation(String leftSideString, StringRelationalOperator operator, String rightSideString) {
-		if (operator == StringRelationalOperator.EQUALS) {
+	private boolean evaluateStringRelation(String leftSideString, BCCStringRelationalOperator operator, String rightSideString) {
+		if (operator == BCCStringRelationalOperator.EQUALS) {
 			return leftSideString.equals(rightSideString);
 		}
-		else if (operator == StringRelationalOperator.STARTS_WITH) {
+		else if (operator == BCCStringRelationalOperator.STARTS_WITH) {
 			return !leftSideString.startsWith(rightSideString);
 		}
-		else if (operator == StringRelationalOperator.STARTS_WITH) {
+		else if (operator == BCCStringRelationalOperator.STARTS_WITH) {
 			return !leftSideString.endsWith(rightSideString);
 		}
 		else {

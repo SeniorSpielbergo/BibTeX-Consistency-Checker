@@ -7,12 +7,12 @@ import java.util.List;
 
 import org.eclipse.core.resources.IResource;
 
+import de.david_wille.bibtexconsistencychecker.analysis.BCCAnalysis;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractBibTeXEntry;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBibTeXFile;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBibTeXPackage;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCEntryBody;
 import de.david_wille.bibtexconsistencychecker.bibtex.util.BCCBibTeXUtil;
-import de.david_wille.bibtexconsistencychecker.util.BCCMarkerHandling;
 import de.david_wille.bibtexconsistencychecker.util.BCCResourceUtil;
 
 public class BCCAlphabeticOrder {
@@ -29,7 +29,7 @@ public class BCCAlphabeticOrder {
 	}
 
 	private static boolean checkAlphabeticOrder(BCCBibTeXFile bibTeXFile) {
-		List<BCCAbstractBibTeXEntry> bibTeXEntries = BCCBibTeXUtil.collectAbstractBibTeXEntries(bibTeXFile);
+		List<BCCAbstractBibTeXEntry> bibTeXEntries = BCCBibTeXUtil.collectAllAbstractBibTeXEntries(bibTeXFile);
 		List<String> entryKeys = collectAllEntryKeys(bibTeXEntries);
 		
 		Collections.sort(entryKeys, new Comparator<String>() {
@@ -48,8 +48,7 @@ public class BCCAlphabeticOrder {
 				String errorMessage = "The entries are not in alphabetical order. Found \"" + foundEntryKey + "\" instead of \"" + expectedEntryKey + "\".";
 				IResource resource = BCCResourceUtil.getIFile(bibTeXFile);
 				
-				BCCMarkerHandling factory = new BCCMarkerHandling();
-				factory.createErrorMarker(resource, errorMessage, entryBody, BCCBibTeXPackage.Literals.BCC_ENTRY_BODY__ENTRY_KEY);
+				BCCAnalysis.createConsistencyProblemWarningMarker(resource, errorMessage, entryBody, BCCBibTeXPackage.Literals.BCC_ENTRY_BODY__ENTRY_KEY);
 				
 				return false;
 			}

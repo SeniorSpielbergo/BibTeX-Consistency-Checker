@@ -11,7 +11,7 @@ BCCAbstractBibTeXFileEntry:
 	BCCAbstractBibTeXEntry | BCCReplacePatternEntry;
 
 BCCReplacePatternEntry:
-	'@string' '{' replaceKey = ReplaceKey '=' replacementFieldValue = ReplacementFieldValue '}';
+	'@string' '{' replaceKey = BCCReplaceKey '=' replacementFieldValue = BCCReplacementFieldValue '}';
 
 BCCAbstractBibTeXEntry:
 	BCCInProceedingsEntry | BCCBookEntry | BCCArticleEntry | BCCStandardEntry |
@@ -71,7 +71,7 @@ BCCProceedingsEntry:
 	'@proceedings' entryBody = BCCEntryBody;
 
 BCCEntryBody:
-	'{' entryKey = EntryKey
+	'{' entryKey = BCCEntryKey
 		(',' fields += BCCAbstractEntryBodyField)*
 	'}';
 
@@ -85,70 +85,70 @@ BCCAbstractGenericField:
 	BCCJournalField | BCCBooktitleField | BCCSchoolField | BCCSeriesField | BCCChapterField | BCCVersionField | BCCHowPublishedField;
 
 BCCTitleField:
-	'title' '=' fieldValue = GenericFieldValue;
+	'title' '=' fieldValue = BCCGenericFieldValue;
 
 BCCEditionField:
-	'edition' '=' fieldValue = GenericFieldValue;
+	'edition' '=' fieldValue = BCCGenericFieldValue;
 
 BCCInstitutionField:
-	'institution' '=' fieldValue = GenericFieldValue;
+	'institution' '=' fieldValue = BCCGenericFieldValue;
 
 BCCOrganizationField:
-	'organization' '=' fieldValue = GenericFieldValue;
+	'organization' '=' fieldValue = BCCGenericFieldValue;
 
 BCCRevisionField:
-	'revision' '=' fieldValue = GenericFieldValue;
+	'revision' '=' fieldValue = BCCGenericFieldValue;
 
 BCCUrlField:
-	'url' '=' fieldValue = GenericFieldValue;
+	'url' '=' fieldValue = BCCGenericFieldValue;
 
 BCCDoiField:
-	'doi' '=' fieldValue = GenericFieldValue;
+	'doi' '=' fieldValue = BCCGenericFieldValue;
 
 BCCTypeField:
-	'type' '=' fieldValue = GenericFieldValue;
+	'type' '=' fieldValue = BCCGenericFieldValue;
 
 BCCIsbnField:
-	'isbn' '=' fieldValue = GenericFieldValue;
+	'isbn' '=' fieldValue = BCCGenericFieldValue;
 
 BCCAddressField:
-	'address' '=' fieldValue = GenericFieldValue;
+	'address' '=' fieldValue = BCCGenericFieldValue;
 
 BCCHowPublishedField:	
-	'howpublished' '=' fieldValue = GenericFieldValue;
+	'howpublished' '=' fieldValue = BCCGenericFieldValue;
 
 BCCNumberField:
-	'number' '=' fieldValue = GenericFieldValue;
+	'number' '=' fieldValue = BCCGenericFieldValue;
 
 BCCVolumeField:
-	'volume' '=' fieldValue = GenericFieldValue;
+	'volume' '=' fieldValue = BCCGenericFieldValue;
 
 BCCNoteField:
-	'note' '=' fieldValue = GenericFieldValue;
+	'note' '=' fieldValue = BCCGenericFieldValue;
 
 BCCSchoolField:
-	'school' '=' fieldValue = GenericFieldValue;
+	'school' '=' fieldValue = BCCGenericFieldValue;
 
 BCCKeywordsField:
-	'keywords' '=' fieldValue = GenericFieldValue;
+	'keywords' '=' fieldValue = BCCGenericFieldValue;
 
 BCCBooktitleField:
-	'booktitle' '=' fieldValue = GenericFieldValue;
+	'booktitle' '=' fieldValue = BCCGenericFieldValue;
 
 BCCSeriesField:
-	'series' '=' fieldValue = GenericFieldValue;
+	'series' '=' fieldValue = BCCGenericFieldValue;
 
 BCCPublisherField:
-	'publisher' '=' fieldValue = GenericFieldValue;
+	'publisher' '=' fieldValue = BCCGenericFieldValue;
 
 BCCJournalField:
-	'journal' '=' fieldValue = GenericFieldValue;
+	'journal' '=' fieldValue = BCCGenericFieldValue;
 
 BCCChapterField:
-	'chapter' '=' fieldValue = GenericFieldValue;
+	'chapter' '=' fieldValue = BCCGenericFieldValue;
 
 BCCVersionField:
-	'version' '=' fieldValue = GenericFieldValue;
+	'version' '=' fieldValue = BCCGenericFieldValue;
 
 BCCAbstractPersonField:
 	BCCAuthorField | BCCEditorField;
@@ -172,60 +172,60 @@ BCCPagesField:
 	'pages' '=' '{' pages = BCCPages '}';
 
 BCCPages hidden():
-	startPage = PagesValue '--' endPage = PagesValue;
+	startPage = BCCPagesValue '--' endPage = BCCPagesValue;
 
 BCCPersonFieldBody:
 	'{' persons += BCCPerson ('and' persons += BCCPerson)* '}';
 
 BCCPerson:
-	lastName = NameValue (',' firstName = NameValue)?;
+	lastName = BCCNameValue (',' firstName = BCCNameValue)?;
 
-PagesValue:
+BCCPagesValue:
 	INT (':' | INT)*;
 
-GenericFieldValue:
-	(ValidID | INT | SpecialCharacterWithCommaWithQuote | Bracket | EscapedSpecialCharacter | ParenthesizedFieldValue)*;
+BCCGenericFieldValue:
+	(BCCValidID | INT | BCCSpecialCharacterWithCommaWithQuote | BCCBracket | BCCEscapedSpecialCharacter | BCCParenthesizedFieldValue)*;
 
-ParenthesizedFieldValue:
-	'{' GenericFieldValue '}';
+BCCParenthesizedFieldValue:
+	'{' BCCGenericFieldValue '}';
 
-ReplacementFieldValue:
-	'"' ReplacementFieldValueContents '"';
+BCCReplacementFieldValue:
+	'"' BCCReplacementFieldValueContents '"';
 
-ReplacementFieldValueContents:
-	(ValidID | INT | SpecialCharacterWithComma | Bracket | EscapedSpecialCharacter | ParenthesizedReplacementFieldValue)*;
+BCCReplacementFieldValueContents:
+	(BCCValidID | INT | BCCSpecialCharacterWithComma | BCCBracket | BCCEscapedSpecialCharacter | BCCParenthesizedReplacementFieldValue)*;
 
-ParenthesizedReplacementFieldValue:
-	'{' ReplacementFieldValueContents '}';
+BCCParenthesizedReplacementFieldValue:
+	'{' BCCReplacementFieldValueContents '}';
 	
-NameValue:
-	(Bracket | EscapedSpecialCharacter | SpecialCharacter | ParenthesizedNameValue | ID)*;
+BCCNameValue:
+	(BCCBracket | BCCEscapedSpecialCharacter | BCCSpecialCharacter | BCCParenthesizedNameValue | ID)*;
 
-ParenthesizedNameValue:
-	'{' NameValue '}';
+BCCParenthesizedNameValue:
+	'{' BCCNameValue '}';
 
-SpecialCharacter:
+BCCSpecialCharacter:
 	'!' | '?' | '#' | '$' | '*' | '~' | '/' | '.' | '+' | '-' | '--' | '_' | '//' | ';' | ':' | '^' | '@';
 
-SpecialCharacterWithComma:
-	SpecialCharacter | ',';
+BCCSpecialCharacterWithComma:
+	BCCSpecialCharacter | ',';
 
-SpecialCharacterWithCommaWithQuote:
-	SpecialCharacter | ',' | '"';
+BCCSpecialCharacterWithCommaWithQuote:
+	BCCSpecialCharacter | ',' | '"';
 
-EscapedSpecialCharacter:
+BCCEscapedSpecialCharacter:
 	'\\\"' | '\\\'' | '\\`'| '\\~' | '\\´' | '\\^' | '\'' | '\\&' | '\\-' | '\\';
 
-Bracket:
+BCCBracket:
 	'(' | ')' | '[' | ']';
 
-EntryKey:
+BCCEntryKey:
 	ID (':' | '+' | '-' | ID | INT)*;
 
-ReplaceKey:
+BCCReplaceKey:
 	ID (':' | '_' | '-' | '+' | INT | ID)*;
 
-ValidID:
+BCCValidID:
 	ID | 'and';
 
 terminal ID:

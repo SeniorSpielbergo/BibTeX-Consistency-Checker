@@ -3,7 +3,10 @@ package de.david_wille.bibtexconsistencychecker.bibtex.ide.syntaxcoloring
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractGenericField
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBibTeXPackage
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCDateField
+import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCEntryBody
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCMonthField
+import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCPages
+import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCPagesField
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCReplacePatternEntry
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCYearField
 import de.david_wille.bibtexconsistencychecker.bibtex.services.BCCBibTeXGrammarAccess
@@ -13,7 +16,6 @@ import org.eclipse.xtext.ide.editor.syntaxcoloring.DefaultSemanticHighlightingCa
 import org.eclipse.xtext.ide.editor.syntaxcoloring.HighlightingStyles
 import org.eclipse.xtext.ide.editor.syntaxcoloring.IHighlightedPositionAcceptor
 import org.eclipse.xtext.util.CancelIndicator
-import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCPagesField
 
 class BCCBibTeXSemanticHighlightingCalculator extends DefaultSemanticHighlightingCalculator {
 	@Inject package BCCBibTeXGrammarAccess grammar
@@ -41,8 +43,17 @@ class BCCBibTeXSemanticHighlightingCalculator extends DefaultSemanticHighlightin
 				highlightFeature(acceptor, object, BCCBibTeXPackage.eINSTANCE.BCCDateField_Date, HighlightingStyles.DEFAULT_ID)
 				return true
 			}
+			BCCPages: {
+				highlightFeature(acceptor, object, BCCBibTeXPackage.eINSTANCE.BCCPages_StartPage, HighlightingStyles.DEFAULT_ID)
+				highlightFeature(acceptor, object, BCCBibTeXPackage.eINSTANCE.BCCPages_EndPage, HighlightingStyles.DEFAULT_ID)
+				return true
+			}
 			BCCPagesField: {
 				highlightFeature(acceptor, object, BCCBibTeXPackage.eINSTANCE.BCCPagesField_Pages, HighlightingStyles.DEFAULT_ID)
+				return true
+			}
+			BCCEntryBody: {
+				highlightFeature(acceptor, object, BCCBibTeXPackage.eINSTANCE.BCCEntryBody_EntryKey, HighlightingStyles.DEFAULT_ID)
 				return true
 			}
 			default: false

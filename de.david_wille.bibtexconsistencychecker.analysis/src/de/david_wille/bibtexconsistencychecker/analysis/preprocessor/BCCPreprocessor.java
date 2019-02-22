@@ -31,10 +31,17 @@ public class BCCPreprocessor {
 			}
 		}
 		
+		// TODO: move to validator as this has to be ensured in all cases
+		if (ensureNoConflictingEntryKeysExistActivated(executionModel)) {
+			BCCNoConflictingEntryKeysExist.checkNoConflictingEntryKeysExist(parsedBibTeXFiles);
+		}
+		
+		// TODO: move to validator as this has to be ensured in all cases
 		if (ensureNoContradictingReplacePatternExistActivated(executionModel)) {
 			BCCNoContradictingReplacePatternExist.checkNoContradictingReplacePatternExist(parsedBibTeXFiles);
 		}
 		
+		// TODO: move to validator as this has to be ensured in all cases
 		if (ensureReplacePatternExistActivated(executionModel)) {
 			BCCReplacePatternExist.checkReplacePatternExist(parsedBibTeXFiles);
 		}
@@ -46,6 +53,10 @@ public class BCCPreprocessor {
 
 	private boolean ensureShortHarvardStyleActivated(BCCExecutionModel executionModel) {
 		return executionModel.getSettingsEntry().isEnsureShortHarvardStyleActivated();
+	}
+
+	private boolean ensureNoConflictingEntryKeysExistActivated(BCCExecutionModel executionModel) {
+		return executionModel.getSettingsEntry().isEnsureNoConflictingEntryKeysExistActivated();
 	}
 
 	private boolean ensureReplacePatternExistActivated(BCCExecutionModel executionModel) {

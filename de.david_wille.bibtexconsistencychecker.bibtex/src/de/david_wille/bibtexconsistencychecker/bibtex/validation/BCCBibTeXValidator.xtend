@@ -20,6 +20,7 @@ class BCCBibTeXValidator extends AbstractBCCBibTeXValidator {
 	public static val String NO_DOUBLE_BRACES = "NO_DOUBLE_BRACES"
 	public static val String SAME_FIELD_MULTIPLE_TIMES = "SAME_FIELD_MULTIPLE_TIMES"
 	public static val String MONTH_FIELD_GREATER_TWELVE = "MONTH_FIELD_GREATER_TWELVE"
+	public static val String REPLACE_PATTERN_DOES_NOT_EXIST = "REPLACE_PATTERN_DOES_NOT_EXIST"
 	private static val String OPENING_BRACE = "{"
 	private static val String CLOSING_BRACE = "}"
 	

@@ -3,15 +3,15 @@ grammar de.david_wille.bibtexconsistencychecker.consistencyrule.BCCConsistencyRu
 generate bCCConsistencyRule "http://www.david-wille.de/bibtexconsistencychecker/consistencyrule/BCCConsistencyRule"
 
 BCCConsistencyRule:
-	ConsistencyRuleKeyword '{'
+	BCCConsistencyRuleKeyword '{'
 		ruleBody = BCCRuleBody
 	'}';
 
 BCCRuleBody:
 	'name' name = STRING
-	(AppliesToKeyword appliesToBody = BCCAbstractSelectorBody (ExceptForKeyword exceptForBody = BCCAbstractSelectorBody)?)
-	(ChecksThatKeyword checksThatExpression = BCCExpression)
-	(ExcludedEntryKeysKeyword excludedEntryKeysBody = BCCAbstractExcludedEntryKeyBody)?;
+	(BCCAppliesToKeyword appliesToBody = BCCAbstractSelectorBody (BCCExceptForKeyword exceptForBody = BCCAbstractSelectorBody)?)
+	(BCCChecksThatKeyword checksThatExpression = BCCExpression)
+	(BCCExcludedEntryKeysKeyword excludedEntryKeysBody = BCCAbstractExcludedEntryKeyBody)?;
 
 BCCAbstractSelectorBody:
 	BCCSingleEntrySelectorBody | BCCMultiEntrySelectorBody;
@@ -26,10 +26,13 @@ BCCMultiEntrySelectorBody:
 	selectors += BCCAbstractSelector (',' selectors += BCCAbstractSelector)* 'and' selectors += BCCAbstractSelector;
 
 BCCSingleEntryExcludedEntryKeysBody:
-	excludedEntryKey = EntryKey;
+	excludedEntryKey = BCCEntryKeyObject;
 
 BCCMultiEntryExcludedEntryKeysBody:
-	excludedEntryKeys += EntryKey (',' excludedEntryKeys += EntryKey)* 'and' excludedEntryKeys += EntryKey;
+	excludedEntryKeys += BCCEntryKeyObject (',' excludedEntryKeys += BCCEntryKeyObject)* 'and' excludedEntryKeys += BCCEntryKeyObject;
+
+BCCEntryKeyObject:
+	entryKey = BCCEntryKey;
 
 BCCExpression:
 	BCCOrExpression;
@@ -41,10 +44,10 @@ BCCAndExpression returns Expression:
 	BCCIntegerRelationalExpression ({BCCAndExpression.left = current} 'AND' right = BCCIntegerRelationalExpression)*;
 	
 BCCIntegerRelationalExpression returns Expression:
-	BCCStringRelationalExpression ({BCCIntegerRelationalExpression.left = current} operator = IntegerRelationalOperator right = BCCStringRelationalExpression)*;
+	BCCStringRelationalExpression ({BCCIntegerRelationalExpression.left = current} operator = BCCIntegerRelationalOperator right = BCCStringRelationalExpression)*;
 	
 BCCStringRelationalExpression returns Expression:
-	BCCNoKeywordExpression ({BCCStringRelationalExpression.left = current} operator = StringRelationalOperator right = BCCNoKeywordExpression)*;
+	BCCNoKeywordExpression ({BCCStringRelationalExpression.left = current} operator = BCCStringRelationalOperator right = BCCNoKeywordExpression)*;
 	
 BCCNoKeywordExpression returns Expression:
 	BCCUnaryExpression ({BCCNoKeywordExpression.left = current} right = BCCUnaryExpression)*;
@@ -57,16 +60,16 @@ BCCAbstractFieldSelectionExpression:
 	BCCSingleFieldSelectionExpression | BCCMultiFieldSelectionExpression;
 
 BCCFieldExistsExpression:
-	{BCCFieldExistsExpression} FieldExistsKeyword;
+	{BCCFieldExistsExpression} BCCFieldExistsKeyword;
 
 BCCFieldsExistExpression:
-	{BCCFieldsExistExpression} FieldsExistKeyword;
+	{BCCFieldsExistExpression} BCCFieldsExistKeyword;
 
 BCCUsesReplacePatternExpression:
-	{BCCUsesReplacePatternExpression} UsesReplacePatternKeyword;
+	{BCCUsesReplacePatternExpression} BCCUsesReplacePatternKeyword;
 
 BCCUseReplacePatternExpression:
-	{BCCUseReplacePatternExpression} UseReplacePatternKeyword;
+	{BCCUseReplacePatternExpression} BCCUseReplacePatternKeyword;
 
 BCCSingleFieldSelectionExpression:
 	selection = BCCAbstractSpecificFieldSelector;
@@ -239,16 +242,16 @@ BCCIntegerExpression:
 BCCStringExpression:
 	value = STRING;
 
-enum IntegerRelationalOperator:
+enum BCCIntegerRelationalOperator:
 	EQUAL = '=' | NOT_EQUAL = '!=' |
 	SMALLER = '<' | SMALLER_OR_EQUAL = '<=' |
 	GREATER = '>' | GREATER_OR_EQUAL = '>=';
 
-enum StringRelationalOperator:
+enum BCCStringRelationalOperator:
 	EQUALS = 'equals' | STARTS_WITH = 'starts with' |
 	ENDS_WITH = 'ends with' | CONTAINS = 'contains';
 
-EntryKey:
+BCCEntryKey:
 	ID (':' | '+' | '-' | ID | INT)*;
 
 terminal INPROCEEDINGS:
@@ -386,29 +389,29 @@ terminal MONTH:
 terminal PAGES:
 	'pages';
 
-ConsistencyRuleKeyword:
+BCCConsistencyRuleKeyword:
 	'consistency' 'rule';
 
-ChecksThatKeyword:
+BCCChecksThatKeyword:
 	'checks' 'that';
 
-AppliesToKeyword:
+BCCAppliesToKeyword:
 	'applies' 'to';
 
-ExcludedEntryKeysKeyword:
+BCCExcludedEntryKeysKeyword:
 	'excluded' 'entry' 'keys';
 
-ExceptForKeyword:
+BCCExceptForKeyword:
 	'except' 'for';
 
-FieldExistsKeyword:
+BCCFieldExistsKeyword:
 	'field' 'exists';
 
-FieldsExistKeyword:
+BCCFieldsExistKeyword:
 	'fields' 'exist';
 
-UsesReplacePatternKeyword:
+BCCUsesReplacePatternKeyword:
 	'uses' 'replace' 'pattern';
 
-UseReplacePatternKeyword:
+BCCUseReplacePatternKeyword:
 	'use' 'replace' 'pattern';

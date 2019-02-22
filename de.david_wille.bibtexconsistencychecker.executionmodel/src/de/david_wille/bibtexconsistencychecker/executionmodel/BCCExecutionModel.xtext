@@ -11,20 +11,21 @@ BCCSettingsEntry:
 	'settings' '{'
 		'name' name = STRING
 		('ensure' '{'
-			(ensureAlphbeticOrderActivated ?= AlphabeticOrderKeyword)? &
-			(ensureShortHarvardStyleActivated ?= ShortHarvardStyleKeyword)? &
-			(ensureReplacePatternExistActivated ?= ReplacePatternExistKeyword)? &
-			(ensureNoContradictingReplacePatternExistActivated ?= NoContradictingReplacePatternExistKeyword)?
+			((ensureAlphbeticOrderActivated ?= BCCAlphabeticOrderKeyword)? &
+			(ensureShortHarvardStyleActivated ?= BCCShortHarvardStyleKeyword)? &
+			(ensureNoConflictingEntryKeysExistActivated ?= BCCNoConflictingEntryKeysExistKeyword)? &
+			(ensureReplacePatternExistActivated ?= BCCReplacePatternExistKeyword)? &
+			(ensureNoContradictingReplacePatternExistActivated ?= BCCNoContradictingReplacePatternExistKeyword)?)
 		'}')?
 	'}';
 
 BCCConsistencyRulesEntry:
-	ConsistencyRulesKeyword '{'
+	BCCConsistencyRulesKeyword '{'
 		(consistencyRuleEntries += BCCConsistencyRuleEntry)+
 	'}';
 
 BCCBibTeXFilesEntry:
-	BibTeXFilesKeyword '{'
+	BCCBibTeXFilesKeyword '{'
 		(bibTeXFileEntries += BCCBibTeXFileEntry)+
 	'}';
 
@@ -46,20 +47,23 @@ terminal RULE_PATH:
 terminal BIBTEX_PATH:
 	('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|'-'|'_'|'0'..'9')* '.bib';
 
-AlphabeticOrderKeyword:
+BCCAlphabeticOrderKeyword:
 	'alphabetic' 'order';
 
-ShortHarvardStyleKeyword:
+BCCShortHarvardStyleKeyword:
 	'short' 'harvard' 'style';
 
-ReplacePatternExistKeyword:
+BCCReplacePatternExistKeyword:
 	'replace' 'pattern' 'exist';
 
-NoContradictingReplacePatternExistKeyword:
+BCCNoContradictingReplacePatternExistKeyword:
 	'no' 'contradicting' 'replace' 'pattern' 'exist';
 
-ConsistencyRulesKeyword:
+BCCNoConflictingEntryKeysExistKeyword:
+	'no' 'conflicting' 'entry' 'keys' 'exist';
+
+BCCConsistencyRulesKeyword:
 	'consistency' 'rules';
 
-BibTeXFilesKeyword:
+BCCBibTeXFilesKeyword:
 	'bibtex' 'files';

@@ -3,6 +3,7 @@ package de.david_wille.bibtexconsistencychecker;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -15,32 +16,45 @@ import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRul
 import de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.BCCBibTeXFileEntry;
 import de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.BCCConsistencyRuleEntry;
 import de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.BCCExecutionModel;
-import de.david_wille.bibtexconsistencychecker.util.BCCMarkerHandling;
+import de.david_wille.bibtexconsistencychecker.util.BCCProblemMarkerHandling;
 import de.david_wille.bibtexconsistencychecker.util.BCCResourceUtil;
 import de.david_wille.bibtexconsistencychecker.util.BCCUtil;
 
 public class BCCLauncher {
 	
-	private static final String BIB_FILE = "bib";
-	private static final String BCC_RULE_FILE = "bcc_rule";
-
 	public void launch(BCCExecutionModel executionModel) {
 		try {
-			List<BCCBibTeXFile> parsedBibTeXFiles = identifyAndParseAllRelevantBibTeXFiles(executionModel);
-			List<BCCConsistencyRule> parsedConsistencyRules = identifyAndParseAllRelevantConsistencyRules(executionModel);
-			
-			BCCAnalysis analysis = new BCCAnalysis(executionModel, parsedConsistencyRules, parsedBibTeXFiles);
-			analysis.startAnalysis();
+			if (!BCCProblemMarkerHandling.resourceHasProblemMarkers(executionModel)) {
+				List<BCCBibTeXFile> parsedBibTeXFiles = identifyAndParseAllRelevantBibTeXFiles(executionModel);
+				
+				if (!BCCProblemMarkerHandling.resourcesHaveProblemMarkers(parsedBibTeXFiles)) {
+					List<BCCConsistencyRule> parsedConsistencyRules = identifyAndParseAllRelevantConsistencyRules(executionModel);
+					
+					if (!BCCProblemMarkerHandling.resourcesHaveProblemMarkers(parsedConsistencyRules)) {
+						BCCAnalysis analysis = new BCCAnalysis(executionModel, parsedConsistencyRules, parsedBibTeXFiles);
+						analysis.startAnalysis();
+					}
+					else {
+						BCCUtil.openErrorDialog("Cannot execute the consistency checks due to errors in the consistency rules!");
+					}
+				}
+				else {
+					BCCUtil.openErrorDialog("Cannot execute the consistency checks due to errors in the BibTeX files!");
+				}
+			}
+			else {
+				BCCUtil.openErrorDialog("Cannot execute the consistency checks due to errors in the execution model!");
+			}
 		}
 		catch (CoreException e) {
-			BCCUtil.openErrorDialog("An unexpected error occurred while reading the bibliography files!");
+			BCCUtil.openErrorDialog("An unexpected error occurred while reading the files!");
 		}
 	}
 
 	private List<BCCBibTeXFile> identifyAndParseAllRelevantBibTeXFiles(BCCExecutionModel executionModel) throws CoreException {
 		List<IFile> identifiedBibliographyFiles = identifyRelevantBibliographyFiles(executionModel);
 		
-		BCCMarkerHandling.clearAllExistingErrorMarkers(identifiedBibliographyFiles);
+		BCCAnalysis.clearAllExistingConsistencyProblemMarkers(identifiedBibliographyFiles);
 		
 		List<BCCBibTeXFile> parsedBibTeXFiles = BCCResourceUtil.parseModels(new BCCBibTeXStandaloneSetup(), identifiedBibliographyFiles);
 		
@@ -49,6 +63,8 @@ public class BCCLauncher {
 
 	private List<BCCConsistencyRule> identifyAndParseAllRelevantConsistencyRules(BCCExecutionModel executionModel) throws CoreException {
 		List<IFile> identifiedConsistencyRuleFiles = identifyRelevantConsistencyRuleFiles(executionModel);
+		
+		BCCAnalysis.clearAllExistingConsistencyProblemMarkers(identifiedConsistencyRuleFiles);
 		
 		List<BCCConsistencyRule> parsedConsistencyRules = BCCResourceUtil.parseModels(new BCCConsistencyRuleStandaloneSetup(), identifiedConsistencyRuleFiles);
 		
@@ -62,7 +78,10 @@ public class BCCLauncher {
 			relevantBibliographyFiles = collectSelectedBibTeXFiles(executionModel);
 		}
 		else {
-			relevantBibliographyFiles = collectAllBibTeXFiles(executionModel);
+			IFile executionModelFile = BCCResourceUtil.getIFile(executionModel);
+			IContainer parentContainer = executionModelFile.getParent();
+			
+			relevantBibliographyFiles = BCCResourceUtil.collectAllFilesInContainer(parentContainer, "bib");
 		}
 		
 		return relevantBibliographyFiles;
@@ -75,7 +94,10 @@ public class BCCLauncher {
 			relevantConsistencyRuleFiles = collectSelectedConsistencyRuleFiles(executionModel);
 		}
 		else {
-			relevantConsistencyRuleFiles = collectAllConsistencyRuleFiles(executionModel);
+			IFile executionModelFile = BCCResourceUtil.getIFile(executionModel);
+			IContainer parentContainer = executionModelFile.getParent();
+			
+			relevantConsistencyRuleFiles = BCCResourceUtil.collectAllFilesInContainer(parentContainer, "bcc_rule");
 		}
 		
 		return relevantConsistencyRuleFiles;
@@ -96,8 +118,8 @@ public class BCCLauncher {
 		List<IFile> relevantBibliographyFiles = new ArrayList<>();
 		
 		for (BCCBibTeXFileEntry entry : executionModel.getBibTeXFilesEntry().getBibTeXFileEntries()) {
-			IFile foundConstistencyRuleFile = identifyBibTeXFile(executionModel, entry);
-			relevantBibliographyFiles.add(foundConstistencyRuleFile);
+			IFile foundBibTeXFile = identifyBibTeXFile(executionModel, entry);
+			relevantBibliographyFiles.add(foundBibTeXFile);
 		}
 		
 		return relevantBibliographyFiles;
@@ -114,7 +136,7 @@ public class BCCLauncher {
 			if (BCCResourceUtil.resourceIsFile(resource)) {
 				IFile file = (IFile) resource;
 				
-				if (file.getFileExtension().equals(BCC_RULE_FILE)) {
+				if (BCCLaunchShortCut.fileIsConsistencyRule(file)) {
 					if (file.getName().equals(path)) {
 						return file;
 					}
@@ -136,7 +158,7 @@ public class BCCLauncher {
 			if (BCCResourceUtil.resourceIsFile(resource)) {
 				IFile file = (IFile) resource;
 				
-				if (file.getFileExtension().equals(BIB_FILE)) {
+				if (BCCLaunchShortCut.fileIsBibTeXFile(file)) {
 					if (file.getName().equals(path)) {
 						return file;
 					}
@@ -145,46 +167,6 @@ public class BCCLauncher {
 		}
 		
 		return null;
-	}
-
-	private List<IFile> collectAllConsistencyRuleFiles(BCCExecutionModel executionModel) {
-		List<IFile> relevantConsistencyRuleFiles = new ArrayList<>();
-		
-		IFile executionModelFile = BCCResourceUtil.getIFile(executionModel);
-		IResource parentResource = executionModelFile.getParent();
-		List<IResource> childResourcesOfParentResource = BCCResourceUtil.getChildResources(parentResource);
-		
-		for (IResource resource : childResourcesOfParentResource) {
-			if (BCCResourceUtil.resourceIsFile(resource)) {
-				IFile file = (IFile) resource;
-				
-				if (file.getFileExtension().equals(BCC_RULE_FILE)) {
-					relevantConsistencyRuleFiles.add(file);
-				}
-			}
-		}
-		
-		return relevantConsistencyRuleFiles;
-	}
-
-	private List<IFile> collectAllBibTeXFiles(BCCExecutionModel executionModel) {
-		List<IFile> relevantBibTeXFiles = new ArrayList<>();
-		
-		IFile executionModelFile = BCCResourceUtil.getIFile(executionModel);
-		IResource parentResource = executionModelFile.getParent();
-		List<IResource> childResourcesOfParentResource = BCCResourceUtil.getChildResources(parentResource);
-		
-		for (IResource resource : childResourcesOfParentResource) {
-			if (BCCResourceUtil.resourceIsFile(resource)) {
-				IFile file = (IFile) resource;
-				
-				if (file.getFileExtension().equals(BIB_FILE)) {
-					relevantBibTeXFiles.add(file);
-				}
-			}
-		}
-		
-		return relevantBibTeXFiles;
 	}
 
 	private boolean explicitConsistencyRuleSelectionExists(BCCExecutionModel executionModel) {

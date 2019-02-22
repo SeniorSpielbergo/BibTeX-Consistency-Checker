@@ -167,5 +167,23 @@ public class BCCResourceUtil {
 		
 		return null;
 	}
+
+	public static List<IFile> collectAllFilesInContainer(IContainer container, String fileExtension) {
+		List<IFile> relevantBibTeXFiles = new ArrayList<>();
+		
+		List<IResource> childResourcesOfParentResource = BCCResourceUtil.getChildResources(container);
+		
+		for (IResource resource : childResourcesOfParentResource) {
+			if (BCCResourceUtil.resourceIsFile(resource)) {
+				IFile file = (IFile) resource;
+				
+				if (file.getFileExtension().equals(fileExtension)) {
+					relevantBibTeXFiles.add(file);
+				}
+			}
+		}
+		
+		return relevantBibTeXFiles;
+	}
 	
 }
