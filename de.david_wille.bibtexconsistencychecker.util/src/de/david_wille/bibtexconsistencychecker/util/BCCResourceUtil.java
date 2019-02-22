@@ -27,6 +27,10 @@ import com.google.inject.Injector;
 
 public class BCCResourceUtil {
 
+	public static final String BIB_FILE_EXTENSION = "bib";
+	public static final String BCC_FILE_EXTENSION = "bcc";
+	public static final String BCC_RULE_FILE_EXTENSION = "bcc_rule";
+
 	@SuppressWarnings("unchecked")
 	public static <T> T parseModel(ISetup setup, IFile file) {
 		Injector injector = setup.createInjectorAndDoEMFRegistration();
@@ -184,6 +188,18 @@ public class BCCResourceUtil {
 		}
 		
 		return relevantBibTeXFiles;
+	}
+
+	public static boolean fileIsExecutionModel(IFile selectedFile) {
+		return selectedFile.getFileExtension().equals(BCC_FILE_EXTENSION);
+	}
+
+	public static boolean fileIsBibTeXFile(IFile selectedFile) {
+		return selectedFile.getFileExtension().equals(BIB_FILE_EXTENSION);
+	}
+
+	public static boolean fileIsConsistencyRule(IFile selectedFile) {
+		return selectedFile.getFileExtension().equals(BCC_RULE_FILE_EXTENSION);
 	}
 	
 }
