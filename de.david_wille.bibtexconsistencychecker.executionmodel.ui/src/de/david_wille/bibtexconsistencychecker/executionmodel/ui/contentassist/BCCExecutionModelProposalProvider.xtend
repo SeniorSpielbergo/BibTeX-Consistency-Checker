@@ -41,18 +41,6 @@ class BCCExecutionModelProposalProvider extends AbstractBCCExecutionModelProposa
 		BCCShortHarvardStyleKeywordAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
 	}
 	
-	override complete_BCCReplacePatternExistKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		BCCReplacePatternExistKeywordAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
-	}
-	
-	override complete_BCCNoConflictingEntryKeysExistKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		BCCNoConflictingEntryKeysExistKeywordAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
-	}
-	
-	override complete_BCCNoContradictingReplacePatternExistKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		BCCNoContradictingReplacePatternExistKeywordAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
-	}
-	
 	override complete_BCCConsistencyRulesKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		BCCConsistencyRulesKeywordAccess.group.createKeywordProposalWithTrailingSeparator(context, acceptor)
 	}

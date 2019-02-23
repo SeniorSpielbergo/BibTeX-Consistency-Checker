@@ -28,14 +28,14 @@ class BCCConsistencyRuleOutlineTreeProvider extends DefaultOutlineTreeProvider {
 		var Image image = imageDispatcher.invoke(rule)
 		createEStructuralFeatureNode(parentNode, rule.ruleBody, BCCConsistencyRulePackage.Literals.BCC_RULE_BODY__APPLIES_TO_BODY,
 					image, "applies to", true);
-					
-		createEStructuralFeatureNode(parentNode, rule.ruleBody, BCCConsistencyRulePackage.Literals.BCC_RULE_BODY__CHECKS_THAT_EXPRESSION,
-					image, "checks that", true);
 		
 		if (rule.ruleBody.excludedEntryKeysBody !== null) {
 			createEStructuralFeatureNode(parentNode, rule.ruleBody, BCCConsistencyRulePackage.Literals.BCC_RULE_BODY__EXCLUDED_ENTRY_KEYS_BODY,
 						image, "excluded entry keys", true);
 		}
+		
+		createEStructuralFeatureNode(parentNode, rule.ruleBody, BCCConsistencyRulePackage.Literals.BCC_RULE_BODY__IF_THEN_ELSE_EXPRESSIONS,
+						image, "rule description", true);
 	}
 
 }

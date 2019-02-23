@@ -12,10 +12,7 @@ BCCSettingsEntry:
 		'name' name = STRING
 		('ensure' '{'
 			((ensureAlphbeticOrderActivated ?= BCCAlphabeticOrderKeyword)? &
-			(ensureShortHarvardStyleActivated ?= BCCShortHarvardStyleKeyword)? &
-			(ensureNoConflictingEntryKeysExistActivated ?= BCCNoConflictingEntryKeysExistKeyword)? &
-			(ensureReplacePatternExistActivated ?= BCCReplacePatternExistKeyword)? &
-			(ensureNoContradictingReplacePatternExistActivated ?= BCCNoContradictingReplacePatternExistKeyword)?)
+			(ensureShortHarvardStyleActivated ?= BCCShortHarvardStyleKeyword)?)
 		'}')?
 	'}';
 
@@ -52,15 +49,6 @@ BCCAlphabeticOrderKeyword:
 
 BCCShortHarvardStyleKeyword:
 	'short' 'harvard' 'style';
-
-BCCReplacePatternExistKeyword:
-	'replace' 'pattern' 'exist';
-
-BCCNoContradictingReplacePatternExistKeyword:
-	'no' 'contradicting' 'replace' 'pattern' 'exist';
-
-BCCNoConflictingEntryKeysExistKeyword:
-	'no' 'conflicting' 'entry' 'keys' 'exist';
 
 BCCConsistencyRulesKeyword:
 	'consistency' 'rules';

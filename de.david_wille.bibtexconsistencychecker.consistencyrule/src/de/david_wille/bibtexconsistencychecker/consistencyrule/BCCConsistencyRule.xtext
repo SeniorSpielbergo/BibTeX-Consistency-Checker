@@ -10,8 +10,8 @@ BCCConsistencyRule:
 BCCRuleBody:
 	'name' name = STRING
 	(BCCAppliesToKeyword appliesToBody = BCCAbstractSelectorBody (BCCExceptForKeyword exceptForBody = BCCAbstractSelectorBody)?)
-	(BCCChecksThatKeyword checksThatExpression = BCCExpression)
-	(BCCExcludedEntryKeysKeyword excludedEntryKeysBody = BCCAbstractExcludedEntryKeyBody)?;
+	(BCCExcludedEntryKeysKeyword excludedEntryKeysBody = BCCAbstractExcludedEntryKeyBody)?
+	(ifThenElseExpressions += BCCIfThenElseExpression)*;
 
 BCCAbstractSelectorBody:
 	BCCSingleEntrySelectorBody | BCCMultiEntrySelectorBody;
@@ -54,7 +54,8 @@ BCCNoKeywordExpression returns Expression:
 	
 BCCUnaryExpression returns Expression:
 	BCCAbstractFieldSelectionExpression | BCCFieldExistsExpression | BCCFieldsExistExpression | BCCStringExpression |
-	BCCIntegerExpression | BCCUsesReplacePatternExpression | BCCUseReplacePatternExpression | BCCNotExpression | BCCParenthesesExpression;
+	BCCIntegerExpression | BCCUsesReplacePatternExpression | BCCUseReplacePatternExpression | BCCIsIntegerExpression |
+	BCCAreIntegerExpression | BCCNotExpression | BCCParenthesesExpression;
 
 BCCAbstractFieldSelectionExpression:
 	BCCSingleFieldSelectionExpression | BCCMultiFieldSelectionExpression;
@@ -71,6 +72,12 @@ BCCUsesReplacePatternExpression:
 BCCUseReplacePatternExpression:
 	{BCCUseReplacePatternExpression} BCCUseReplacePatternKeyword;
 
+BCCIsIntegerExpression:
+	{BCCIsIntegerExpression} BCCIsIntegerKeyword;
+
+BCCAreIntegerExpression:
+	{BCCAreIntegerExpression} BCCAreIntegerKeyword;
+
 BCCSingleFieldSelectionExpression:
 	selection = BCCAbstractSpecificFieldSelector;
 
@@ -81,7 +88,34 @@ BCCParenthesesExpression:
 	'(' expression = BCCExpression ')';
 
 BCCNotExpression:
-	'not' expression = BCCParenthesesExpression;
+	'!' expression = BCCParenthesesExpression;
+
+BCCIfThenElseExpression:
+	ifThenExpression = BCCIfThenExpression
+	('else' elseIfThenExpressions += BCCIfThenExpression)*
+	('else' '{'
+		(elseExpressions += BCCEvaluationExpression)*
+	'}')?;
+
+BCCIfThenExpression:
+	'if' '(' ifExpression = BCCExpression ')' '{'
+		(thenExpressions += BCCEvaluationExpression)*
+	'}';
+
+BCCEvaluationExpression:
+	BCCAbstractMarkerExpression | BCCIfThenElseExpression | BCCReturnExpression;
+
+BCCReturnExpression:
+	{BCCReturnExpression} 'return';
+
+BCCAbstractMarkerExpression:
+	BCCWarningMarkerExpression | BCCErrorMarkerExpression;
+
+BCCWarningMarkerExpression:
+	'add' 'warning' message = STRING ('to' causingElement = BCCSingleFieldSelectionExpression)?;
+
+BCCErrorMarkerExpression:
+	'add' 'error' message = STRING ('to' causingElement = BCCSingleFieldSelectionExpression)?;
 
 BCCAbstractSelector:
 	BCCAllSelector | BCCAbstractSpecificBibTeXEntrySelector;
@@ -243,7 +277,7 @@ BCCStringExpression:
 	value = STRING;
 
 enum BCCIntegerRelationalOperator:
-	EQUAL = '=' | NOT_EQUAL = '!=' |
+	EQUAL = '==' | NOT_EQUAL = '!=' |
 	SMALLER = '<' | SMALLER_OR_EQUAL = '<=' |
 	GREATER = '>' | GREATER_OR_EQUAL = '>=';
 
@@ -392,9 +426,6 @@ terminal PAGES:
 BCCConsistencyRuleKeyword:
 	'consistency' 'rule';
 
-BCCChecksThatKeyword:
-	'checks' 'that';
-
 BCCAppliesToKeyword:
 	'applies' 'to';
 
@@ -409,6 +440,12 @@ BCCFieldExistsKeyword:
 
 BCCFieldsExistKeyword:
 	'fields' 'exist';
+
+BCCIsIntegerKeyword:
+	'is' 'integer';
+
+BCCAreIntegerKeyword:
+	'are' 'integer';
 
 BCCUsesReplacePatternKeyword:
 	'uses' 'replace' 'pattern';

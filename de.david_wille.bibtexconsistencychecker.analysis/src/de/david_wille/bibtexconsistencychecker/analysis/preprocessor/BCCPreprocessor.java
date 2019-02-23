@@ -3,16 +3,21 @@ package de.david_wille.bibtexconsistencychecker.analysis.preprocessor;
 import java.util.List;
 
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBibTeXFile;
+import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCConsistencyRule;
 import de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.BCCExecutionModel;
 
 public class BCCPreprocessor {
 	
 	private BCCExecutionModel executionModel;
 	private List<BCCBibTeXFile> parsedBibTeXFiles;
+	private List<BCCConsistencyRule> parsedConsistencyRules;
 
-	public BCCPreprocessor(BCCExecutionModel executionModel, List<BCCBibTeXFile> parsedBibTeXFiles) {
+	public BCCPreprocessor(BCCExecutionModel executionModel, List<BCCBibTeXFile> parsedBibTeXFiles,
+			List<BCCConsistencyRule> parsedConsistencyRules)
+	{
 		this.executionModel = executionModel;
 		this.parsedBibTeXFiles = parsedBibTeXFiles;
+		this.parsedConsistencyRules = parsedConsistencyRules;
 	}
 
 	public void execute() {
@@ -31,20 +36,13 @@ public class BCCPreprocessor {
 			}
 		}
 		
-		// TODO: move to validator as this has to be ensured in all cases
-		if (ensureNoConflictingEntryKeysExistActivated(executionModel)) {
-			BCCNoConflictingEntryKeysExist.checkNoConflictingEntryKeysExist(parsedBibTeXFiles);
-		}
+		BCCNoConflictingEntryKeysExist.checkNoConflictingEntryKeysExist(parsedBibTeXFiles);
 		
-		// TODO: move to validator as this has to be ensured in all cases
-		if (ensureNoContradictingReplacePatternExistActivated(executionModel)) {
-			BCCNoContradictingReplacePatternExist.checkNoContradictingReplacePatternExist(parsedBibTeXFiles);
-		}
+		BCCNoContradictingReplacePatternExist.checkNoContradictingReplacePatternExist(parsedBibTeXFiles);
 		
-		// TODO: move to validator as this has to be ensured in all cases
-		if (ensureReplacePatternExistActivated(executionModel)) {
-			BCCReplacePatternExist.checkReplacePatternExist(parsedBibTeXFiles);
-		}
+		BCCReplacePatternExist.checkReplacePatternExist(parsedBibTeXFiles);
+		
+		BCCExcludedEntryKeysExist.checkExcludedEntryKeysExist(parsedBibTeXFiles, parsedConsistencyRules);
 	}
 	
 	private boolean ensureAlphabeticOrderActivated(BCCExecutionModel executionModel) {
@@ -53,18 +51,6 @@ public class BCCPreprocessor {
 
 	private boolean ensureShortHarvardStyleActivated(BCCExecutionModel executionModel) {
 		return executionModel.getSettingsEntry().isEnsureShortHarvardStyleActivated();
-	}
-
-	private boolean ensureNoConflictingEntryKeysExistActivated(BCCExecutionModel executionModel) {
-		return executionModel.getSettingsEntry().isEnsureNoConflictingEntryKeysExistActivated();
-	}
-
-	private boolean ensureReplacePatternExistActivated(BCCExecutionModel executionModel) {
-		return executionModel.getSettingsEntry().isEnsureReplacePatternExistActivated();
-	}
-
-	private boolean ensureNoContradictingReplacePatternExistActivated(BCCExecutionModel executionModel) {
-		return executionModel.getSettingsEntry().isEnsureNoContradictingReplacePatternExistActivated();
 	}
 
 }

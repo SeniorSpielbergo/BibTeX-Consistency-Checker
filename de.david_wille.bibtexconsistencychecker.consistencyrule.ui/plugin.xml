@@ -4,12 +4,13 @@
 	<extension
 		point="org.eclipse.ui.editors">
 		<editor
-			class="de.david_wille.bibtexconsistencychecker.consistencyrule.ui.BCCConsistencyRuleExecutableExtensionFactory:org.eclipse.xtext.ui.editor.XtextEditor"
-			contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
-			default="true"
-			extensions="bcc_rule"
-			id="de.david_wille.bibtexconsistencychecker.consistencyrule.BCCConsistencyRule"
-			name="BCCConsistencyRule Editor">
+        class="de.david_wille.bibtexconsistencychecker.consistencyrule.ui.BCCConsistencyRuleExecutableExtensionFactory:org.eclipse.xtext.ui.editor.XtextEditor"
+        contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
+        default="true"
+        extensions="bcc_rule"
+        icon="icons/bcc_rule_icon16.png"
+        id="de.david_wille.bibtexconsistencychecker.consistencyrule.BCCConsistencyRule"
+        name="BCCConsistencyRule Editor">
 		</editor>
 	</extension>
 	<extension

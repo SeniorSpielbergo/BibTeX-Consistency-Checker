@@ -26,7 +26,7 @@ public class BCCAnalysis {
 	public BCCAnalysis(BCCExecutionModel executionModel, List<BCCConsistencyRule> parsedConsistencyRules, List<BCCBibTeXFile> parsedBibTeXFiles) {
 		this.parsedConsistencyRules = parsedConsistencyRules;
 		
-		preprocessor = new BCCPreprocessor(executionModel, parsedBibTeXFiles);
+		preprocessor = new BCCPreprocessor(executionModel, parsedBibTeXFiles, parsedConsistencyRules);
 		collector = new BCCCollector(parsedBibTeXFiles);
 	}
 
@@ -59,14 +59,32 @@ public class BCCAnalysis {
 		BCCProblemMarkerHandling.clearAllExistingCustomProblemMarkers(CONSISTENCY_PROBLEM_MARKER_ID, file);
 	}
 
-	public static void createConsistencyProblemErrorMarker(IResource resource, String errorMessage, EObject eObject, EStructuralFeature eStructuralFeature) {
+	public static void createConsistencyProblemErrorMarker(IResource resource, String errorMessage, EObject eObject,
+			EStructuralFeature eStructuralFeature)
+	{
 		BCCProblemMarkerHandling factory = new BCCProblemMarkerHandling();
 		factory.createCustomProblemErrorMarker(CONSISTENCY_PROBLEM_MARKER_ID, resource, errorMessage, eObject, eStructuralFeature);
 	}
 
-	public static void createConsistencyProblemWarningMarker(IResource resource, String errorMessage, EObject eObject, EStructuralFeature eStructuralFeature) {
+	public static void createConsistencyProblemErrorMarker(IResource resource, String errorMessage, EObject eObject,
+			EStructuralFeature eStructuralFeature, int index)
+	{
+		BCCProblemMarkerHandling factory = new BCCProblemMarkerHandling();
+		factory.createCustomProblemErrorMarker(CONSISTENCY_PROBLEM_MARKER_ID, resource, errorMessage, eObject, eStructuralFeature, index);
+	}
+
+	public static void createConsistencyProblemWarningMarker(IResource resource, String errorMessage, EObject eObject,
+			EStructuralFeature eStructuralFeature)
+	{
 		BCCProblemMarkerHandling factory = new BCCProblemMarkerHandling();
 		factory.createCustomProblemWarningMarker(CONSISTENCY_PROBLEM_MARKER_ID, resource, errorMessage, eObject, eStructuralFeature);
+	}
+
+	public static void createConsistencyProblemWarningMarker(IResource resource, String errorMessage, EObject eObject,
+			EStructuralFeature eStructuralFeature, int index)
+	{
+		BCCProblemMarkerHandling factory = new BCCProblemMarkerHandling();
+		factory.createCustomProblemWarningMarker(CONSISTENCY_PROBLEM_MARKER_ID, resource, errorMessage, eObject, eStructuralFeature, index);
 	}
 
 }

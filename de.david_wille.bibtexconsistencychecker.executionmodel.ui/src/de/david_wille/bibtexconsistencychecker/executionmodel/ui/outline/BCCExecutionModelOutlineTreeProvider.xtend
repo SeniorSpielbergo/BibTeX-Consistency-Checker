@@ -56,24 +56,6 @@ class BCCExecutionModelOutlineTreeProvider extends DefaultOutlineTreeProvider {
 			createEStructuralFeatureNode(parentNode, settingsEntry, BCCExecutionModelPackage.Literals.BCC_SETTINGS_ENTRY__ENSURE_SHORT_HARVARD_STYLE_ACTIVATED,
 				ensureShortHarvardStyleActivatedImage, "ensure short harvard style", true);
 		}
-		
-		if (settingsEntry.ensureReplacePatternExistActivated) {
-			var Image ensureShortHarvardStyleActivatedImage = imageDispatcher.invoke(settingsEntry)
-			createEStructuralFeatureNode(parentNode, settingsEntry, BCCExecutionModelPackage.Literals.BCC_SETTINGS_ENTRY__ENSURE_REPLACE_PATTERN_EXIST_ACTIVATED,
-				ensureShortHarvardStyleActivatedImage, "ensure replace pattern exist", true);
-		}
-		
-		if (settingsEntry.ensureNoContradictingReplacePatternExistActivated) {
-			var Image ensureShortHarvardStyleActivatedImage = imageDispatcher.invoke(settingsEntry)
-			createEStructuralFeatureNode(parentNode, settingsEntry, BCCExecutionModelPackage.Literals.BCC_SETTINGS_ENTRY__ENSURE_NO_CONTRADICTING_REPLACE_PATTERN_EXIST_ACTIVATED,
-				ensureShortHarvardStyleActivatedImage, "ensure no contradicting replace pattern exist", true);
-		}
-		
-		if (settingsEntry.ensureNoConflictingEntryKeysExistActivated) {
-			var Image ensureShortHarvardStyleActivatedImage = imageDispatcher.invoke(settingsEntry)
-			createEStructuralFeatureNode(parentNode, settingsEntry, BCCExecutionModelPackage.Literals.BCC_SETTINGS_ENTRY__ENSURE_NO_CONFLICTING_ENTRY_KEYS_EXIST_ACTIVATED,
-				ensureShortHarvardStyleActivatedImage, "ensure no conflicting entry keys exist", true);
-		}
 	}
 	
 	protected def _createNode(IOutlineNode parentNode, BCCConsistencyRulesEntry rulesEntry) {

@@ -54,6 +54,19 @@ public class BCCBibTeXUtil {
 		
 		return !fieldValue.startsWith(OPENING_BRACE) && !fieldValue.endsWith(CLOSING_BRACE);
 	}
+	
+	public static boolean isInteger(BCCAbstractGenericField genericField) {
+		String fieldValue = getFieldValueWithoutFieldBraces(genericField);
+
+		try {
+			Integer.parseInt(fieldValue);
+		}
+		catch(NumberFormatException nfe){
+			return false;
+		}
+		
+		return true;
+	}
 
 	public static List<BCCAbstractBibTeXEntry> collectAllAbstractBibTeXEntries(List<BCCBibTeXFile> parsedBibTeXFiles) {
 		List<BCCAbstractBibTeXEntry> bibTeXEntries = new ArrayList<>();
@@ -98,6 +111,39 @@ public class BCCBibTeXUtil {
 		}
 		
 		return allReplacePattern;
+	}
+	
+	public static String getFieldValueWithoutFieldBraces(BCCAbstractGenericField genericField) {
+		String fieldValue = genericField.getFieldValue();
+		
+		while (fieldValue.startsWith(OPENING_BRACE) && fieldValue.endsWith(CLOSING_BRACE)) {
+			fieldValue = fieldValue.substring(1, fieldValue.length());
+			
+			fieldValue = fieldValue.substring(0, fieldValue.length()-1);
+		}
+		
+		return fieldValue;
+	}
+
+	public static List<String> collectAllEntryKeys(List<BCCBibTeXFile> bibTeXFiles) {
+		List<String> allEntryKeys = new ArrayList<>();
+		
+		for (BCCBibTeXFile bibTeXFile : bibTeXFiles) {
+			allEntryKeys.addAll(collectAllEntryKeys(bibTeXFile));
+		}
+		
+		return allEntryKeys;
+	}
+
+	public static List<String> collectAllEntryKeys(BCCBibTeXFile bibTeXFile) {
+		List<String> allEntryKeys = new ArrayList<>();
+		
+		List<BCCAbstractBibTeXEntry> allBibTeXEntries = collectAllAbstractBibTeXEntries(bibTeXFile);
+		for (BCCAbstractBibTeXEntry bibTeXEntry : allBibTeXEntries) {
+			allEntryKeys.add(bibTeXEntry.getEntryBody().getEntryKey());
+		}
+		
+		return allEntryKeys;
 	}
 	
 }

@@ -1,8 +1,6 @@
 package de.david_wille.bibtexconsistencychecker.analysis.evaluator;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EStructuralFeature;
 
 import de.david_wille.bibtexconsistencychecker.analysis.BCCAnalysis;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractBibTeXEntry;
@@ -17,6 +15,7 @@ import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCDateField;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCDoiField;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCEditionField;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCEditorField;
+import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCEntryBody;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCHowPublishedField;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCInstitutionField;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCIsbnField;
@@ -39,9 +38,11 @@ import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCVolumeField;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCYearField;
 import de.david_wille.bibtexconsistencychecker.bibtex.util.BCCBibTeXUtil;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCAbstractFieldSelectionExpression;
+import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCAbstractMarkerExpression;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCAbstractSpecificFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCAddressFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCAndExpression;
+import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCAreIntegerExpression;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCAuthorFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCBooktitleFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCChapterFieldSelector;
@@ -50,13 +51,19 @@ import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRul
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCDoiFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCEditionFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCEditorFieldSelector;
+import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCErrorMarkerExpression;
+import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCEvaluationExpression;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCExpression;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCFieldExistsExpression;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCFieldsExistExpression;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCHowPublishedFieldSelector;
+import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCIfThenElseExpression;
+import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCIfThenExpression;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCInstitutionFieldSelector;
+import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCIntegerExpression;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCIntegerRelationalExpression;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCIntegerRelationalOperator;
+import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCIsIntegerExpression;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCIsbnFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCJournalFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCKeywordsFieldSelector;
@@ -71,10 +78,12 @@ import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRul
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCPagesFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCParenthesesExpression;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCPublisherFieldSelector;
+import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCReturnExpression;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCRevisionFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCSchoolFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCSeriesFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCSingleFieldSelectionExpression;
+import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCStringExpression;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCStringRelationalExpression;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCStringRelationalOperator;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCTitleFieldSelector;
@@ -84,59 +93,144 @@ import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRul
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCUsesReplacePatternExpression;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCVersionFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCVolumeFieldSelector;
+import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCWarningMarkerExpression;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCYearFieldSelector;
-import de.david_wille.bibtexconsistencychecker.util.BCCProblemMarkerHandling;
 import de.david_wille.bibtexconsistencychecker.util.BCCResourceUtil;
 
 public class BCCExpressionEvaluator {
 	
-	private BCCProblemMarkerHandling markerFactory;
 	private BCCConsistencyRule evaluatedConsistencyRule;
+	private boolean returnFromRule;
 	
-	public BCCExpressionEvaluator() {
-		markerFactory = new BCCProblemMarkerHandling();
-	}
-
 	public void evaluateExpression(BCCConsistencyRule evaluatedConsistencyRule, BCCAbstractBibTeXEntry bibTeXEntry) {
 		this.evaluatedConsistencyRule = evaluatedConsistencyRule;
-		BCCExpression expression = evaluatedConsistencyRule.getRuleBody().getChecksThatExpression();
+		returnFromRule = false;
 		
-		boolean positivelyEvaluated = evaluateExpression(expression, bibTeXEntry);
+		for (BCCIfThenElseExpression ifThenElseExpression : evaluatedConsistencyRule.getRuleBody().getIfThenElseExpressions()) {
+			evaluateIfThenElseExpression(ifThenElseExpression, bibTeXEntry);
+		}
+	}
+
+	private void evaluateIfThenElseExpression(BCCIfThenElseExpression ifThenElseExpression, BCCAbstractBibTeXEntry bibTeXEntry) {
+		if (!returnFromRule) {
+			BCCIfThenExpression ifThenExpression = ifThenElseExpression.getIfThenExpression();
+			
+			BCCExpression ifExpression = ifThenExpression.getIfExpression();
+			
+			// check the if expression
+			if (evaluateExpression(ifExpression, bibTeXEntry)) {
+				for (BCCEvaluationExpression thenExpression : ifThenExpression.getThenExpressions()) {
+					evaluateEvaluationExpression(thenExpression, bibTeXEntry);
+				}
+				return;
+			}
+			else {
+				// process all else if expressions
+				for (BCCIfThenExpression elseIfThenExpression : ifThenElseExpression.getElseIfThenExpressions()) {
+					BCCExpression elseIfExpression = elseIfThenExpression.getIfExpression();
+					
+					// check the else if expression
+					if (evaluateExpression(elseIfExpression, bibTeXEntry)) {
+						for (BCCEvaluationExpression thenExpression : elseIfThenExpression.getThenExpressions()) {
+							evaluateEvaluationExpression(thenExpression, bibTeXEntry);
+						}
+						return;
+					}
+				}
+				
+				// execute the else expression
+				for (BCCEvaluationExpression elseExpression : ifThenElseExpression.getElseExpressions()) {
+					evaluateEvaluationExpression(elseExpression, bibTeXEntry);
+				}
+			}
+		}
+	}
+
+	private void evaluateEvaluationExpression(BCCEvaluationExpression evaluationExpression, BCCAbstractBibTeXEntry bibTeXEntry) {
+		if (!returnFromRule) {
+			if (evaluationExpression instanceof BCCIfThenElseExpression) {
+				BCCIfThenElseExpression ifThenElseExpression = (BCCIfThenElseExpression) evaluationExpression;
+				evaluateIfThenElseExpression(ifThenElseExpression, bibTeXEntry);
+			}
+			else if (evaluationExpression instanceof BCCAbstractMarkerExpression) {
+				BCCAbstractMarkerExpression markerExpression = (BCCAbstractMarkerExpression) evaluationExpression;
+				generateMarker(markerExpression, bibTeXEntry);
+			}
+			else if (evaluationExpression instanceof BCCReturnExpression) {
+				returnFromRule = true;
+			}
+			else {
+				throw new UnsupportedOperationException("Encountered a situation that was not yet implemented!");
+			}
+		}
+	}
+
+	private void generateMarker(BCCAbstractMarkerExpression markerExpression, BCCAbstractBibTeXEntry bibTeXEntry)
+	{
+		IResource problematicResource = BCCResourceUtil.getIFile(bibTeXEntry);
+		IResource identifyingRuleResource = BCCResourceUtil.getIFile(evaluatedConsistencyRule);
+		BCCSingleFieldSelectionExpression fieldSelectionExpression = markerExpression.getCausingElement();
+		BCCEntryBody causingEntryBody = bibTeXEntry.getEntryBody();
+		String message = identifyingRuleResource.getName() + ": " + markerExpression.getMessage();
 		
-//		System.out.println(positivelyEvaluated);
+		if (markerExpression instanceof BCCWarningMarkerExpression) {
+			if (fieldSelectionExpression == null) {
+				BCCAnalysis.createConsistencyProblemWarningMarker(problematicResource, message, causingEntryBody, BCCBibTeXPackage.Literals.BCC_ENTRY_BODY__ENTRY_KEY);
+			}
+			else {
+				BCCAbstractEntryBodyField field = identifyField(fieldSelectionExpression.getSelection(), bibTeXEntry);
+				int index = BCCBibTeXUtil.identifyFieldPosition(bibTeXEntry, field);
+				BCCAnalysis.createConsistencyProblemWarningMarker(problematicResource, message, causingEntryBody, BCCBibTeXPackage.Literals.BCC_ENTRY_BODY__FIELDS, index);
+			}
+		}
+		else if (markerExpression instanceof BCCErrorMarkerExpression) {
+			if (fieldSelectionExpression == null) {
+				BCCAnalysis.createConsistencyProblemErrorMarker(problematicResource, message, causingEntryBody, BCCBibTeXPackage.Literals.BCC_ENTRY_BODY__ENTRY_KEY);
+			}
+			else {
+				BCCAbstractEntryBodyField field = identifyField(fieldSelectionExpression.getSelection(), bibTeXEntry);
+				int index = BCCBibTeXUtil.identifyFieldPosition(bibTeXEntry, field);
+				BCCAnalysis.createConsistencyProblemErrorMarker(problematicResource, message, causingEntryBody, BCCBibTeXPackage.Literals.BCC_ENTRY_BODY__FIELDS, index);
+			}
+		}
 	}
 
 	private boolean evaluateExpression(BCCExpression expression, BCCAbstractBibTeXEntry bibTeXEntry) {
-		if (expression instanceof BCCNoKeywordExpression) {
-			BCCNoKeywordExpression noKeywordExpression = (BCCNoKeywordExpression) expression;
-			return evaluateNoKeywordExpression(noKeywordExpression, bibTeXEntry);
+		if (!returnFromRule) {
+			if (expression instanceof BCCNoKeywordExpression) {
+				BCCNoKeywordExpression noKeywordExpression = (BCCNoKeywordExpression) expression;
+				return evaluateNoKeywordExpression(noKeywordExpression, bibTeXEntry);
+			}
+			else if (expression instanceof BCCAndExpression) {
+				BCCAndExpression andExpression = (BCCAndExpression) expression;
+				return evaluateAndExpression(andExpression, bibTeXEntry);
+			}
+			else if (expression instanceof BCCOrExpression) {
+				BCCOrExpression orExpression = (BCCOrExpression) expression;
+				return evaluateOrExpression(orExpression, bibTeXEntry);
+			}
+			else if (expression instanceof BCCParenthesesExpression) {
+				BCCParenthesesExpression parenthesesExpression = (BCCParenthesesExpression) expression;
+				return evaluateExpression(parenthesesExpression.getExpression(), bibTeXEntry);
+			}
+			else if (expression instanceof BCCNotExpression) {
+				BCCNotExpression notExpression = (BCCNotExpression) expression;
+				return !evaluateExpression(notExpression.getExpression(), bibTeXEntry);
+			}
+			else if (expression instanceof BCCStringRelationalExpression) {
+				BCCStringRelationalExpression stringRelationalExpression = (BCCStringRelationalExpression) expression;
+				return evaluateStringRelationalExpression(stringRelationalExpression, bibTeXEntry);
+			}
+			else if (expression instanceof BCCIntegerRelationalExpression) {
+				BCCIntegerRelationalExpression integerRelationalExpression = (BCCIntegerRelationalExpression) expression;
+				return evaluateIntegerRelationalExpression(integerRelationalExpression, bibTeXEntry);
+			}
+			
+			throw new UnsupportedOperationException("Encountered a situation that was not yet implemented!");
 		}
-		else if (expression instanceof BCCAndExpression) {
-			BCCAndExpression andExpression = (BCCAndExpression) expression;
-			return evaluateAndExpression(andExpression, bibTeXEntry);
+		else {
+			return false;
 		}
-		else if (expression instanceof BCCOrExpression) {
-			BCCOrExpression orExpression = (BCCOrExpression) expression;
-			return evaluateOrExpression(orExpression, bibTeXEntry);
-		}
-		else if (expression instanceof BCCParenthesesExpression) {
-			BCCParenthesesExpression parenthesesExpression = (BCCParenthesesExpression) expression;
-			return evaluateExpression(parenthesesExpression.getExpression(), bibTeXEntry);
-		}
-		else if (expression instanceof BCCNotExpression) {
-			BCCNotExpression notExpression = (BCCNotExpression) expression;
-			return !evaluateExpression(notExpression.getExpression(), bibTeXEntry);
-		}
-		else if (expression instanceof BCCStringRelationalExpression) {
-			BCCStringRelationalExpression stringRelationalExpression = (BCCStringRelationalExpression) expression;
-			return evaluateStringRelationalExpression(stringRelationalExpression, bibTeXEntry);
-		}
-		else if (expression instanceof BCCIntegerRelationalExpression) {
-			BCCIntegerRelationalExpression integerRelationalExpression = (BCCIntegerRelationalExpression) expression;
-			return evaluateIntegerRelationalExpression(integerRelationalExpression, bibTeXEntry);
-		}
-		
-		throw new UnsupportedOperationException("Encountered a situation that was not yet implemented!");
 	}
 
 	private boolean evaluateNoKeywordExpression(BCCNoKeywordExpression noKeywordExpression, BCCAbstractBibTeXEntry bibTeXEntry) {
@@ -154,6 +248,11 @@ public class BCCExpressionEvaluator {
 				
 				return evaluateUsesReplacePatternExpression(fieldSelectionExpression, bibTeXEntry);
 			}
+			else if (rightExpression instanceof BCCIsIntegerExpression || rightExpression instanceof BCCAreIntegerExpression) {
+				BCCAbstractFieldSelectionExpression fieldSelectionExpression = (BCCAbstractFieldSelectionExpression) leftExpression;
+				
+				return evaluateIsDigitExpression(fieldSelectionExpression, bibTeXEntry);
+			}
 		}
 		
 		throw new UnsupportedOperationException("Encountered a situation that was not yet implemented!");
@@ -163,31 +262,70 @@ public class BCCExpressionEvaluator {
 		BCCExpression leftExpression = orExpression.getLeft();
 		BCCExpression rightExpression = orExpression.getRight();
 		
-		boolean leftExpressionEvaluationResult = evaluateExpression(leftExpression, bibTeXEntry);
-		boolean rightExpressionEvaluationResult = evaluateExpression(rightExpression, bibTeXEntry);
-		
-		return leftExpressionEvaluationResult || rightExpressionEvaluationResult;
+		if (evaluateExpression(leftExpression, bibTeXEntry)) {
+			return true;
+		}
+		else if (evaluateExpression(rightExpression, bibTeXEntry)) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	private boolean evaluateAndExpression(BCCAndExpression andExpression, BCCAbstractBibTeXEntry bibTeXEntry) {
 		BCCExpression leftExpression = andExpression.getLeft();
 		BCCExpression rightExpression = andExpression.getRight();
 		
-		boolean leftExpressionEvaluationResult = evaluateExpression(leftExpression, bibTeXEntry);
-		boolean rightExpressionEvaluationResult = evaluateExpression(rightExpression, bibTeXEntry);
-		
-		return leftExpressionEvaluationResult && rightExpressionEvaluationResult;
-	}
-
-	private boolean evaluateStringRelationalExpression(BCCStringRelationalExpression stringRelationalExpression,
-			BCCAbstractBibTeXEntry bibTeXEntry)
-	{
-		throw new UnsupportedOperationException("Encountered a situation that was not yet implemented!");
+		if (evaluateExpression(leftExpression, bibTeXEntry)) {
+			return evaluateExpression(rightExpression, bibTeXEntry);
+		}
+		else {
+			return false;
+		}
 	}
 
 	private boolean evaluateIntegerRelationalExpression(BCCIntegerRelationalExpression integerRelationalExpression,
 			BCCAbstractBibTeXEntry bibTeXEntry)
 	{
+		BCCExpression leftExpression = integerRelationalExpression.getLeft();
+		BCCExpression rightExpression = integerRelationalExpression.getRight();
+		
+		if (leftExpression instanceof BCCSingleFieldSelectionExpression && rightExpression instanceof BCCIntegerExpression) {
+			BCCSingleFieldSelectionExpression singleFieldSelectionExpression = (BCCSingleFieldSelectionExpression) leftExpression;
+			BCCIntegerExpression integerExpression = (BCCIntegerExpression) rightExpression;
+			
+			BCCAbstractSpecificFieldSelector fieldSelector = singleFieldSelectionExpression.getSelection();
+			if (identifyField(fieldSelector, bibTeXEntry) != null) {
+				int leftSideInteger = identifyIntegerFieldValue(fieldSelector, bibTeXEntry);
+				int rightSideInteger = integerExpression.getValue();
+				
+				return evaluateIntegerRelation(leftSideInteger, integerRelationalExpression.getOperator(), rightSideInteger);
+			}
+		}
+		
+		throw new UnsupportedOperationException("Encountered a situation that was not yet implemented!");
+	}
+
+	private boolean evaluateStringRelationalExpression(BCCStringRelationalExpression stringRelationalExpression,
+			BCCAbstractBibTeXEntry bibTeXEntry)
+	{
+		BCCExpression leftExpression = stringRelationalExpression.getLeft();
+		BCCExpression rightExpression = stringRelationalExpression.getRight();
+		
+		if (leftExpression instanceof BCCSingleFieldSelectionExpression && rightExpression instanceof BCCStringExpression) {
+			BCCSingleFieldSelectionExpression singleFieldSelectionExpression = (BCCSingleFieldSelectionExpression) leftExpression;
+			BCCStringExpression stringExpression = (BCCStringExpression) rightExpression;
+			
+			BCCAbstractSpecificFieldSelector fieldSelector = singleFieldSelectionExpression.getSelection();
+			if (identifyField(fieldSelector, bibTeXEntry) != null) {
+				String leftSideString = identifyStringFieldValue(fieldSelector, bibTeXEntry);
+				String rightSideString = stringExpression.getValue();
+				
+				return evaluateStringRelation(leftSideString, stringRelationalExpression.getOperator(), rightSideString);
+			}
+		}
+		
 		throw new UnsupportedOperationException("Encountered a situation that was not yet implemented!");
 	}
 
@@ -237,16 +375,33 @@ public class BCCExpressionEvaluator {
 		throw new UnsupportedOperationException("Encountered a situation that was not yet implemented!");
 	}
 
+	private boolean evaluateIsDigitExpression(BCCAbstractFieldSelectionExpression leftExpression,
+			BCCAbstractBibTeXEntry bibTeXEntry)
+	{
+		if (leftExpression instanceof BCCSingleFieldSelectionExpression) {
+			BCCSingleFieldSelectionExpression singleSelectionElement = (BCCSingleFieldSelectionExpression) leftExpression;
+			BCCAbstractSpecificFieldSelector selector = singleSelectionElement.getSelection();
+			
+			return evaluateIsDigitExpression(selector, bibTeXEntry);
+		}
+		else if (leftExpression instanceof BCCMultiFieldSelectionExpression) {
+			BCCMultiFieldSelectionExpression multiSelectionElement = (BCCMultiFieldSelectionExpression) leftExpression;
+			
+			boolean returnValue = true;
+			for (BCCAbstractSpecificFieldSelector selector : multiSelectionElement.getSelections()) {
+				returnValue = returnValue && evaluateIsDigitExpression(selector, bibTeXEntry);
+			}
+			
+			return returnValue;
+		}
+		
+		throw new UnsupportedOperationException("Encountered a situation that was not yet implemented!");
+	}
+
 	private boolean evaluateSelectedFieldExistsInBibTeXEntry(BCCAbstractSpecificFieldSelector selector,
 			BCCAbstractBibTeXEntry bibTeXEntry)
 	{
-		boolean exists = identifyWhetherSelectedFieldExists(selector, bibTeXEntry);
-		
-		if (!exists) {
-			generateErrorMarker(bibTeXEntry, bibTeXEntry.getEntryBody(), BCCBibTeXPackage.Literals.BCC_ENTRY_BODY__ENTRY_KEY, "The required \"" + selector.getFieldKeyword() + "\" field does not exist.");
-		}
-		
-		return exists;
+		return identifyWhetherSelectedFieldExists(selector, bibTeXEntry);
 	}
 
 	private boolean evaluateUsesReplacePatternExpression(BCCAbstractSpecificFieldSelector selector,
@@ -261,8 +416,6 @@ public class BCCExpressionEvaluator {
 				BCCAbstractGenericField genericField = (BCCAbstractGenericField) field;
 				
 				if (!BCCBibTeXUtil.usesReplacePattern(genericField)) {
-					int fieldPosition = BCCBibTeXUtil.identifyFieldPosition(bibTeXEntry, genericField);
-					generateErrorMarker(bibTeXEntry, bibTeXEntry.getEntryBody(), BCCBibTeXPackage.Literals.BCC_ENTRY_BODY__FIELDS, fieldPosition, "The field \"" + selector.getFieldKeyword() + "\" does not use a replace pattern.");
 					return false;
 				}
 			}
@@ -271,16 +424,24 @@ public class BCCExpressionEvaluator {
 		return true;
 	}
 
-	private void generateErrorMarker(BCCAbstractBibTeXEntry bibTeXEntry, EObject errorMarkerEObject, EStructuralFeature markedFeature, String errorMessage) {
-		IResource problematicResource = BCCResourceUtil.getIFile(bibTeXEntry);
-		IResource identifyingRuleResource = BCCResourceUtil.getIFile(evaluatedConsistencyRule);
-		markerFactory.createCustomProblemErrorMarker(BCCAnalysis.CONSISTENCY_PROBLEM_MARKER_ID, problematicResource, identifyingRuleResource.getName() + ": " + errorMessage, errorMarkerEObject, markedFeature);
-	}
-
-	private void generateErrorMarker(BCCAbstractBibTeXEntry bibTeXEntry, EObject errorMarkerEObject, EStructuralFeature markedFeature, int listPosition, String errorMessage) {
-		IResource problematicResource = BCCResourceUtil.getIFile(bibTeXEntry);
-		IResource identifyingRuleResource = BCCResourceUtil.getIFile(evaluatedConsistencyRule);
-		markerFactory.createCustomProblemErrorMarker(BCCAnalysis.CONSISTENCY_PROBLEM_MARKER_ID, problematicResource, identifyingRuleResource.getName() + ": " + errorMessage, errorMarkerEObject, markedFeature, listPosition);
+	private boolean evaluateIsDigitExpression(BCCAbstractSpecificFieldSelector selector,
+			BCCAbstractBibTeXEntry bibTeXEntry)
+	{
+		boolean exists = identifyWhetherSelectedFieldExists(selector, bibTeXEntry);
+		
+		if (exists) {
+			BCCAbstractEntryBodyField field = identifyField(selector, bibTeXEntry);
+			
+			if (field instanceof BCCAbstractGenericField) {
+				BCCAbstractGenericField genericField = (BCCAbstractGenericField) field;
+				
+				if (!BCCBibTeXUtil.isInteger(genericField)) {
+					return false;
+				}
+			}
+		}
+		
+		return true;
 	}
 
 	private boolean identifyWhetherSelectedFieldExists(BCCAbstractSpecificFieldSelector selector,
@@ -370,9 +531,8 @@ public class BCCExpressionEvaluator {
 		else if (selector instanceof BCCEditorFieldSelector) {
 			return BCCBibTeXUtil.bibTeXEntryContainsField(bibTeXEntry, BCCEditorField.class);
 		}
-		else {
-			throw new UnsupportedOperationException("Encountered a situation that was not yet implemented!");
-		}
+		
+		throw new UnsupportedOperationException("Encountered a situation that was not yet implemented!");
 	}
 
 	private BCCAbstractEntryBodyField identifyField(BCCAbstractSpecificFieldSelector selector, BCCAbstractBibTeXEntry bibTeXEntry) {
@@ -460,9 +620,93 @@ public class BCCExpressionEvaluator {
 		else if (selector instanceof BCCEditorFieldSelector) {
 			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCEditorField.class);
 		}
-		else {
-			throw new UnsupportedOperationException("Encountered a situation that was not yet implemented!");
+		
+		throw new UnsupportedOperationException("Encountered a situation that was not yet implemented!");
+	}
+
+	private int identifyIntegerFieldValue(BCCAbstractSpecificFieldSelector selector, BCCAbstractBibTeXEntry bibTeXEntry) {
+		if (selector instanceof BCCMonthFieldSelector) {
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCMonthField.class).getMonth();
 		}
+		else if (selector instanceof BCCDateFieldSelector) {
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCDateField.class).getDate();
+		}
+		else if (selector instanceof BCCYearFieldSelector) {
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCYearField.class).getYear();
+		}
+		
+		throw new UnsupportedOperationException("Encountered a situation that was not yet implemented!");
+	}
+
+	private String identifyStringFieldValue(BCCAbstractSpecificFieldSelector selector, BCCAbstractBibTeXEntry bibTeXEntry) {
+		if (selector instanceof BCCTitleFieldSelector) {
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCTitleField.class).getFieldValue();
+		}
+		else if (selector instanceof BCCEditionFieldSelector) {
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCEditionField.class).getFieldValue();
+		}
+		else if (selector instanceof BCCUrlFieldSelector) {
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCUrlField.class).getFieldValue();
+		}
+		else if (selector instanceof BCCInstitutionFieldSelector) {
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCInstitutionField.class).getFieldValue();
+		}
+		else if (selector instanceof BCCOrganizationFieldSelector) {
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCOrganizationField.class).getFieldValue();
+		}
+		else if (selector instanceof BCCRevisionFieldSelector) {
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCRevisionField.class).getFieldValue();
+		}
+		else if (selector instanceof BCCIsbnFieldSelector) {
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCIsbnField.class).getFieldValue();
+		}
+		else if (selector instanceof BCCDoiFieldSelector) {
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCDoiField.class).getFieldValue();
+		}
+		else if (selector instanceof BCCAddressFieldSelector) {
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCAddressField.class).getFieldValue();
+		}
+		else if (selector instanceof BCCTypeFieldSelector) {
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCTypeField.class).getFieldValue();
+		}
+		else if (selector instanceof BCCNumberFieldSelector) {
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCNumberField.class).getFieldValue();
+		}
+		else if (selector instanceof BCCVolumeFieldSelector) {
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCVolumeField.class).getFieldValue();
+		}
+		else if (selector instanceof BCCKeywordsFieldSelector) {
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCKeywordsField.class).getFieldValue();
+		}
+		else if (selector instanceof BCCNoteFieldSelector) {
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCNoteField.class).getFieldValue();
+		}
+		else if (selector instanceof BCCPublisherFieldSelector) {
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCPublisherField.class).getFieldValue();
+		}
+		else if (selector instanceof BCCJournalFieldSelector) {
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCJournalField.class).getFieldValue();
+		}
+		else if (selector instanceof BCCBooktitleFieldSelector) {
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCBooktitleField.class).getFieldValue();
+		}
+		else if (selector instanceof BCCSchoolFieldSelector) {
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCSchoolField.class).getFieldValue();
+		}
+		else if (selector instanceof BCCSeriesFieldSelector) {
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCSeriesField.class).getFieldValue();
+		}
+		else if (selector instanceof BCCChapterFieldSelector) {
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCChapterField.class).getFieldValue();
+		}
+		else if (selector instanceof BCCVersionFieldSelector) {
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCVersionField.class).getFieldValue();
+		}
+		else if (selector instanceof BCCHowPublishedFieldSelector) {
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCHowPublishedField.class).getFieldValue();
+		}
+		
+		throw new UnsupportedOperationException("Encountered a situation that was not yet implemented!");
 	}
 	
 	private boolean evaluateIntegerRelation(int leftSideInteger, BCCIntegerRelationalOperator operator, int rightSideInteger) {
@@ -491,13 +735,13 @@ public class BCCExpressionEvaluator {
 			return leftSideString.equals(rightSideString);
 		}
 		else if (operator == BCCStringRelationalOperator.STARTS_WITH) {
-			return !leftSideString.startsWith(rightSideString);
+			return leftSideString.startsWith(rightSideString);
 		}
-		else if (operator == BCCStringRelationalOperator.STARTS_WITH) {
-			return !leftSideString.endsWith(rightSideString);
+		else if (operator == BCCStringRelationalOperator.ENDS_WITH) {
+			return leftSideString.endsWith(rightSideString);
 		}
 		else {
-			return !leftSideString.contains(rightSideString);
+			return leftSideString.contains(rightSideString);
 		}
 	}
 

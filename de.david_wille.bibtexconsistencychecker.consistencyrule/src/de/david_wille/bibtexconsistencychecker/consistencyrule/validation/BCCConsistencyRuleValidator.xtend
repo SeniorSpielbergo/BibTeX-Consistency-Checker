@@ -3,9 +3,11 @@ package de.david_wille.bibtexconsistencychecker.consistencyrule.validation
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCAbstractSelector
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCAbstractSelectorBody
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCAllSelector
+import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCAreIntegerExpression
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCExpression
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCFieldExistsExpression
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCFieldsExistExpression
+import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCIsIntegerExpression
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCMultiEntrySelectorBody
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCMultiFieldSelectionExpression
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCNoKeywordExpression
@@ -117,6 +119,9 @@ class BCCConsistencyRuleValidator extends AbstractBCCConsistencyRuleValidator {
 			else if (rightExpression instanceof BCCUseReplacePatternExpression) {
 				error("Incorrect grammar. Please use the \"uses replace pattern\" keyword instead.", rightExpression.eContainingFeature, USES_CORRECT_KEYWORD_COMBINATIONS)
 			}
+			else if (rightExpression instanceof BCCAreIntegerExpression) {
+				error("Incorrect grammar. Please use the \"is integer\" keyword instead.", rightExpression.eContainingFeature, USES_CORRECT_KEYWORD_COMBINATIONS)
+			}
 		}
 		else if (leftExpression instanceof BCCMultiFieldSelectionExpression) {
 			if (rightExpression instanceof BCCFieldExistsExpression) {
@@ -124,6 +129,9 @@ class BCCConsistencyRuleValidator extends AbstractBCCConsistencyRuleValidator {
 			}
 			else if (rightExpression instanceof BCCUsesReplacePatternExpression) {
 				error("Incorrect grammar. Please use the \"use replace pattern\" keyword instead.", rightExpression.eContainingFeature, USES_CORRECT_KEYWORD_COMBINATIONS)
+			}
+			else if (rightExpression instanceof BCCIsIntegerExpression) {
+				error("Incorrect grammar. Please use the \"are integer\" keyword instead.", rightExpression.eContainingFeature, USES_CORRECT_KEYWORD_COMBINATIONS)
 			}
 		}
 	}

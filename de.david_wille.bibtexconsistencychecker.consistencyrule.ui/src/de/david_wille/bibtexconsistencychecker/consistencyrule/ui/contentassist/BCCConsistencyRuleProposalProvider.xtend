@@ -37,10 +37,6 @@ class BCCConsistencyRuleProposalProvider extends AbstractBCCConsistencyRulePropo
 		BCCAppliesToKeywordAccess.group.createKeywordProposalWithTrailingSeparator(context, acceptor)
 	}
 	
-	override complete_BCCChecksThatKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		BCCChecksThatKeywordAccess.group.createKeywordProposalWithTrailingSeparator(context, acceptor)
-	}
-	
 	override complete_BCCExcludedEntryKeysKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		BCCExcludedEntryKeysKeywordAccess.group.createKeywordProposalWithTrailingSeparator(context, acceptor)
 	}
@@ -63,6 +59,14 @@ class BCCConsistencyRuleProposalProvider extends AbstractBCCConsistencyRulePropo
 	
 	override complete_BCCUseReplacePatternKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		BCCUseReplacePatternKeywordAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
+	}
+	
+	override complete_BCCIsIntegerKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		BCCIsIntegerKeywordAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
+	}
+	
+	override complete_BCCAreIntegerKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		BCCAreIntegerKeywordAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
 	}
 	
 	override complete_BCCUsesReplacePatternExpression(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {

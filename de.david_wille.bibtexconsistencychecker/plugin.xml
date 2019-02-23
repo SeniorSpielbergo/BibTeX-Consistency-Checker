@@ -5,6 +5,7 @@
          point="org.eclipse.debug.ui.launchShortcuts">
       <shortcut
             class="de.david_wille.bibtexconsistencychecker.BCCLaunchShortCut"
+            icon="icons/bcc_icon32.png"
             id="de.david_wille.bibtexconsistencychecker.BCCLaunchShortCut"
             label="BibTeX Consistency Checker"
             modes="run, debug">
