@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -57,6 +58,10 @@ public class BCCResourceUtil {
 
 	public static boolean resourceIsFile(IResource resource) {
 		return resource.getType() == IResource.FILE;
+	}
+	
+	public static IProject identifyParentProject(IResource resource) {
+		return resource.getProject();
 	}
 
 	public static boolean resourceIsContainer(IResource resource) {

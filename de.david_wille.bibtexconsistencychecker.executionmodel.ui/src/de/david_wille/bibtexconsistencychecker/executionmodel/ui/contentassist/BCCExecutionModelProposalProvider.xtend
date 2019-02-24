@@ -1,11 +1,8 @@
 package de.david_wille.bibtexconsistencychecker.executionmodel.ui.contentassist
 
-import de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.BCCBibTeXFileEntry
 import de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.BCCBibTeXFilesEntry
-import de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.BCCBibTeXPath
-import de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.BCCConsistencyRuleEntry
 import de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.BCCConsistencyRulesEntry
-import de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.BCCRulePath
+import de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.BCCFilePathEntry
 import de.david_wille.bibtexconsistencychecker.executionmodel.services.BCCExecutionModelGrammarAccess
 import de.david_wille.bibtexconsistencychecker.util.BCCResourceUtil
 import java.util.ArrayList
@@ -49,79 +46,110 @@ class BCCExecutionModelProposalProvider extends AbstractBCCExecutionModelProposa
 		BCCBibTeXFilesKeywordAccess.group.createKeywordProposalWithTrailingSeparator(context, acceptor)
 	}
 	
-	override complete_BCCRulePath(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+	override complete_BCCValidPath(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		var IFile modelFile = BCCResourceUtil.getIFile(model)
 		var IContainer parentResource = modelFile.parent
 		
 		var EObject contextNode = NodeModelUtils.findActualSemanticObjectFor(context.currentNode)
-		if (contextNode instanceof BCCConsistencyRulesEntry) {
-			var BCCConsistencyRulesEntry rulesEntry = contextNode as BCCConsistencyRulesEntry
-			var List<String> existingConsistencyRuleSelections = collectExistingConsistencyRuleSelections(rulesEntry)
+		if (isBibTeXFilesEntryContext(contextNode)) {
+			var List<IResource> allFoundSubResources = collectAllSubResources(parentResource, BIB_FILE_ENDING)
+			var List<String> existingConsistencyRuleSelections = collectExistingBibTeXFileSelections(contextNode)
 			
-			for (IResource childResource : parentResource.members) {
-				if (BCCResourceUtil.resourceIsFile(childResource)) {
-					var IFile childFile = childResource as IFile
-					
-					if (childFile.fileExtension.equals(BCC_RULE_FILE_ENDING)) {
-						var String childName = childFile.name
-						if (!existingConsistencyRuleSelections.contains(childName)) {
-							val proposalString = childName
-							acceptor.accept(createCompletionProposal(proposalString, proposalString, null, context))
-						}
-					}
+			for (IResource resource : allFoundSubResources) {
+				val String proposalString = getProposalString(resource)
+				if (!existingConsistencyRuleSelections.contains(proposalString)) {
+					acceptor.accept(createCompletionProposal(proposalString, proposalString, null, context))
+				}
+			}
+		}
+		else if (isConsistencyRulesEntryContext(contextNode)) {
+			var List<IResource> allFoundSubResources = collectAllSubResources(parentResource, BCC_RULE_FILE_ENDING)
+			var List<String> existingConsistencyRuleSelections = collectExistingConsistencyRuleSelections(contextNode)
+			
+			for (IResource resource : allFoundSubResources) {
+				val String proposalString = getProposalString(resource)
+				if (!existingConsistencyRuleSelections.contains(proposalString)) {
+					acceptor.accept(createCompletionProposal(proposalString, proposalString, null, context))
 				}
 			}
 		}
 	}
 	
-	def collectExistingConsistencyRuleSelections(BCCConsistencyRulesEntry rulesEntry) {
-		var List<String> existingConsistencyRuleSelections = new ArrayList<String>()
-		for (BCCConsistencyRuleEntry ruleEntry : rulesEntry.consistencyRuleEntries) {
-			var BCCRulePath rulePath = ruleEntry.rulePath
-			if (rulePath !== null && rulePath.path !== null) {
-				existingConsistencyRuleSelections.add(rulePath.path)
-			}
+	protected def getProposalString(IResource resource) {
+		var String propsalString = resource.projectRelativePath.toPortableString
+		
+		if (resource instanceof IContainer) {
+			propsalString += "/"
 		}
-		existingConsistencyRuleSelections
+		
+		propsalString
 	}
 	
-	override complete_BCCBibTeXPath(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		var IFile modelFile = BCCResourceUtil.getIFile(model)
-		var IContainer parentResource = modelFile.parent
+	protected def isBibTeXFilesEntryContext(EObject object) {
+		object instanceof BCCBibTeXFilesEntry || object.eContainer instanceof BCCBibTeXFilesEntry
+	}
+	
+	protected def isConsistencyRulesEntryContext(EObject object) {
+		object instanceof BCCConsistencyRulesEntry || object.eContainer instanceof BCCConsistencyRulesEntry
+	}
+	
+	protected def List<IResource> collectAllSubResources(IContainer container, String fileExtension) {
+		var List<IResource> allFoundSubResources = new ArrayList<IResource>();
 		
-		var EObject contextNode = NodeModelUtils.findActualSemanticObjectFor(context.currentNode)
-		if (contextNode instanceof BCCBibTeXFilesEntry) {
-			var BCCBibTeXFilesEntry filesEntry = contextNode as BCCBibTeXFilesEntry
-			var List<String> existingBibTeXFileSelections = collectExistingConsistencyRuleSelections(filesEntry)
-			
-			for (IResource childResource : parentResource.members) {
-				if (BCCResourceUtil.resourceIsFile(childResource)) {
-					var IFile childFile = childResource as IFile
-					
-					if (childFile.fileExtension.equals(BIB_FILE_ENDING)) {
-						var String childName = childFile.name
-						if (!existingBibTeXFileSelections.contains(childName)) {
-							val proposalString = childName
-							acceptor.accept(createCompletionProposal(proposalString, proposalString, null, context))
-						}
-					}
+		var List<IResource> subResources = BCCResourceUtil.getChildResources(container);
+		for (IResource subResource : subResources) {
+			if (subResource instanceof IContainer) {
+				var List<IResource> nextLevelSubResources = collectAllSubResources(subResource, fileExtension);
+				if (nextLevelSubResources.size > 0) {
+					allFoundSubResources.addAll(nextLevelSubResources);
+					allFoundSubResources.add(subResource)
 				}
 			}
+			else if (subResource instanceof IFile && subResource.fileExtension.equals(fileExtension)) {
+				allFoundSubResources.add(subResource)
+			}
 		}
+		
+		allFoundSubResources
 	}
 	
-	def collectExistingConsistencyRuleSelections(BCCBibTeXFilesEntry filesEntry) {
+	protected def List<String> collectExistingConsistencyRuleSelections(EObject eObject) {
+		var BCCConsistencyRulesEntry rulesEntry = null
+		if (eObject instanceof BCCConsistencyRulesEntry) {
+			rulesEntry = eObject as BCCConsistencyRulesEntry
+		}
+		else if (eObject.eContainer instanceof BCCConsistencyRulesEntry) {
+			rulesEntry = eObject.eContainer as BCCConsistencyRulesEntry
+		}
+		
 		var List<String> existingConsistencyRuleSelections = new ArrayList<String>()
-		for (BCCBibTeXFileEntry fileEntry : filesEntry.bibTeXFileEntries) {
-			var BCCBibTeXPath filePath = fileEntry.filePath
-			if (filePath !== null && filePath.path !== null) {
-				existingConsistencyRuleSelections.add(filePath.path)
+		for (BCCFilePathEntry ruleEntry : rulesEntry.entries) {
+			if (ruleEntry.path !== null) {
+				existingConsistencyRuleSelections.add(ruleEntry.path)
 			}
 		}
 		existingConsistencyRuleSelections
 	}
 	
-	def createKeywordProposalWithTrailingSeparator(Group group, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+	protected def List<String> collectExistingBibTeXFileSelections(EObject eObject) {
+		var BCCBibTeXFilesEntry filesEntry = null
+		if (eObject instanceof BCCBibTeXFilesEntry) {
+			filesEntry = eObject as BCCBibTeXFilesEntry
+		}
+		else if (eObject.eContainer instanceof BCCBibTeXFilesEntry) {
+			filesEntry = eObject.eContainer as BCCBibTeXFilesEntry
+		}
+		
+		var List<String> existingConsistencyRuleSelections = new ArrayList<String>()
+		for (BCCFilePathEntry fileEntry : filesEntry.entries) {
+			if (fileEntry.path !== null) {
+				existingConsistencyRuleSelections.add(fileEntry.path)
+			}
+		}
+		existingConsistencyRuleSelections
+	}
+	
+	protected def createKeywordProposalWithTrailingSeparator(Group group, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		if (group === null) {
 			return null
 		}
@@ -129,7 +157,7 @@ class BCCExecutionModelProposalProvider extends AbstractBCCExecutionModelProposa
 		acceptor.accept(createCompletionProposal(proposalString, proposalString, null, context))
 	}
 	
-	def createKeywordProposalWithoutTrailingSeparator(Group group, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+	protected def createKeywordProposalWithoutTrailingSeparator(Group group, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		if (group === null) {
 			return null
 		}

@@ -86,7 +86,7 @@ class BCCConsistencyRuleProposalProvider extends AbstractBCCConsistencyRulePropo
 		}
 	}
 	
-	def identifyAllBibTeXEntryKeysContainingValue(EObject model, String fieldValue) {
+	protected def identifyAllBibTeXEntryKeysContainingValue(EObject model, String fieldValue) {
 		var IFile modelFile = BCCResourceUtil.getIFile(model)
 		var IContainer container = modelFile.parent
 		
@@ -107,7 +107,7 @@ class BCCConsistencyRuleProposalProvider extends AbstractBCCConsistencyRulePropo
 		relevantBibTeXEntries
 	}
 	
-	def createKeywordProposalWithTrailingSeparator(Group group, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+	protected def createKeywordProposalWithTrailingSeparator(Group group, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		if (group === null) {
 			return null
 		}
@@ -115,7 +115,7 @@ class BCCConsistencyRuleProposalProvider extends AbstractBCCConsistencyRulePropo
 		acceptor.accept(createCompletionProposal(proposalString, proposalString, null, context))
 	}
 	
-	def createKeywordProposalWithoutTrailingSeparator(Group group, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+	protected def createKeywordProposalWithoutTrailingSeparator(Group group, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		if (group === null) {
 			return null
 		}

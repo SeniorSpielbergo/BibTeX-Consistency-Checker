@@ -37,7 +37,7 @@ class BCCBibTeXProposalProvider extends AbstractBCCBibTeXProposalProvider {
 		}
 	}
 	
-	def identifyAllReplacePatternContainingValue(EObject model, String fieldValue) {
+	protected def identifyAllReplacePatternContainingValue(EObject model, String fieldValue) {
 		var IFile modelFile = BCCResourceUtil.getIFile(model)
 		var IContainer container = modelFile.parent
 		

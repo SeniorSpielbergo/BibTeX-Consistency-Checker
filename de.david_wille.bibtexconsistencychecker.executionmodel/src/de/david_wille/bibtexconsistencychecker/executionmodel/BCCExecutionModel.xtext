@@ -1,48 +1,50 @@
-grammar de.david_wille.bibtexconsistencychecker.executionmodel.BCCExecutionModel with org.eclipse.xtext.common.Terminals
+grammar de.david_wille.bibtexconsistencychecker.executionmodel.BCCExecutionModel hidden(WS, ML_COMMENT, SL_COMMENT)
 
 generate bCCExecutionModel "http://www.david-wille.de/bibtexconsistencychecker/executionmodel/BCCExecutionModel"
 
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+
 BCCExecutionModel:
 	settingsEntry = BCCSettingsEntry
-	(rulesEntry = BCCConsistencyRulesEntry)? &
-	(bibTeXFilesEntry = BCCBibTeXFilesEntry)?;
+	(
+		(
+			(bibTeXFilesEntry = BCCBibTeXFilesEntry)? &
+			(rulesEntry = BCCConsistencyRulesEntry)?
+		)
+	);
 
 BCCSettingsEntry:
 	'settings' '{'
 		'name' name = STRING
 		('ensure' '{'
-			((ensureAlphbeticOrderActivated ?= BCCAlphabeticOrderKeyword)? &
-			(ensureShortHarvardStyleActivated ?= BCCShortHarvardStyleKeyword)?)
+			(
+				(ensureAlphbeticOrderActivated ?= BCCAlphabeticOrderKeyword)? &
+				(ensureShortHarvardStyleActivated ?= BCCShortHarvardStyleKeyword)?
+			)
 		'}')?
 	'}';
 
-BCCConsistencyRulesEntry:
-	BCCConsistencyRulesKeyword '{'
-		(consistencyRuleEntries += BCCConsistencyRuleEntry)+
-	'}';
-
 BCCBibTeXFilesEntry:
-	BCCBibTeXFilesKeyword '{'
-		(bibTeXFileEntries += BCCBibTeXFileEntry)+
+	{BCCBibTeXFilesEntry} BCCBibTeXFilesKeyword '{'
+		entries += BCCFilePathEntry
+		(',' entries += BCCFilePathEntry)*
 	'}';
 
-BCCConsistencyRuleEntry:
-	'rule' rulePath = BCCRulePath;
+BCCConsistencyRulesEntry:
+	{BCCConsistencyRulesEntry} BCCConsistencyRulesKeyword '{'
+		entries += BCCFilePathEntry
+		(',' entries += BCCFilePathEntry)*
+	'}';
 
-BCCBibTeXFileEntry:
-	'file' filePath = BCCBibTeXPath;
+BCCFilePathEntry:
+	path = BCCValidPath;
 
-BCCRulePath:
-	path = RULE_PATH;
+BCCValidPath:
+	FILE_FOLDER_PATH | BCCUsedKeyword;
 
-BCCBibTeXPath:
-	path = BIBTEX_PATH;
-
-terminal RULE_PATH:
-	('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|'-'|'_'|'0'..'9')* '.bcc_rule';
-
-terminal BIBTEX_PATH:
-	('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|'-'|'_'|'0'..'9')* '.bib';
+BCCUsedKeyword:
+	'alphabetic' | 'order' | 'short' | 'harvard' | 'style' | 'consistency' |
+	'rules' | 'bibtex' | 'files' | 'settings' | 'name' | 'ensure';
 
 BCCAlphabeticOrderKeyword:
 	'alphabetic' 'order';
@@ -55,3 +57,22 @@ BCCConsistencyRulesKeyword:
 
 BCCBibTeXFilesKeyword:
 	'bibtex' 'files';
+
+terminal FILE_FOLDER_PATH:
+	(FOLDER_PATH)* (FILE_PATH)?;
+
+terminal FILE_PATH:
+	('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|'-'|'_'|'0'..'9')* ('.bib' | '.bcc_rule');
+
+terminal FOLDER_PATH:
+	('a'..'z'|'A'..'Z'|'_'|'0'..'9') ('a'..'z'|'A'..'Z'|'-'|'_'|'0'..'9')* '/';
+
+terminal STRING	: 
+			'"' ( '\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\'|'"') )* '"' |
+			"'" ( '\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\'|"'") )* "'"
+		; 
+terminal ML_COMMENT	: '/*' -> '*/';
+
+terminal SL_COMMENT 	: '//' !('\n'|'\r')* ('\r'? '\n')?;
+
+terminal WS			: (' '|'\t'|'\r'|'\n')+;

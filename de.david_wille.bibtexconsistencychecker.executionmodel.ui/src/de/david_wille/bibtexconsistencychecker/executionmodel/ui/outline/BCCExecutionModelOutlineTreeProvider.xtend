@@ -1,11 +1,10 @@
 package de.david_wille.bibtexconsistencychecker.executionmodel.ui.outline
 
-import de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.BCCBibTeXFileEntry
 import de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.BCCBibTeXFilesEntry
-import de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.BCCConsistencyRuleEntry
 import de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.BCCConsistencyRulesEntry
 import de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.BCCExecutionModel
 import de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.BCCExecutionModelPackage
+import de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.BCCFilePathEntry
 import de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.BCCSettingsEntry
 import org.eclipse.swt.graphics.Image
 import org.eclipse.xtext.ui.editor.outline.IOutlineNode
@@ -77,21 +76,21 @@ class BCCExecutionModelOutlineTreeProvider extends DefaultOutlineTreeProvider {
 	}
 	
 	protected def _createChildren(IOutlineNode parentNode, BCCConsistencyRulesEntry rulesEntry) {
-		for (BCCConsistencyRuleEntry ruleEntry : rulesEntry.consistencyRuleEntries) {
-			if (ruleEntry.rulePath !== null) {
-				var Image ensureAlphbeticOrderActivatedImage = imageDispatcher.invoke(ruleEntry)
-				createEStructuralFeatureNode(parentNode, ruleEntry, BCCExecutionModelPackage.Literals.BCC_RULE_PATH__PATH,
-					ensureAlphbeticOrderActivatedImage, "Rule " + ruleEntry.rulePath.path, true);
+		for (BCCFilePathEntry ruleEntry : rulesEntry.entries) {
+			if (ruleEntry.path !== null) {
+				var Image pathImage = imageDispatcher.invoke(ruleEntry)
+				createEStructuralFeatureNode(parentNode, ruleEntry, BCCExecutionModelPackage.Literals.BCC_FILE_PATH_ENTRY__PATH,
+					pathImage, ruleEntry.path, true);
 			}
 		}
 	}
 	
 	protected def _createChildren(IOutlineNode parentNode, BCCBibTeXFilesEntry filesEntry) {
-		for (BCCBibTeXFileEntry fileEntry : filesEntry.bibTeXFileEntries) {
-			if (fileEntry.filePath !== null) {
-				var Image ensureAlphbeticOrderActivatedImage = imageDispatcher.invoke(fileEntry)
-				createEStructuralFeatureNode(parentNode, fileEntry, BCCExecutionModelPackage.Literals.BCC_BIB_TE_XPATH__PATH,
-					ensureAlphbeticOrderActivatedImage, "Rule " + fileEntry.filePath.path, true);
+		for (BCCFilePathEntry fileEntry : filesEntry.entries) {
+			if (fileEntry.path !== null) {
+				var Image pathImage = imageDispatcher.invoke(fileEntry)
+				createEStructuralFeatureNode(parentNode, fileEntry, BCCExecutionModelPackage.Literals.BCC_FILE_PATH_ENTRY__PATH,
+					pathImage, fileEntry.path, true);
 			}
 		}
 	}

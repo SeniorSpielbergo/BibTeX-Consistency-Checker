@@ -11,5 +11,6 @@ Require-Bundle: de.david_wille.bibtexconsistencychecker.executionmodel,
  org.antlr.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: de.david_wille.bibtexconsistencychecker.executionmodel.ide.contentassist.antlr,
- de.david_wille.bibtexconsistencychecker.executionmodel.ide.contentassist.antlr.internal
+ de.david_wille.bibtexconsistencychecker.executionmodel.ide.contentassist.antlr.internal,
+ de.david_wille.bibtexconsistencychecker.executionmodel.ide.syntaxcoloring
 

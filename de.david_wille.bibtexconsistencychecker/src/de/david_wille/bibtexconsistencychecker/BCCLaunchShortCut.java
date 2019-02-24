@@ -59,22 +59,23 @@ public class BCCLaunchShortCut implements ILaunchShortcut {
 	private void executeBibTeXAnalyzer(IFile selectedFile) {
 		if (BCCResourceUtil.fileIsExecutionModel(selectedFile)) {
 			BCCExecutionModel executionModel = BCCResourceUtil.parseModel(new BCCExecutionModelStandaloneSetup(), selectedFile);
-			
 			launchExecutionModel(executionModel);
 		}
 		else if (BCCResourceUtil.fileIsBibTeXFile(selectedFile) || BCCResourceUtil.fileIsConsistencyRule(selectedFile)) {
-			if (BCCLauncherResourceUtil.singleExecutionModelExists(selectedFile)) {
-				IFile executionModelFile = BCCLauncherResourceUtil.findExecutionModel(selectedFile);
-				BCCExecutionModel executionModel = BCCResourceUtil.parseModel(new BCCExecutionModelStandaloneSetup(), executionModelFile);
-				
-				launchExecutionModel(executionModel);
+			List<IFile> possibleExecutionModelFiles = BCCLauncherResourceUtil.identifyAllExecutionModelFiles(selectedFile.getProject());
+			
+			List<BCCExecutionModel> relevantExecutionModelFiles = BCCLauncherResourceUtil.identifyAllExecutionModelFilesAnalysingFile(possibleExecutionModelFiles, selectedFile);
+			
+			if (relevantExecutionModelFiles.size() == 0) {
+				BCCUtil.openErrorDialog("No execution models (*." + BCCResourceUtil.BCC_FILE_EXTENSION + ") were found!");
+			}
+			else if (relevantExecutionModelFiles.size() > 1) {
+				BCCUtil.openErrorDialog("Multiple execution models (*." + BCCResourceUtil.BCC_FILE_EXTENSION + ") were found!");
 			}
 			else {
-				BCCUtil.openErrorDialog("No / multiple execution models (*." + BCCResourceUtil.BCC_FILE_EXTENSION + ") were found!");
+				BCCExecutionModel executionModel = relevantExecutionModelFiles.get(0);
+				launchExecutionModel(executionModel);
 			}
-		}
-		else {
-			BCCUtil.openErrorDialog("Please provide a single valid execution model file (*." + BCCResourceUtil.BCC_FILE_EXTENSION + ")!");
 		}
 	}
 

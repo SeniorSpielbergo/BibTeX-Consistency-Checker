@@ -226,7 +226,10 @@ BCCReplaceKey:
 	ID (':' | '_' | '-' | '+' | INT | ID)*;
 
 BCCValidID:
-	ID | 'and';
+	ID | 'and' | 'title' | 'edition' | 'institution' | 'organization' | 'revision' | 'url' |
+	'doi' | 'type' | 'isbn' | 'address' | 'howpublished' | 'number' | 'volume' | 'note' |
+	'school' | 'keywords' | 'booktitle' | 'series' | 'publisher' | 'journal' | 'chapter' |
+	'version' | 'author' | 'editor' | 'year' | 'date' | 'month' | 'pages';
 
 terminal ID:
 	('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
