@@ -1,10 +1,13 @@
 package de.david_wille.bibtexconsistencychecker.bibtex.validation
 
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractEntryBodyField
+import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBibTeXFile
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBibTeXPackage
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCEntryBody
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCMonthField
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCTitleField
+import de.david_wille.bibtexconsistencychecker.bibtex.cache.BCCBibTeXCache
+import de.david_wille.bibtexconsistencychecker.util.BCCResourceUtil
 import de.david_wille.bibtexconsistencychecker.util.BCCSpecialCharacterHandling
 import java.util.HashMap
 import java.util.Map
@@ -23,6 +26,11 @@ class BCCBibTeXValidator extends AbstractBCCBibTeXValidator {
 	public static val String REPLACE_PATTERN_DOES_NOT_EXIST = "REPLACE_PATTERN_DOES_NOT_EXIST"
 	private static val String OPENING_BRACE = "{"
 	private static val String CLOSING_BRACE = "}"
+	
+	@Check(NORMAL)
+	def void updateBibTeXCache(BCCBibTeXFile bibTeXFile) {
+		BCCBibTeXCache.instance.updateBibTeXFileCache(BCCResourceUtil.getIProject(bibTeXFile), bibTeXFile);
+	}
 	
 	@Check
 	def void checkTitleFieldStartsAndEndsWithDoubleParenthesis(BCCTitleField titleField) {

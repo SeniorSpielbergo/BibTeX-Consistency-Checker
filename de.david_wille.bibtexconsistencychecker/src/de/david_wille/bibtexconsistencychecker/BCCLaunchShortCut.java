@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.debug.ui.ILaunchShortcut;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorPart;
@@ -18,18 +16,12 @@ import de.david_wille.bibtexconsistencychecker.util.BCCUtil;
 
 public class BCCLaunchShortCut implements ILaunchShortcut {
 	
-	private IWorkspaceRoot workspaceRoot;
-	
-	public BCCLaunchShortCut() {
-		workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-	}
-
 	@Override
 	public void launch(ISelection selection, String mode) {
-		List<String> selectionPaths = BCCLauncherResourceUtil.identifyAllFilesFromSelection(selection);
+		List<IResource> selectionPaths = BCCLauncherResourceUtil.identifyAllResourcesFromSelection(selection);
 		
 		if (singleFileSelected(selectionPaths)) {
-			IResource resource = workspaceRoot.findMember(selectionPaths.get(0));
+			IResource resource = selectionPaths.get(0);
 			
 			if (resource instanceof IFile) {
 				IFile selectedFile = (IFile) resource;
@@ -45,7 +37,7 @@ public class BCCLaunchShortCut implements ILaunchShortcut {
 		}
 	}
 
-	private boolean singleFileSelected(List<String> selectionPaths) {
+	private boolean singleFileSelected(List<IResource> selectionPaths) {
 		return selectionPaths.size() == 1;
 	}
 
@@ -62,18 +54,15 @@ public class BCCLaunchShortCut implements ILaunchShortcut {
 			launchExecutionModel(executionModel);
 		}
 		else if (BCCResourceUtil.fileIsBibTeXFile(selectedFile) || BCCResourceUtil.fileIsConsistencyRule(selectedFile)) {
-			List<IFile> possibleExecutionModelFiles = BCCLauncherResourceUtil.identifyAllExecutionModelFiles(selectedFile.getProject());
+			BCCExecutionModel executionModel = BCCLauncherResourceUtil.identifyExecutionModel(selectedFile.getProject());
 			
-			List<BCCExecutionModel> relevantExecutionModelFiles = BCCLauncherResourceUtil.identifyAllExecutionModelFilesAnalysingFile(possibleExecutionModelFiles, selectedFile);
-			
-			if (relevantExecutionModelFiles.size() == 0) {
+			if (executionModel == null) {
 				BCCUtil.openErrorDialog("No execution models (*." + BCCResourceUtil.BCC_FILE_EXTENSION + ") were found!");
 			}
-			else if (relevantExecutionModelFiles.size() > 1) {
-				BCCUtil.openErrorDialog("Multiple execution models (*." + BCCResourceUtil.BCC_FILE_EXTENSION + ") were found!");
+			else if (!BCCLauncherResourceUtil.identifyWheterExecutionModelAnalyzesFile(executionModel, selectedFile)) {
+				BCCUtil.openErrorDialog("This execution model does not analyze the selected file!");
 			}
 			else {
-				BCCExecutionModel executionModel = relevantExecutionModelFiles.get(0);
 				launchExecutionModel(executionModel);
 			}
 		}

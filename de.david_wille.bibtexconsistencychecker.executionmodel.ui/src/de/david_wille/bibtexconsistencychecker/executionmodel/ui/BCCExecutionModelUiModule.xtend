@@ -4,6 +4,7 @@ import de.david_wille.bibtexconsistencychecker.executionmodel.ide.syntaxcoloring
 import de.david_wille.bibtexconsistencychecker.executionmodel.ui.hyperlink.BCCExecutionModelHyperlinkHelper
 import org.eclipse.xtend.lib.annotations.FinalFieldsConstructor
 import org.eclipse.xtext.ide.editor.syntaxcoloring.ISemanticHighlightingCalculator
+import org.eclipse.xtext.ui.editor.IXtextEditorCallback
 import org.eclipse.xtext.ui.editor.hyperlinking.IHyperlinkHelper
 
 /**
@@ -18,6 +19,11 @@ class BCCExecutionModelUiModule extends AbstractBCCExecutionModelUiModule {
 	
 	def Class<? extends ISemanticHighlightingCalculator> bindISemanticHighlightingCalculator () {
 		BCCExecutionModelSemanticHighlightingCalculator
+	}
+	
+	// replaces the default NatureAddingEditorCallback
+	override Class<? extends IXtextEditorCallback> bindIXtextEditorCallback() {
+		return BCCNatureAddingEditorCallBack
 	}
 	
 }

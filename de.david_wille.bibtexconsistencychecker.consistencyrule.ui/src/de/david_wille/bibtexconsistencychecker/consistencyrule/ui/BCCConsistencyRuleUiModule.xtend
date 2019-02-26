@@ -4,10 +4,17 @@
 package de.david_wille.bibtexconsistencychecker.consistencyrule.ui
 
 import org.eclipse.xtend.lib.annotations.FinalFieldsConstructor
+import org.eclipse.xtext.ui.editor.IXtextEditorCallback
 
 /**
  * Use this class to register components to be used within the Eclipse IDE.
  */
 @FinalFieldsConstructor
 class BCCConsistencyRuleUiModule extends AbstractBCCConsistencyRuleUiModule {
+	
+	// replaces the default NatureAddingEditorCallback
+	override Class<? extends IXtextEditorCallback> bindIXtextEditorCallback() {
+		return BCCNatureAddingEditorCallBack
+	}
+	
 }

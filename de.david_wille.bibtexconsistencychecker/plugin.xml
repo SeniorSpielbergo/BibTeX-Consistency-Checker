@@ -21,5 +21,116 @@
          </contextualLaunch>
       </shortcut>
    </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="de.david_wille.bibtexconsistencychecker.category.main"
+            name="BibTeX Consistency Checker">
+      </category>
+      <wizard
+            category="de.david_wille.bibtexconsistencychecker.category.main"
+            class="de.david_wille.bibtexconsistencychecker.wizard.BCCNewProjectWizard"
+            descriptionImage="icons/bcc_icon32.png"
+            icon="icons/bcc_icon16.png"
+            id="de.david_wille.bibtexconsistencychecker.wizard.project"
+            name="New BibTeX Consistency Checker Project"
+            project="true">
+      </wizard>
+      <wizard
+            category="de.david_wille.bibtexconsistencychecker.category.main"
+            class="de.david_wille.bibtexconsistencychecker.wizard.BCCNewConsistencyRuleFileWizard"
+            descriptionImage="icons/bcc_rule_icon32.png"
+            icon="icons/bcc_rule_icon16.png"
+            id="de.david_wille.bibtexconsistencychecker.wizard.consistencyrule"
+            name="New BibTeX Consistency Rule">
+      </wizard>
+      <wizard
+            category="de.david_wille.bibtexconsistencychecker.category.main"
+            class="de.david_wille.bibtexconsistencychecker.wizard.BCCNewExecutionFileWizard"
+            descriptionImage="icons/bcc_icon32.png"
+            icon="icons/bcc_icon16.png"
+            id="de.david_wille.bibtexconsistencychecker.wizard.executionmodel"
+            name="New BibTeX Consistency Checker Execution File">
+      </wizard>
+      <wizard
+            category="de.david_wille.bibtexconsistencychecker.category.main"
+            class="de.david_wille.bibtexconsistencychecker.wizard.BCCNewBibTeXFileWizard"
+            descriptionImage="icons/bib_icon32.png"
+            icon="icons/bib_icon16.png"
+            id="de.david_wille.bibtexconsistencychecker.wizard.bibtex"
+            name="New BibTeX File">
+      </wizard>
+   </extension>
+   <extension
+         id="de.david_wille.bibtexconsistencychecker.bccnature"
+         name="BibTeX Consistency Checker Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="de.david_wille.bibtexconsistencychecker.nature.BCCProjectNature">
+         </run>
+      </runtime>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="de.david_wille.bibtexconsistencychecker.bccnature.command"
+            name="Convert to BibTeX Consistency Checker Project">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commandImages">
+      <image
+            commandId="de.david_wille.bibtexconsistencychecker.bccnature.command"
+            icon="icons/bcc_icon16.png">
+      </image>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="de.david_wille.bibtexconsistencychecker.nature.BCCProjectNatureHandler"
+            commandId="de.david_wille.bibtexconsistencychecker.bccnature.command">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.definitions">
+      <definition
+            id="de.david_wille.bibtexconsistencychecker.hasNature">
+         <adapt
+               type="org.eclipse.core.resources.IProject">
+            <test
+                  property="org.eclipse.core.resources.projectNature"
+                  value="de.david_wille.bibtexconsistencychecker.bccnature">
+            </test>
+         </adapt>
+      </definition>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.projectConfigure">
+         <command
+               commandId="de.david_wille.bibtexconsistencychecker.bccnature.command"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <not>
+                  <reference
+                        definitionId="de.david_wille.bibtexconsistencychecker.hasNature">
+                  </reference>
+               </not>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.ide.projectNatureImages">
+      <image
+            icon="icons/bib_icon8.png"
+            id="de.david_wille.bibtexconsistencychecker.bccnature.image"
+            natureId="de.david_wille.bibtexconsistencychecker.bccnature">
+      </image>
+   </extension>
 
 </plugin>

@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
@@ -66,6 +67,10 @@ public class BCCResourceUtil {
 
 	public static boolean resourceIsContainer(IResource resource) {
 		return resourceIsFolder(resource) || resourceIsProject(resource);
+	}
+	
+	public static IProject getIProject(EObject eObject) {
+		return getIFile(eObject.eResource()).getProject();
 	}
 	
 	public static IFile getIFile(EObject eObject) {
@@ -205,6 +210,29 @@ public class BCCResourceUtil {
 
 	public static boolean fileIsConsistencyRule(IFile selectedFile) {
 		return selectedFile.getFileExtension().equals(BCC_RULE_FILE_EXTENSION);
+	}
+
+	public static void createFolder(IProject project, String folderName) throws CoreException
+	{
+		IFolder folder = project.getFolder(folderName);
+		folder.create(IResource.NONE, true, null);
+	}
+
+	public static IProject createNewProject(String projectName) throws CoreException
+	{
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		IProject project = workspace.getRoot().getProject(projectName);
+		
+		if (!project.exists()) {
+			project.create(null);
+		}
+		
+		return project;
+	}
+
+	public static void refreshProject(IResource resource) throws CoreException
+	{
+		resource.refreshLocal(IResource.DEPTH_INFINITE, null);
 	}
 	
 }
