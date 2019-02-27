@@ -17,15 +17,17 @@ Require-Bundle: org.eclipse.xtext,
  org.eclipse.core.resources;bundle-version="3.12.0",
  de.david_wille.bibtexconsistencychecker.util;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.impl,
- de.david_wille.bibtexconsistencychecker.executionmodel.scoping,
- de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.util,
- de.david_wille.bibtexconsistencychecker.executionmodel.parser.antlr,
- de.david_wille.bibtexconsistencychecker.executionmodel.services,
- de.david_wille.bibtexconsistencychecker.executionmodel,
- de.david_wille.bibtexconsistencychecker.executionmodel.generator,
- de.david_wille.bibtexconsistencychecker.executionmodel.validation,
- de.david_wille.bibtexconsistencychecker.executionmodel.parser.antlr.internal,
+Export-Package: de.david_wille.bibtexconsistencychecker.executionmodel,
  de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel,
- de.david_wille.bibtexconsistencychecker.executionmodel.serializer
+ de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.impl,
+ de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.util,
+ de.david_wille.bibtexconsistencychecker.executionmodel.generator,
+ de.david_wille.bibtexconsistencychecker.executionmodel.parser.antlr,
+ de.david_wille.bibtexconsistencychecker.executionmodel.parser.antlr.internal,
+ de.david_wille.bibtexconsistencychecker.executionmodel.scoping,
+ de.david_wille.bibtexconsistencychecker.executionmodel.services,
+ de.david_wille.bibtexconsistencychecker.executionmodel.util,
+ de.david_wille.bibtexconsistencychecker.executionmodel.validation,
+ de.david_wille.bibtexconsistencychecker.executionmodel.serializer,
+ de.david_wille.bibtexconsistencychecker.executionmodel.formatting2
 Import-Package: org.apache.log4j

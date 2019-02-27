@@ -26,7 +26,7 @@ public class BCCBibTeXStartup implements IStartup {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		try {
 			for (IResource resource : workspace.getRoot().members()) {
-				if (BCCResourceUtil.resourceIsProject(resource)) {
+				if (resource instanceof IProject) {
 					IProject project = (IProject) resource;
 					
 					if (project.hasNature(NATURE_ID)) {
@@ -43,7 +43,7 @@ public class BCCBibTeXStartup implements IStartup {
 	private void identifyAndCacheBibliographyFolder(IProject project) throws CoreException
 	{
 		for (IResource resource : project.members()) {
-			if (BCCResourceUtil.resourceIsFolder(resource)) {
+			if (resource instanceof IFolder) {
 				IFolder folder = (IFolder) resource;
 				
 				if (folder.getName().equals(BIBLIOGRAPHY_FOLDER)) {
@@ -56,12 +56,12 @@ public class BCCBibTeXStartup implements IStartup {
 	private void identifyAndCacheBibliographyFiles(IProject project, IFolder folder) throws CoreException
 	{
 		for (IResource resource : folder.members()) {
-			if (BCCResourceUtil.resourceIsFile(resource)) {
+			if (resource instanceof IFile) {
 				IFile file = (IFile) resource;
 				
 				if (BCCResourceUtil.fileIsBibTeXFile(file)) {
 					BCCBibTeXFile bibTeXFile = BCCResourceUtil.parseModel(new BCCBibTeXStandaloneSetup(), file);
-					BCCBibTeXCache.getInstance().updateBibTeXFileCache(project, bibTeXFile);
+					BCCBibTeXCache.getInstance().cacheBibTeXFile(project, bibTeXFile);
 				}
 			}
 		}

@@ -41,7 +41,7 @@ public class BCCNoConflictingEntryKeysExist {
 					
 					IResource resource = BCCResourceUtil.getIFile(entry);
 					
-					BCCAnalysis.createConsistencyProblemErrorMarker(resource, errorMessage, entry.getEntryBody(), BCCBibTeXPackage.Literals.BCC_ENTRY_BODY__ENTRY_KEY);
+					BCCAnalysis.createConsistencyProblemErrorMarker(resource, errorMessage, entry.getEntryBody(), BCCBibTeXPackage.Literals.BCC_ENTRY_BODY__ENTRY_KEY_OBJECT);
 					
 					noErrorsDetected = noErrorsDetected && false;
 				}
@@ -120,12 +120,12 @@ public class BCCNoConflictingEntryKeysExist {
 					BCCEntryBody entryBody = bibTeXEntry.getEntryBody();
 					
 					List<BCCAbstractBibTeXEntry> entries = new ArrayList<>();
-					if (allEntries.containsKey(entryBody.getEntryKey())) {
-						entries = allEntries.get(entryBody.getEntryKey());
+					if (allEntries.containsKey(entryBody.getEntryKeyObject().getEntryKey())) {
+						entries = allEntries.get(entryBody.getEntryKeyObject().getEntryKey());
 					}
 					entries.add(bibTeXEntry);
 					
-					allEntries.put(entryBody.getEntryKey(), entries);
+					allEntries.put(entryBody.getEntryKeyObject().getEntryKey(), entries);
 				}
 			}
 		}

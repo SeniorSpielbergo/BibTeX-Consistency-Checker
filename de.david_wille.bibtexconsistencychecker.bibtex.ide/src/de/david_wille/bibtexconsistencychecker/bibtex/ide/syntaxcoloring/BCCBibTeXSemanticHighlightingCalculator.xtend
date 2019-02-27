@@ -4,6 +4,7 @@ import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractGener
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBibTeXPackage
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCDateField
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCEntryBody
+import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCEntryKeyObject
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCMonthField
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCPages
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCPagesField
@@ -24,7 +25,7 @@ class BCCBibTeXSemanticHighlightingCalculator extends DefaultSemanticHighlightin
 		CancelIndicator cancelIndicator) {
 		switch (object) {
 			BCCAbstractGenericField: {
-				highlightFeature(acceptor, object, BCCBibTeXPackage.eINSTANCE.BCCAbstractGenericField_FieldValue, HighlightingStyles.DEFAULT_ID)
+				highlightFeature(acceptor, object, BCCBibTeXPackage.eINSTANCE.BCCAbstractGenericField_FieldValueObject, HighlightingStyles.DEFAULT_ID)
 				return true
 			}
 			BCCReplacePatternEntry: {
@@ -53,7 +54,11 @@ class BCCBibTeXSemanticHighlightingCalculator extends DefaultSemanticHighlightin
 				return true
 			}
 			BCCEntryBody: {
-				highlightFeature(acceptor, object, BCCBibTeXPackage.eINSTANCE.BCCEntryBody_EntryKey, HighlightingStyles.DEFAULT_ID)
+				highlightFeature(acceptor, object, BCCBibTeXPackage.eINSTANCE.BCCEntryBody_EntryKeyObject, HighlightingStyles.DEFAULT_ID)
+				return true
+			}
+			BCCEntryKeyObject: {
+				highlightFeature(acceptor, object, BCCBibTeXPackage.eINSTANCE.BCCEntryKeyObject_EntryKey, HighlightingStyles.DEFAULT_ID)
 				return true
 			}
 			default: false

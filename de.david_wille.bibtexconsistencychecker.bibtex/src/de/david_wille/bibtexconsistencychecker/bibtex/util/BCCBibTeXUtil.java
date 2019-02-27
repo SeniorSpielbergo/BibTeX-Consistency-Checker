@@ -49,7 +49,7 @@ public class BCCBibTeXUtil {
 	}
 	
 	public static boolean usesReplacePattern(BCCAbstractGenericField genericField) {
-		String fieldValue = genericField.getFieldValue();
+		String fieldValue = genericField.getFieldValueObject().getFieldValue();
 		BCCSpecialCharacterHandling.replaceSpecialLatexCharacters(fieldValue);
 		
 		return !fieldValue.startsWith(OPENING_BRACE) && !fieldValue.endsWith(CLOSING_BRACE);
@@ -114,7 +114,7 @@ public class BCCBibTeXUtil {
 	}
 	
 	public static String getFieldValueWithoutFieldBraces(BCCAbstractGenericField genericField) {
-		String fieldValue = genericField.getFieldValue();
+		String fieldValue = genericField.getFieldValueObject().getFieldValue();
 		
 		while (fieldValue.startsWith(OPENING_BRACE) && fieldValue.endsWith(CLOSING_BRACE)) {
 			fieldValue = fieldValue.substring(1, fieldValue.length());
@@ -140,7 +140,7 @@ public class BCCBibTeXUtil {
 		
 		List<BCCAbstractBibTeXEntry> allBibTeXEntries = collectAllAbstractBibTeXEntries(bibTeXFile);
 		for (BCCAbstractBibTeXEntry bibTeXEntry : allBibTeXEntries) {
-			allEntryKeys.add(bibTeXEntry.getEntryBody().getEntryKey());
+			allEntryKeys.add(bibTeXEntry.getEntryBody().getEntryKeyObject().getEntryKey());
 		}
 		
 		return allEntryKeys;

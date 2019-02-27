@@ -5,12 +5,15 @@ import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBibTeXFile
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBibTeXPackage
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCEntryBody
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCMonthField
+import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCReplaceKeyObject
+import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCReplacePatternEntry
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCTitleField
 import de.david_wille.bibtexconsistencychecker.bibtex.cache.BCCBibTeXCache
 import de.david_wille.bibtexconsistencychecker.util.BCCResourceUtil
 import de.david_wille.bibtexconsistencychecker.util.BCCSpecialCharacterHandling
 import java.util.HashMap
 import java.util.Map
+import org.eclipse.core.resources.IFile
 import org.eclipse.xtext.validation.Check
 
 /**
@@ -29,17 +32,17 @@ class BCCBibTeXValidator extends AbstractBCCBibTeXValidator {
 	
 	@Check(NORMAL)
 	def void updateBibTeXCache(BCCBibTeXFile bibTeXFile) {
-		BCCBibTeXCache.instance.updateBibTeXFileCache(BCCResourceUtil.getIProject(bibTeXFile), bibTeXFile);
+		BCCBibTeXCache.instance.cacheBibTeXFile(BCCResourceUtil.getIProject(bibTeXFile), bibTeXFile);
 	}
 	
 	@Check
 	def void checkTitleFieldStartsAndEndsWithDoubleParenthesis(BCCTitleField titleField) {
-		var String toBeCheckedValue = BCCSpecialCharacterHandling.replaceSpecialLatexCharacters(titleField.fieldValue)
+		var String toBeCheckedValue = BCCSpecialCharacterHandling.replaceSpecialLatexCharacters(titleField.fieldValueObject.fieldValue)
 		
 		if (!toBeCheckedValue.startsWith(OPENING_BRACE + OPENING_BRACE) ||
 			!toBeCheckedValue.endsWith(CLOSING_BRACE + CLOSING_BRACE))
 		{
-			warning("To ensure case sensitivity of titles you should enclose them in double braces \"{{ ... }}\"", BCCBibTeXPackage.Literals.BCC_ABSTRACT_GENERIC_FIELD__FIELD_VALUE, NO_DOUBLE_BRACES, titleField.fieldValue)
+			warning("To ensure case sensitivity of titles you should enclose them in double braces \"{{ ... }}\"", titleField.fieldValueObject, BCCBibTeXPackage.Literals.BCC_ABSTRACT_GENERIC_FIELD__FIELD_VALUE_OBJECT, NO_DOUBLE_BRACES)
 		}
 	}
 	
@@ -57,6 +60,12 @@ class BCCBibTeXValidator extends AbstractBCCBibTeXValidator {
 			}
 			i++;
 		}
+	}
+	
+	protected def replacePatternContainedInSameResource(BCCReplaceKeyObject replaceKeyObject, BCCReplacePatternEntry existingEntry) {
+		var IFile replaceKeyObjectFile = BCCResourceUtil.getIFile(replaceKeyObject)
+		var IFile existingEntryFile = BCCResourceUtil.getIFile(existingEntry)
+		replaceKeyObjectFile.equals(existingEntryFile)
 	}
 	
 	@Check

@@ -42,13 +42,13 @@ public class BCCAlphabeticOrder {
 		for (int i = 0; i < entryKeys.size(); i++) {
 			BCCEntryBody entryBody = bibTeXEntries.get(i).getEntryBody();
 			String expectedEntryKey = entryKeys.get(i);
-			String foundEntryKey = entryBody.getEntryKey();
+			String foundEntryKey = entryBody.getEntryKeyObject().getEntryKey();
 			
 			if (!entryKeysAreEqual(expectedEntryKey, foundEntryKey)) {
 				String errorMessage = "The entries are not in alphabetical order. Found \"" + foundEntryKey + "\" instead of \"" + expectedEntryKey + "\".";
 				IResource resource = BCCResourceUtil.getIFile(bibTeXFile);
 				
-				BCCAnalysis.createConsistencyProblemWarningMarker(resource, errorMessage, entryBody, BCCBibTeXPackage.Literals.BCC_ENTRY_BODY__ENTRY_KEY);
+				BCCAnalysis.createConsistencyProblemWarningMarker(resource, errorMessage, entryBody, BCCBibTeXPackage.Literals.BCC_ENTRY_BODY__ENTRY_KEY_OBJECT);
 				
 				return false;
 			}
@@ -65,7 +65,7 @@ public class BCCAlphabeticOrder {
 		List<String> entryKeys = new ArrayList<>();
 		
 		for (BCCAbstractBibTeXEntry bibTeXEntry : bibTeXEntries) {
-			entryKeys.add(bibTeXEntry.getEntryBody().getEntryKey());
+			entryKeys.add(bibTeXEntry.getEntryBody().getEntryKeyObject().getEntryKey());
 		}
 		
 		return entryKeys;

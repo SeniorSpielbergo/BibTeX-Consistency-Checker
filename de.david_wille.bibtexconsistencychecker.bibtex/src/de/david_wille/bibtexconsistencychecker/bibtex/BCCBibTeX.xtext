@@ -11,7 +11,7 @@ BCCAbstractBibTeXFileEntry:
 	BCCAbstractBibTeXEntry | BCCReplacePatternEntry;
 
 BCCReplacePatternEntry:
-	'@string' '{' replaceKey = BCCReplaceKey '=' replacementFieldValue = BCCReplacementFieldValue '}';
+	'@string' '{' replaceKeyObject = BCCReplaceKeyObject '=' replacementFieldValue = BCCReplacementFieldValue '}';
 
 BCCAbstractBibTeXEntry:
 	BCCInProceedingsEntry | BCCBookEntry | BCCArticleEntry | BCCStandardEntry |
@@ -71,7 +71,7 @@ BCCProceedingsEntry:
 	'@proceedings' entryBody = BCCEntryBody;
 
 BCCEntryBody:
-	'{' entryKey = BCCEntryKey
+	'{' entryKeyObject = BCCEntryKeyObject
 		(',' fields += BCCAbstractEntryBodyField)*
 	'}';
 
@@ -85,70 +85,70 @@ BCCAbstractGenericField:
 	BCCJournalField | BCCBooktitleField | BCCSchoolField | BCCSeriesField | BCCChapterField | BCCVersionField | BCCHowPublishedField;
 
 BCCTitleField:
-	'title' '=' fieldValue = BCCGenericFieldValue;
+	'title' '=' fieldValueObject = BCCGenericFieldValueObject;
 
 BCCEditionField:
-	'edition' '=' fieldValue = BCCGenericFieldValue;
+	'edition' '=' fieldValueObject = BCCGenericFieldValueObject;
 
 BCCInstitutionField:
-	'institution' '=' fieldValue = BCCGenericFieldValue;
+	'institution' '=' fieldValueObject = BCCGenericFieldValueObject;
 
 BCCOrganizationField:
-	'organization' '=' fieldValue = BCCGenericFieldValue;
+	'organization' '=' fieldValueObject = BCCGenericFieldValueObject;
 
 BCCRevisionField:
-	'revision' '=' fieldValue = BCCGenericFieldValue;
+	'revision' '=' fieldValueObject = BCCGenericFieldValueObject;
 
 BCCUrlField:
-	'url' '=' fieldValue = BCCGenericFieldValue;
+	'url' '=' fieldValueObject = BCCGenericFieldValueObject;
 
 BCCDoiField:
-	'doi' '=' fieldValue = BCCGenericFieldValue;
+	'doi' '=' fieldValueObject = BCCGenericFieldValueObject;
 
 BCCTypeField:
-	'type' '=' fieldValue = BCCGenericFieldValue;
+	'type' '=' fieldValueObject = BCCGenericFieldValueObject;
 
 BCCIsbnField:
-	'isbn' '=' fieldValue = BCCGenericFieldValue;
+	'isbn' '=' fieldValueObject = BCCGenericFieldValueObject;
 
 BCCAddressField:
-	'address' '=' fieldValue = BCCGenericFieldValue;
+	'address' '=' fieldValueObject = BCCGenericFieldValueObject;
 
 BCCHowPublishedField:	
-	'howpublished' '=' fieldValue = BCCGenericFieldValue;
+	'howpublished' '=' fieldValueObject = BCCGenericFieldValueObject;
 
 BCCNumberField:
-	'number' '=' fieldValue = BCCGenericFieldValue;
+	'number' '=' fieldValueObject = BCCGenericFieldValueObject;
 
 BCCVolumeField:
-	'volume' '=' fieldValue = BCCGenericFieldValue;
+	'volume' '=' fieldValueObject = BCCGenericFieldValueObject;
 
 BCCNoteField:
-	'note' '=' fieldValue = BCCGenericFieldValue;
+	'note' '=' fieldValueObject = BCCGenericFieldValueObject;
 
 BCCSchoolField:
-	'school' '=' fieldValue = BCCGenericFieldValue;
+	'school' '=' fieldValueObject = BCCGenericFieldValueObject;
 
 BCCKeywordsField:
-	'keywords' '=' fieldValue = BCCGenericFieldValue;
+	'keywords' '=' fieldValueObject = BCCGenericFieldValueObject;
 
 BCCBooktitleField:
-	'booktitle' '=' fieldValue = BCCGenericFieldValue;
+	'booktitle' '=' fieldValueObject = BCCGenericFieldValueObject;
 
 BCCSeriesField:
-	'series' '=' fieldValue = BCCGenericFieldValue;
+	'series' '=' fieldValueObject = BCCGenericFieldValueObject;
 
 BCCPublisherField:
-	'publisher' '=' fieldValue = BCCGenericFieldValue;
+	'publisher' '=' fieldValueObject = BCCGenericFieldValueObject;
 
 BCCJournalField:
-	'journal' '=' fieldValue = BCCGenericFieldValue;
+	'journal' '=' fieldValueObject = BCCGenericFieldValueObject;
 
 BCCChapterField:
-	'chapter' '=' fieldValue = BCCGenericFieldValue;
+	'chapter' '=' fieldValueObject = BCCGenericFieldValueObject;
 
 BCCVersionField:
-	'version' '=' fieldValue = BCCGenericFieldValue;
+	'version' '=' fieldValueObject = BCCGenericFieldValueObject;
 
 BCCAbstractPersonField:
 	BCCAuthorField | BCCEditorField;
@@ -179,6 +179,15 @@ BCCPersonFieldBody:
 
 BCCPerson:
 	lastName = BCCNameValue (',' firstName = BCCNameValue)?;
+
+BCCEntryKeyObject:
+	entryKey = BCCEntryKey;
+
+BCCReplaceKeyObject:
+	replaceKey = BCCReplaceKey;
+
+BCCGenericFieldValueObject:
+	fieldValue = BCCGenericFieldValue;
 
 BCCPagesValue:
 	INT (':' | INT)*;

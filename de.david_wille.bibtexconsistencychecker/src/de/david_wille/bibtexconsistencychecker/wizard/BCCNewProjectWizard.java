@@ -11,30 +11,36 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
+import de.david_wille.bibtexconsistencychecker.executionmodel.BCCExecutionModelStandaloneSetup;
+import de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.BCCExecutionModel;
+import de.david_wille.bibtexconsistencychecker.executionmodel.util.BCCDefaultExecutionModel;
 import de.david_wille.bibtexconsistencychecker.nature.BCCProjectNature;
 import de.david_wille.bibtexconsistencychecker.util.BCCResourceUtil;
-import de.david_wille.bibtexconsistencychecker.wizard.pages.BCCProjectSettingsPage;
+import de.david_wille.bibtexconsistencychecker.wizard.pages.BCCWizardNewProjectCreationPage;
 
 public class BCCNewProjectWizard extends Wizard implements INewWizard {
 
-	private static final String WINDOW_TITLE = "New BibTeX Consistency Checker Project";
-	private BCCProjectSettingsPage settingsPage;
+	private static final String PROJECT_CREATION_PAGE_NAME = "New Project";
+	private static final String PROJECT_CREATION_PAGE_TITLE = "Project";
+	private static final String PROJECT_CREATION_PAGE_DESCRIPTION = "Create a new BibTeX Consistency Checker project.";
 
-	public BCCNewProjectWizard() {
-		settingsPage = new BCCProjectSettingsPage();
-	}
+	private static final String WINDOW_TITLE = "New BibTeX Consistency Checker Project";
+	private WizardNewProjectCreationPage newProjectCreationPage;
 
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		ImageDescriptor image = AbstractUIPlugin.imageDescriptorFromPlugin("de.david_wille.bibtexconsistencychecker", "icons/bcc_icon96.png");
 		setDefaultPageImageDescriptor(image);
+		
+		newProjectCreationPage = new BCCWizardNewProjectCreationPage(PROJECT_CREATION_PAGE_NAME, PROJECT_CREATION_PAGE_TITLE, PROJECT_CREATION_PAGE_DESCRIPTION);
 	}
 
 	@Override
 	public void addPages() {
-		addPage(settingsPage);
+		addPage(newProjectCreationPage);
 	}
 
 	@Override
@@ -44,10 +50,12 @@ public class BCCNewProjectWizard extends Wizard implements INewWizard {
 
 	@Override
 	public boolean performFinish() {
-		String projectName = settingsPage.getProjectName();
+		String projectName = newProjectCreationPage.getProjectName();
 
 		try {
 			IProject project = BCCResourceUtil.createNewProject(projectName);
+			project.open(null);
+			
 			IProjectDescription description = project.getDescription();
 			String[] natures = description.getNatureIds();
 			String[] newNatures = new String[natures.length + 1];
@@ -65,7 +73,8 @@ public class BCCNewProjectWizard extends Wizard implements INewWizard {
 				project.setDescription(description, null);
 			}
 			
-			// TODO: generate default *.bcc file
+			BCCExecutionModel executionModel = BCCDefaultExecutionModel.generate(projectName);
+			BCCResourceUtil.storeModel(new BCCExecutionModelStandaloneSetup(), executionModel, project, projectName, "bcc");
 			
 			BCCResourceUtil.refreshProject(project);
 		}

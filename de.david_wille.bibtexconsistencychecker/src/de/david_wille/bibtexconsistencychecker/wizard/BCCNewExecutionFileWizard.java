@@ -1,42 +1,59 @@
 package de.david_wille.bibtexconsistencychecker.wizard;
 
-import java.util.List;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.xtext.ISetup;
 
-import org.eclipse.core.resources.IResource;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.ui.INewWizard;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
+import de.david_wille.bibtexconsistencychecker.executionmodel.BCCExecutionModelStandaloneSetup;
+import de.david_wille.bibtexconsistencychecker.executionmodel.util.BCCDefaultExecutionModel;
 
-import de.david_wille.bibtexconsistencychecker.BCCLauncherResourceUtil;
+public class BCCNewExecutionFileWizard extends AbstractFileCreationWizard {
+	
+	private static final String FILE_EXTENSION = "bcc";
+	private static final String FILE_CREATION_PAGE_NAME = "New BibTeX Consistency Checker Execution File";
+	private static final String FILE_CREATION_PAGE_TITLE = "BibTeX Consistency Checker Execution File";
+	private static final String FILE_CREATION_PAGE_DESCRIPTION = "Create a new BibTeX Consistency Checker Execution file.";
 
-public class BCCNewExecutionFileWizard extends Wizard implements INewWizard {
-
+	private static final String ICON_PATH = "icons/bcc_icon96.png";
 	private static final String WINDOW_TITLE = "New BibTeX Consistency Checker Execution File";
 
-	public BCCNewExecutionFileWizard() {
-		// TODO Auto-generated constructor stub
+	@Override
+	protected String getFileCreationPageName() {
+		return FILE_CREATION_PAGE_NAME;
 	}
 
 	@Override
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		ImageDescriptor image = AbstractUIPlugin.imageDescriptorFromPlugin("de.david_wille.bibtexconsistencychecker", "icons/bcc_icon96.png");
-		setDefaultPageImageDescriptor(image);
-		
-		List<IResource> selectedResources = BCCLauncherResourceUtil.identifyAllResourcesFromSelection(selection);
+	protected String getFileCreationPageTitle() {
+		return FILE_CREATION_PAGE_TITLE;
 	}
 
 	@Override
-	public String getWindowTitle() {
+	protected String getFileCreationPageDescription() {
+		return FILE_CREATION_PAGE_DESCRIPTION;
+	}
+
+	@Override
+	protected String getFileCreationWindowTitle() {
 		return WINDOW_TITLE;
 	}
 
 	@Override
-	public boolean performFinish() {
-		// TODO Auto-generated method stub
-		return false;
+	protected String getFileExtension() {
+		return FILE_EXTENSION;
+	}
+
+	@Override
+	protected ISetup getFileCreationSetup() {
+		return new BCCExecutionModelStandaloneSetup();
+	}
+
+	@Override
+	protected EObject getStoredModel(String name) {
+		return BCCDefaultExecutionModel.generate(name);
+	}
+
+	@Override
+	protected String getIconPath() {
+		return ICON_PATH;
 	}
 
 }

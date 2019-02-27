@@ -130,14 +130,14 @@ public class BCCProblemMarkerHandling extends DiagnosticConverterImpl {
 		}
 	}
 
-	public static boolean resourceHasProblemMarkers(EObject eObject) throws CoreException {
+	public static boolean resourceHasErrorProblemMarkers(EObject eObject) throws CoreException {
 		IResource resource = BCCResourceUtil.getIFile(eObject);
-		return resourceHasProblemMarkers(resource);
+		return resourceHasErrorProblemMarkers(resource);
 	}
 
 	public static boolean resourcesHaveProblemMarkers(List<? extends EObject> eObjects) throws CoreException {
 		for (EObject eObject : eObjects) {
-			if (resourceHasProblemMarkers(eObject)) {
+			if (resourceHasErrorProblemMarkers(eObject)) {
 				return true;
 			}
 		}
@@ -145,8 +145,8 @@ public class BCCProblemMarkerHandling extends DiagnosticConverterImpl {
 		return false;
 	}
 
-	public static boolean resourceHasProblemMarkers(IResource resource) throws CoreException {
-		return resource.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE).length > 0;
+	public static boolean resourceHasErrorProblemMarkers(IResource resource) throws CoreException {
+		return resource.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE) == IMarker.SEVERITY_ERROR;
 	}
 
 }

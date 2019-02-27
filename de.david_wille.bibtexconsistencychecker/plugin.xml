@@ -14,7 +14,7 @@
                <with
                      variable="selection">
                   <count
-                        value="+">
+                        value="1">
                   </count>
                </with>
             </enablement>

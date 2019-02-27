@@ -4,7 +4,7 @@ import de.david_wille.bibtexconsistencychecker.bibtex.BCCBibTeXStandaloneSetup
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractBibTeXEntry
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBibTeXFile
 import de.david_wille.bibtexconsistencychecker.bibtex.util.BCCBibTeXUtil
-import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCEntryKeyObject
+import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCEntryKeyReference
 import de.david_wille.bibtexconsistencychecker.consistencyrule.services.BCCConsistencyRuleGrammarAccess
 import de.david_wille.bibtexconsistencychecker.util.BCCResourceUtil
 import java.util.ArrayList
@@ -73,14 +73,14 @@ class BCCConsistencyRuleProposalProvider extends AbstractBCCConsistencyRulePropo
 		BCCUsesReplacePatternExpressionAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
 	}
 	
-	override complete_BCCEntryKeyObject(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+	override complete_BCCEntryKeyReference(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		var EObject contextNode = NodeModelUtils.findActualSemanticObjectFor(context.currentNode)
-		if (contextNode instanceof BCCEntryKeyObject) {
+		if (contextNode instanceof BCCEntryKeyReference) {
 			var String fieldValue = contextNode.entryKey
 			var List<BCCAbstractBibTeXEntry> relevantBibTeXEntries = identifyAllBibTeXEntryKeysContainingValue(model, fieldValue)
 			
 			for (BCCAbstractBibTeXEntry relevantBibTeXEntry : relevantBibTeXEntries) {
-				val proposalString = relevantBibTeXEntry.entryBody.entryKey
+				val proposalString = relevantBibTeXEntry.entryBody.entryKeyObject.entryKey
 				acceptor.accept(createCompletionProposal(proposalString, proposalString, null, context))
 			}
 		}
@@ -90,7 +90,7 @@ class BCCConsistencyRuleProposalProvider extends AbstractBCCConsistencyRulePropo
 		var IFile modelFile = BCCResourceUtil.getIFile(model)
 		var IContainer container = modelFile.parent
 		
-		var List<IFile> allBibTeXFiles = BCCResourceUtil.collectAllFilesInContainer(container, "bib")
+		var List<IFile> allBibTeXFiles = BCCResourceUtil.recursivelyCollectAllFiles(container, "bib")
 		
 		var List<BCCBibTeXFile> parsedBibTeXFiles = BCCResourceUtil.parseModels(new BCCBibTeXStandaloneSetup(), allBibTeXFiles)
 		
@@ -99,7 +99,7 @@ class BCCConsistencyRuleProposalProvider extends AbstractBCCConsistencyRulePropo
 		var List<BCCAbstractBibTeXEntry> relevantBibTeXEntries = new ArrayList<BCCAbstractBibTeXEntry>()
 		
 		for (BCCAbstractBibTeXEntry bibTeXEntry : allBibTeXEntries) {
-			if (bibTeXEntry.entryBody.entryKey.contains(fieldValue)) {
+			if (bibTeXEntry.entryBody.entryKeyObject.entryKey.contains(fieldValue)) {
 				relevantBibTeXEntries.add(bibTeXEntry)
 			}
 		}

@@ -83,58 +83,58 @@ class BCCBibTeXOutlineTreeProvider extends DefaultOutlineTreeProvider {
 		var String stringRepresentation = ""
 		
 		if (fileEntry instanceof BCCInProceedingsEntry) {
-			stringRepresentation += "In Proceedings \"" + fileEntry.entryBody.entryKey + "\""
+			stringRepresentation += "In Proceedings \"" + fileEntry.entryBody.entryKeyObject.entryKey + "\""
 		}
 		else if (fileEntry instanceof BCCBookEntry) {
-			stringRepresentation += "Book \"" + fileEntry.entryBody.entryKey + "\""
+			stringRepresentation += "Book \"" + fileEntry.entryBody.entryKeyObject.entryKey + "\""
 		}
 		else if (fileEntry instanceof BCCBookletEntry) {
-			stringRepresentation += "Booklet \"" + fileEntry.entryBody.entryKey + "\""
+			stringRepresentation += "Booklet \"" + fileEntry.entryBody.entryKeyObject.entryKey + "\""
 		}
 		else if (fileEntry instanceof BCCConferenceEntry) {
-			stringRepresentation += "Conference \"" + fileEntry.entryBody.entryKey + "\""
+			stringRepresentation += "Conference \"" + fileEntry.entryBody.entryKeyObject.entryKey + "\""
 		}
 		else if (fileEntry instanceof BCCManualEntry) {
-			stringRepresentation += "Manual \"" + fileEntry.entryBody.entryKey + "\""
+			stringRepresentation += "Manual \"" + fileEntry.entryBody.entryKeyObject.entryKey + "\""
 		}
 		else if (fileEntry instanceof BCCMasterthesisEntry) {
-			stringRepresentation += "Master's Thesis \"" + fileEntry.entryBody.entryKey + "\""
+			stringRepresentation += "Master's Thesis \"" + fileEntry.entryBody.entryKeyObject.entryKey + "\""
 		}
 		else if (fileEntry instanceof BCCMiscEntry) {
-			stringRepresentation += "Misc \"" + fileEntry.entryBody.entryKey + "\""
+			stringRepresentation += "Misc \"" + fileEntry.entryBody.entryKeyObject.entryKey + "\""
 		}
 		else if (fileEntry instanceof BCCPhdThesisEntry) {
-			stringRepresentation += "PhD Thesis \"" + fileEntry.entryBody.entryKey + "\""
+			stringRepresentation += "PhD Thesis \"" + fileEntry.entryBody.entryKeyObject.entryKey + "\""
 		}
 		else if (fileEntry instanceof BCCArticleEntry) {
-			stringRepresentation += "Article \"" + fileEntry.entryBody.entryKey + "\""
+			stringRepresentation += "Article \"" + fileEntry.entryBody.entryKeyObject.entryKey + "\""
 		}
 		else if (fileEntry instanceof BCCStandardEntry) {
-			stringRepresentation += "Standard \"" + fileEntry.entryBody.entryKey + "\""
+			stringRepresentation += "Standard \"" + fileEntry.entryBody.entryKeyObject.entryKey + "\""
 		}
 		else if (fileEntry instanceof BCCInBookEntry) {
-			stringRepresentation += "In Book \"" + fileEntry.entryBody.entryKey + "\""
+			stringRepresentation += "In Book \"" + fileEntry.entryBody.entryKeyObject.entryKey + "\""
 		}
 		else if (fileEntry instanceof BCCReportEntry) {
-			stringRepresentation += "Report \"" + fileEntry.entryBody.entryKey + "\""
+			stringRepresentation += "Report \"" + fileEntry.entryBody.entryKeyObject.entryKey + "\""
 		}
 		else if (fileEntry instanceof BCCTechReportEntry) {
-			stringRepresentation += "Technical Report \"" + fileEntry.entryBody.entryKey + "\""
+			stringRepresentation += "Technical Report \"" + fileEntry.entryBody.entryKeyObject.entryKey + "\""
 		}
 		else if (fileEntry instanceof BCCUnpublishedEntry) {
-			stringRepresentation += "Unpublished \"" + fileEntry.entryBody.entryKey + "\""
+			stringRepresentation += "Unpublished \"" + fileEntry.entryBody.entryKeyObject.entryKey + "\""
 		}
 		else if (fileEntry instanceof BCCThesisEntry) {
-			stringRepresentation += "Thesis \"" + fileEntry.entryBody.entryKey + "\""
+			stringRepresentation += "Thesis \"" + fileEntry.entryBody.entryKeyObject.entryKey + "\""
 		}
 		else if (fileEntry instanceof BCCInCollectionEntry) {
-			stringRepresentation += "In Collection \"" + fileEntry.entryBody.entryKey + "\""
+			stringRepresentation += "In Collection \"" + fileEntry.entryBody.entryKeyObject.entryKey + "\""
 		}
 		else if (fileEntry instanceof BCCProceedingsEntry) {
-			stringRepresentation += "Proceedings \"" + fileEntry.entryBody.entryKey + "\""
+			stringRepresentation += "Proceedings \"" + fileEntry.entryBody.entryKeyObject.entryKey + "\""
 		}
 		else if (fileEntry instanceof BCCReplacePatternEntry) {
-			stringRepresentation += "String Replace Pattern \"" + fileEntry.replaceKey + "\""
+			stringRepresentation += "String Replace Pattern \"" + fileEntry.replaceKeyObject.replaceKey + "\""
 		}
 		
 		if (fileEntry instanceof BCCAbstractBibTeXEntry) {
@@ -167,7 +167,7 @@ class BCCBibTeXOutlineTreeProvider extends DefaultOutlineTreeProvider {
 					image, "editor", true);
 			}
 			else if (entryBodyField instanceof BCCAbstractGenericField) {
-				createEStructuralFeatureNode(parentNode, entryBodyField, BCCBibTeXPackage.Literals.BCC_ABSTRACT_GENERIC_FIELD__FIELD_VALUE,
+				createEStructuralFeatureNode(parentNode, entryBodyField, BCCBibTeXPackage.Literals.BCC_ABSTRACT_GENERIC_FIELD__FIELD_VALUE_OBJECT,
 					image, generateAbstractGenericFieldRepresentation(entryBodyField), true);
 			}
 			else if (entryBodyField instanceof BCCYearField) {

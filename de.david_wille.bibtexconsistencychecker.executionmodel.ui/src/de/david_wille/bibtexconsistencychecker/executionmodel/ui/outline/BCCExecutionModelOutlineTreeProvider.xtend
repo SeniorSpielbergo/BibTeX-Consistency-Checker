@@ -44,16 +44,18 @@ class BCCExecutionModelOutlineTreeProvider extends DefaultOutlineTreeProvider {
 	}
 	
 	protected def _createChildren(IOutlineNode parentNode, BCCSettingsEntry settingsEntry) {
-		if (settingsEntry.ensureAlphbeticOrderActivated) {
-			var Image ensureAlphbeticOrderActivatedImage = imageDispatcher.invoke(settingsEntry)
-			createEStructuralFeatureNode(parentNode, settingsEntry, BCCExecutionModelPackage.Literals.BCC_SETTINGS_ENTRY__ENSURE_ALPHBETIC_ORDER_ACTIVATED,
-				ensureAlphbeticOrderActivatedImage, "ensure alphabetic order", true);
-		}
-		
-		if (settingsEntry.ensureShortHarvardStyleActivated) {
-			var Image ensureShortHarvardStyleActivatedImage = imageDispatcher.invoke(settingsEntry)
-			createEStructuralFeatureNode(parentNode, settingsEntry, BCCExecutionModelPackage.Literals.BCC_SETTINGS_ENTRY__ENSURE_SHORT_HARVARD_STYLE_ACTIVATED,
-				ensureShortHarvardStyleActivatedImage, "ensure short harvard style", true);
+		if (settingsEntry.ensureSettingsEntry !== null) {
+			if (settingsEntry.ensureSettingsEntry.ensureAlphbeticOrderActivated) {
+				var Image ensureAlphbeticOrderActivatedImage = imageDispatcher.invoke(settingsEntry)
+				createEStructuralFeatureNode(parentNode, settingsEntry, BCCExecutionModelPackage.Literals.BCC_ENSURE_SETTINGS_ENTRY__ENSURE_ALPHBETIC_ORDER_ACTIVATED,
+					ensureAlphbeticOrderActivatedImage, "ensure alphabetic order", true);
+			}
+			
+			if (settingsEntry.ensureSettingsEntry.ensureShortHarvardStyleActivated) {
+				var Image ensureShortHarvardStyleActivatedImage = imageDispatcher.invoke(settingsEntry)
+				createEStructuralFeatureNode(parentNode, settingsEntry, BCCExecutionModelPackage.Literals.BCC_ENSURE_SETTINGS_ENTRY__ENSURE_SHORT_HARVARD_STYLE_ACTIVATED,
+					ensureShortHarvardStyleActivatedImage, "ensure short harvard style", true);
+			}
 		}
 	}
 	

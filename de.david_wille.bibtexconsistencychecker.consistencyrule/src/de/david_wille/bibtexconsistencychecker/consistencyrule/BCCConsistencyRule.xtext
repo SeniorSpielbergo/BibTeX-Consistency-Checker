@@ -26,12 +26,12 @@ BCCMultiEntrySelectorBody:
 	selectors += BCCAbstractSelector (',' selectors += BCCAbstractSelector)* 'and' selectors += BCCAbstractSelector;
 
 BCCSingleEntryExcludedEntryKeysBody:
-	excludedEntryKey = BCCEntryKeyObject;
+	excludedEntryKey = BCCEntryKeyReference;
 
 BCCMultiEntryExcludedEntryKeysBody:
-	excludedEntryKeys += BCCEntryKeyObject (',' excludedEntryKeys += BCCEntryKeyObject)* 'and' excludedEntryKeys += BCCEntryKeyObject;
+	excludedEntryKeys += BCCEntryKeyReference (',' excludedEntryKeys += BCCEntryKeyReference)* 'and' excludedEntryKeys += BCCEntryKeyReference;
 
-BCCEntryKeyObject:
+BCCEntryKeyReference:
 	entryKey = BCCEntryKey;
 
 BCCExpression:

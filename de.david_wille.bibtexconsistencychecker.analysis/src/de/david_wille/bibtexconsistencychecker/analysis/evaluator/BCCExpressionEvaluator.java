@@ -175,7 +175,7 @@ public class BCCExpressionEvaluator {
 		
 		if (markerExpression instanceof BCCWarningMarkerExpression) {
 			if (fieldSelectionExpression == null) {
-				BCCAnalysis.createConsistencyProblemWarningMarker(problematicResource, message, causingEntryBody, BCCBibTeXPackage.Literals.BCC_ENTRY_BODY__ENTRY_KEY);
+				BCCAnalysis.createConsistencyProblemWarningMarker(problematicResource, message, causingEntryBody, BCCBibTeXPackage.Literals.BCC_ENTRY_BODY__ENTRY_KEY_OBJECT);
 			}
 			else {
 				BCCAbstractEntryBodyField field = identifyField(fieldSelectionExpression.getSelection(), bibTeXEntry);
@@ -185,7 +185,7 @@ public class BCCExpressionEvaluator {
 		}
 		else if (markerExpression instanceof BCCErrorMarkerExpression) {
 			if (fieldSelectionExpression == null) {
-				BCCAnalysis.createConsistencyProblemErrorMarker(problematicResource, message, causingEntryBody, BCCBibTeXPackage.Literals.BCC_ENTRY_BODY__ENTRY_KEY);
+				BCCAnalysis.createConsistencyProblemErrorMarker(problematicResource, message, causingEntryBody, BCCBibTeXPackage.Literals.BCC_ENTRY_BODY__ENTRY_KEY_OBJECT);
 			}
 			else {
 				BCCAbstractEntryBodyField field = identifyField(fieldSelectionExpression.getSelection(), bibTeXEntry);
@@ -640,70 +640,70 @@ public class BCCExpressionEvaluator {
 
 	private String identifyStringFieldValue(BCCAbstractSpecificFieldSelector selector, BCCAbstractBibTeXEntry bibTeXEntry) {
 		if (selector instanceof BCCTitleFieldSelector) {
-			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCTitleField.class).getFieldValue();
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCTitleField.class).getFieldValueObject().getFieldValue();
 		}
 		else if (selector instanceof BCCEditionFieldSelector) {
-			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCEditionField.class).getFieldValue();
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCEditionField.class).getFieldValueObject().getFieldValue();
 		}
 		else if (selector instanceof BCCUrlFieldSelector) {
-			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCUrlField.class).getFieldValue();
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCUrlField.class).getFieldValueObject().getFieldValue();
 		}
 		else if (selector instanceof BCCInstitutionFieldSelector) {
-			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCInstitutionField.class).getFieldValue();
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCInstitutionField.class).getFieldValueObject().getFieldValue();
 		}
 		else if (selector instanceof BCCOrganizationFieldSelector) {
-			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCOrganizationField.class).getFieldValue();
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCOrganizationField.class).getFieldValueObject().getFieldValue();
 		}
 		else if (selector instanceof BCCRevisionFieldSelector) {
-			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCRevisionField.class).getFieldValue();
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCRevisionField.class).getFieldValueObject().getFieldValue();
 		}
 		else if (selector instanceof BCCIsbnFieldSelector) {
-			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCIsbnField.class).getFieldValue();
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCIsbnField.class).getFieldValueObject().getFieldValue();
 		}
 		else if (selector instanceof BCCDoiFieldSelector) {
-			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCDoiField.class).getFieldValue();
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCDoiField.class).getFieldValueObject().getFieldValue();
 		}
 		else if (selector instanceof BCCAddressFieldSelector) {
-			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCAddressField.class).getFieldValue();
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCAddressField.class).getFieldValueObject().getFieldValue();
 		}
 		else if (selector instanceof BCCTypeFieldSelector) {
-			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCTypeField.class).getFieldValue();
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCTypeField.class).getFieldValueObject().getFieldValue();
 		}
 		else if (selector instanceof BCCNumberFieldSelector) {
-			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCNumberField.class).getFieldValue();
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCNumberField.class).getFieldValueObject().getFieldValue();
 		}
 		else if (selector instanceof BCCVolumeFieldSelector) {
-			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCVolumeField.class).getFieldValue();
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCVolumeField.class).getFieldValueObject().getFieldValue();
 		}
 		else if (selector instanceof BCCKeywordsFieldSelector) {
-			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCKeywordsField.class).getFieldValue();
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCKeywordsField.class).getFieldValueObject().getFieldValue();
 		}
 		else if (selector instanceof BCCNoteFieldSelector) {
-			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCNoteField.class).getFieldValue();
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCNoteField.class).getFieldValueObject().getFieldValue();
 		}
 		else if (selector instanceof BCCPublisherFieldSelector) {
-			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCPublisherField.class).getFieldValue();
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCPublisherField.class).getFieldValueObject().getFieldValue();
 		}
 		else if (selector instanceof BCCJournalFieldSelector) {
-			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCJournalField.class).getFieldValue();
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCJournalField.class).getFieldValueObject().getFieldValue();
 		}
 		else if (selector instanceof BCCBooktitleFieldSelector) {
-			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCBooktitleField.class).getFieldValue();
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCBooktitleField.class).getFieldValueObject().getFieldValue();
 		}
 		else if (selector instanceof BCCSchoolFieldSelector) {
-			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCSchoolField.class).getFieldValue();
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCSchoolField.class).getFieldValueObject().getFieldValue();
 		}
 		else if (selector instanceof BCCSeriesFieldSelector) {
-			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCSeriesField.class).getFieldValue();
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCSeriesField.class).getFieldValueObject().getFieldValue();
 		}
 		else if (selector instanceof BCCChapterFieldSelector) {
-			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCChapterField.class).getFieldValue();
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCChapterField.class).getFieldValueObject().getFieldValue();
 		}
 		else if (selector instanceof BCCVersionFieldSelector) {
-			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCVersionField.class).getFieldValue();
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCVersionField.class).getFieldValueObject().getFieldValue();
 		}
 		else if (selector instanceof BCCHowPublishedFieldSelector) {
-			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCHowPublishedField.class).getFieldValue();
+			return BCCBibTeXUtil.identifyField(bibTeXEntry, BCCHowPublishedField.class).getFieldValueObject().getFieldValue();
 		}
 		
 		throw new UnsupportedOperationException("Encountered a situation that was not yet implemented!");

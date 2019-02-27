@@ -23,7 +23,7 @@ public class BCCNoContradictingReplacePatternExist {
 			List<BCCReplacePatternEntry> fileReplacePattern = BCCBibTeXUtil.collectAllReplacePattern(parsedBibTeXFile);
 			
 			for (BCCReplacePatternEntry replacePattern : fileReplacePattern) {
-				String key = replacePattern.getReplaceKey();
+				String key = replacePattern.getReplaceKeyObject().getReplaceKey();
 				
 				if (replacePatternAlreadyExists(overallReplacePattern, replacePattern)) {
 					BCCReplacePatternEntry existingPattern = identifyReplacePattern(overallReplacePattern, key);
@@ -44,7 +44,7 @@ public class BCCNoContradictingReplacePatternExist {
 			BCCReplacePatternEntry replacePattern)
 	{
 		for (BCCReplacePatternEntry entry : overallReplacePattern) {
-			if (entry.getReplaceKey().equals(replacePattern.getReplaceKey())) {
+			if (entry.getReplaceKeyObject().getReplaceKey().equals(replacePattern.getReplaceKeyObject().getReplaceKey())) {
 				return true;
 			}
 		}
@@ -55,7 +55,7 @@ public class BCCNoContradictingReplacePatternExist {
 			String replaceKey)
 	{
 		for (BCCReplacePatternEntry entry : overallReplacePattern) {
-			if (entry.getReplaceKey().equals(replaceKey)) {
+			if (entry.getReplaceKeyObject().getReplaceKey().equals(replaceKey)) {
 				return entry;
 			}
 		}
@@ -75,15 +75,15 @@ public class BCCNoContradictingReplacePatternExist {
 			if (resource1.equals(resource2)) {
 				String errorMessage = "Another replace pattern specifies a different value for this key.";
 				
-				BCCAnalysis.createConsistencyProblemErrorMarker(resource1, errorMessage, pattern, BCCBibTeXPackage.Literals.BCC_REPLACE_PATTERN_ENTRY__REPLACE_KEY);
-				BCCAnalysis.createConsistencyProblemErrorMarker(resource2, errorMessage, existingPattern, BCCBibTeXPackage.Literals.BCC_REPLACE_PATTERN_ENTRY__REPLACE_KEY);
+				BCCAnalysis.createConsistencyProblemErrorMarker(resource1, errorMessage, pattern, BCCBibTeXPackage.Literals.BCC_REPLACE_PATTERN_ENTRY__REPLACE_KEY_OBJECT);
+				BCCAnalysis.createConsistencyProblemErrorMarker(resource2, errorMessage, existingPattern, BCCBibTeXPackage.Literals.BCC_REPLACE_PATTERN_ENTRY__REPLACE_KEY_OBJECT);
 			}
 			else {
 				String errorMessage1 = "Another replace pattern in \"" + resource2.getName() + "\" specifies a different value for this key.";
 				String errorMessage2 = "Another replace pattern in \"" + resource1.getName() + "\" specifies a different value for this key.";
 				
-				BCCAnalysis.createConsistencyProblemErrorMarker(resource1, errorMessage1, pattern, BCCBibTeXPackage.Literals.BCC_REPLACE_PATTERN_ENTRY__REPLACE_KEY);
-				BCCAnalysis.createConsistencyProblemErrorMarker(resource2, errorMessage2, existingPattern, BCCBibTeXPackage.Literals.BCC_REPLACE_PATTERN_ENTRY__REPLACE_KEY);
+				BCCAnalysis.createConsistencyProblemErrorMarker(resource1, errorMessage1, pattern, BCCBibTeXPackage.Literals.BCC_REPLACE_PATTERN_ENTRY__REPLACE_KEY_OBJECT);
+				BCCAnalysis.createConsistencyProblemErrorMarker(resource2, errorMessage2, existingPattern, BCCBibTeXPackage.Literals.BCC_REPLACE_PATTERN_ENTRY__REPLACE_KEY_OBJECT);
 			}
 			
 			return false;

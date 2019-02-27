@@ -32,7 +32,7 @@ import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRul
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCBookletEntrySelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCConferenceEntrySelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCConsistencyRule;
-import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCEntryKeyObject;
+import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCEntryKeyReference;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCInBookEntrySelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCInCollectionEntrySelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCInProceedingsEntrySelector;
@@ -138,7 +138,7 @@ public class BCCCollector {
 	}
 	
 	private boolean entryKeyIsExcluded(BCCAbstractBibTeXEntry bibTeXEntry, List<String> excludedEntryKeys) {
-		return excludedEntryKeys.contains(bibTeXEntry.getEntryBody().getEntryKey());
+		return excludedEntryKeys.contains(bibTeXEntry.getEntryBody().getEntryKeyObject().getEntryKey());
 	}
 	
 	private boolean selectorAndBibTeXEntryHaveMatchingTypes(BCCAbstractSelector selector, BCCAbstractBibTeXEntry bibTeXEntry) {
@@ -207,8 +207,8 @@ public class BCCCollector {
 		}
 		else if (excludedEntryKeyBody instanceof BCCMultiEntryExcludedEntryKeysBody) {
 			BCCMultiEntryExcludedEntryKeysBody multiEntryBody = (BCCMultiEntryExcludedEntryKeysBody) excludedEntryKeyBody;
-			for (BCCEntryKeyObject entryKeyObject : multiEntryBody.getExcludedEntryKeys()) {
-				excludedEntryKeys.add(entryKeyObject.getEntryKey());
+			for (BCCEntryKeyReference entryKeyReference : multiEntryBody.getExcludedEntryKeys()) {
+				excludedEntryKeys.add(entryKeyReference.getEntryKey());
 			}
 		}
 		

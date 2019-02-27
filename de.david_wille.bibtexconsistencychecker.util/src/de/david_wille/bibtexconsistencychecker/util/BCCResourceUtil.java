@@ -1,6 +1,7 @@
 package de.david_wille.bibtexconsistencychecker.util;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,9 +22,9 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.xtext.ISetup;
-import org.eclipse.xtext.resource.XtextResource;
-import org.eclipse.xtext.resource.XtextResourceSet;
 
 import com.google.inject.Injector;
 
@@ -32,13 +33,31 @@ public class BCCResourceUtil {
 	public static final String BIB_FILE_EXTENSION = "bib";
 	public static final String BCC_FILE_EXTENSION = "bcc";
 	public static final String BCC_RULE_FILE_EXTENSION = "bcc_rule";
+	
+	public static List<IResource> identifyAllResourcesFromSelection(ISelection selection) {
+		StructuredSelection structuredSelection = (StructuredSelection) selection;
+		List<IResource> selectionPaths = new ArrayList<>();
+		
+		for(Object obj : structuredSelection.toList()) {
+			if (obj instanceof IFile) {
+				IFile file = (IFile) obj;
+				selectionPaths.add(file);
+			}
+			else if (obj instanceof IFolder) {
+				IFolder folder = (IFolder) obj;
+				selectionPaths.add(folder);
+			}
+			else if (obj instanceof IProject) {
+				IProject project = (IProject) obj;
+				selectionPaths.add(project);
+			}
+		}
+		
+		return selectionPaths;
+}
 
 	@SuppressWarnings("unchecked")
-	public static <T> T parseModel(ISetup setup, IFile file) {
-		Injector injector = setup.createInjectorAndDoEMFRegistration();
-		XtextResourceSet resourceSet = injector.getInstance(XtextResourceSet.class);
-		resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
-
+	public static <T extends EObject> T parseModel(ISetup setup, IFile file) {
 		Resource resource = getResource(file);
 		
 		if (resource.getContents().size() > 0) {
@@ -49,26 +68,30 @@ public class BCCResourceUtil {
 		return null;
 	}
 	
-	public static boolean resourceIsFolder(IResource resource) {
-		return resource.getType() == IResource.FOLDER;
-	}
+	public static <T extends EObject> void storeModel(ISetup setup, T model, IContainer target, String modelName, String fileExtension) {
+		Injector injector = setup.createInjectorAndDoEMFRegistration();
+		ResourceSet resourceSet = injector.getInstance(ResourceSet.class);
+		
+		String location = "platform:/resource/"
+				+ target.getFullPath().toPortableString() + "/"
+				+ modelName + "." + fileExtension;
 	
-	public static boolean resourceIsProject(IResource resource) {
-		return resource.getType() == IResource.PROJECT;
-	}
-
-	public static boolean resourceIsFile(IResource resource) {
-		return resource.getType() == IResource.FILE;
+		URI fileUri = URI.createURI(location);
+		
+		Resource resource = resourceSet.createResource(fileUri);
+		resource.getContents().add(model);
+		try {
+			resource.save(null);
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static IProject identifyParentProject(IResource resource) {
 		return resource.getProject();
 	}
 
-	public static boolean resourceIsContainer(IResource resource) {
-		return resourceIsFolder(resource) || resourceIsProject(resource);
-	}
-	
 	public static IProject getIProject(EObject eObject) {
 		return getIFile(eObject.eResource()).getProject();
 	}
@@ -154,7 +177,7 @@ public class BCCResourceUtil {
 		return resource;
 	}
 
-	public static <T> List<T> parseModels(ISetup setup, List<IFile> files) {
+	public static <T extends EObject> List<T> parseModels(ISetup setup, List<IFile> files) {
 		List<T> parsedModels = new ArrayList<>();
 		for (IFile file : files) {
 			T parsedModel = parseModel(setup, file);
@@ -166,10 +189,10 @@ public class BCCResourceUtil {
 	}
 
 	public static List<IResource> getChildResources(IResource resource) {
-		if (resourceIsFile(resource)) {
+		if (resource instanceof IFile) {
 			return new ArrayList<>();
 		}
-		else if (resourceIsContainer(resource)) {
+		else if (resource instanceof IContainer) {
 			IContainer container = (IContainer) resource;
 			try {
 				return new ArrayList<>(Arrays.asList(container.members()));
@@ -182,22 +205,27 @@ public class BCCResourceUtil {
 		return null;
 	}
 
-	public static List<IFile> collectAllFilesInContainer(IContainer container, String fileExtension) {
-		List<IFile> relevantBibTeXFiles = new ArrayList<>();
+	public static List<IFile> recursivelyCollectAllFiles(IContainer container, String fileExtension) {
+		List<IFile> relevantFiles = new ArrayList<>();
 		
 		List<IResource> childResourcesOfParentResource = BCCResourceUtil.getChildResources(container);
 		
 		for (IResource resource : childResourcesOfParentResource) {
-			if (BCCResourceUtil.resourceIsFile(resource)) {
+			if (resource instanceof IFile) {
 				IFile file = (IFile) resource;
 				
 				if (file.getFileExtension().equals(fileExtension)) {
-					relevantBibTeXFiles.add(file);
+					relevantFiles.add(file);
 				}
+			}
+			else if (resource instanceof IFolder) {
+				IFolder subFolder = (IFolder) resource;
+				List<IFile> relevantSubFiles = recursivelyCollectAllFiles(subFolder, fileExtension);
+				relevantFiles.addAll(relevantSubFiles);
 			}
 		}
 		
-		return relevantBibTeXFiles;
+		return relevantFiles;
 	}
 
 	public static boolean fileIsExecutionModel(IFile selectedFile) {

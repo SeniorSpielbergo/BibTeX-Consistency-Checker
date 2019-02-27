@@ -10,7 +10,7 @@ import de.david_wille.bibtexconsistencychecker.bibtex.util.BCCBibTeXUtil;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCAbstractExcludedEntryKeyBody;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCConsistencyRule;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCConsistencyRulePackage;
-import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCEntryKeyObject;
+import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCEntryKeyReference;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCMultiEntryExcludedEntryKeysBody;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCSingleEntryExcludedEntryKeysBody;
 import de.david_wille.bibtexconsistencychecker.util.BCCResourceUtil;
@@ -40,13 +40,13 @@ public class BCCExcludedEntryKeysExist {
 			if (excludedEntryKeyBody instanceof BCCSingleEntryExcludedEntryKeysBody) {
 				BCCSingleEntryExcludedEntryKeysBody singleEntryKeyBody = (BCCSingleEntryExcludedEntryKeysBody) excludedEntryKeyBody;
 				
-				BCCEntryKeyObject excludedKeyObject = singleEntryKeyBody.getExcludedEntryKey();
-				String excludedKey = excludedKeyObject.getEntryKey();
+				BCCEntryKeyReference excludedKeyReference = singleEntryKeyBody.getExcludedEntryKey();
+				String excludedKey = excludedKeyReference.getEntryKey();
 				if (!allReplacePattern.contains(excludedKey)) {
 					String errorMessage = "The excluded key does not exist.";
-					IResource resource = BCCResourceUtil.getIFile(excludedKeyObject);
+					IResource resource = BCCResourceUtil.getIFile(excludedKeyReference);
 					
-					BCCAnalysis.createConsistencyProblemWarningMarker(resource, errorMessage, excludedKeyObject, BCCConsistencyRulePackage.Literals.BCC_SINGLE_ENTRY_EXCLUDED_ENTRY_KEYS_BODY__EXCLUDED_ENTRY_KEY);
+					BCCAnalysis.createConsistencyProblemWarningMarker(resource, errorMessage, excludedKeyReference, BCCConsistencyRulePackage.Literals.BCC_SINGLE_ENTRY_EXCLUDED_ENTRY_KEYS_BODY__EXCLUDED_ENTRY_KEY);
 					return false;
 				}
 			}
@@ -55,13 +55,13 @@ public class BCCExcludedEntryKeysExist {
 				boolean noProblemDetected = true;
 				
 				int i = 0;
-				for (BCCEntryKeyObject excludedKeyObject : multiEntryKeyBody.getExcludedEntryKeys()) {
-					String excludedKey = excludedKeyObject.getEntryKey();
+				for (BCCEntryKeyReference excludedKeyReference : multiEntryKeyBody.getExcludedEntryKeys()) {
+					String excludedKey = excludedKeyReference.getEntryKey();
 					if (!allReplacePattern.contains(excludedKey)) {
 						String errorMessage = "The excluded key does not exist.";
-						IResource resource = BCCResourceUtil.getIFile(excludedKeyObject);
+						IResource resource = BCCResourceUtil.getIFile(excludedKeyReference);
 						
-						BCCAnalysis.createConsistencyProblemWarningMarker(resource, errorMessage, excludedKeyObject, BCCConsistencyRulePackage.Literals.BCC_MULTI_ENTRY_EXCLUDED_ENTRY_KEYS_BODY__EXCLUDED_ENTRY_KEYS, i);
+						BCCAnalysis.createConsistencyProblemWarningMarker(resource, errorMessage, excludedKeyReference, BCCConsistencyRulePackage.Literals.BCC_MULTI_ENTRY_EXCLUDED_ENTRY_KEYS_BODY__EXCLUDED_ENTRY_KEYS, i);
 						
 						noProblemDetected = false;
 					}

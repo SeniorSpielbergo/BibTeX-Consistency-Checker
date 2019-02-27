@@ -26,11 +26,11 @@ class BCCBibTeXProposalProvider extends AbstractBCCBibTeXProposalProvider {
 		var EObject contextNode = NodeModelUtils.findActualSemanticObjectFor(context.currentNode)
 		if (contextNode instanceof BCCAbstractGenericField) {
 			if (BCCBibTeXUtil.usesReplacePattern(contextNode)) {
-				var String fieldValue = contextNode.fieldValue
+				var String fieldValue = contextNode.fieldValueObject.fieldValue
 				var List<BCCReplacePatternEntry> relevantReplacePattern = identifyAllReplacePatternContainingValue(model, fieldValue)
 				
 				for (BCCReplacePatternEntry replacePattern : relevantReplacePattern) {
-					val proposalString = replacePattern.replaceKey
+					val proposalString = replacePattern.replaceKeyObject.replaceKey
 					acceptor.accept(createCompletionProposal(proposalString, proposalString, null, context))
 				}
 			}
@@ -41,7 +41,7 @@ class BCCBibTeXProposalProvider extends AbstractBCCBibTeXProposalProvider {
 		var IFile modelFile = BCCResourceUtil.getIFile(model)
 		var IContainer container = modelFile.parent
 		
-		var List<IFile> allBibTeXFiles = BCCResourceUtil.collectAllFilesInContainer(container, "bib")
+		var List<IFile> allBibTeXFiles = BCCResourceUtil.recursivelyCollectAllFiles(container, "bib")
 		
 		var List<BCCBibTeXFile> parsedBibTeXFiles = BCCResourceUtil.parseModels(new BCCBibTeXStandaloneSetup(), allBibTeXFiles)
 		
@@ -50,7 +50,7 @@ class BCCBibTeXProposalProvider extends AbstractBCCBibTeXProposalProvider {
 		var List<BCCReplacePatternEntry> relevantReplacePattern = new ArrayList<BCCReplacePatternEntry>()
 		
 		for (BCCReplacePatternEntry replacePattern : allReplacePattern) {
-			if (replacePattern.replaceKey.contains(fieldValue)) {
+			if (replacePattern.replaceKeyObject.replaceKey.contains(fieldValue)) {
 				relevantReplacePattern.add(replacePattern)
 			}
 		}

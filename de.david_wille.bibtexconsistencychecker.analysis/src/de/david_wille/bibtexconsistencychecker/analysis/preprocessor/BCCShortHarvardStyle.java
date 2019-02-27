@@ -59,7 +59,7 @@ public class BCCShortHarvardStyle {
 				String errorMessage = "The entry does not use the Short Harvard Style. Found \"" + foundEntryKey + "\" instead of \"" + expectedEntryKey + "\".";
 				IResource resource = BCCResourceUtil.getIFile(bibTeXFile);
 				
-				BCCAnalysis.createConsistencyProblemWarningMarker(resource, errorMessage, entryBody, BCCBibTeXPackage.Literals.BCC_ENTRY_BODY__ENTRY_KEY);
+				BCCAnalysis.createConsistencyProblemWarningMarker(resource, errorMessage, entryBody, BCCBibTeXPackage.Literals.BCC_ENTRY_BODY__ENTRY_KEY_OBJECT);
 				noErrorsDetected = noErrorsDetected && false;
 			}
 		}
@@ -98,7 +98,7 @@ public class BCCShortHarvardStyle {
 							BCCTitleField titleField0 = BCCBibTeXUtil.identifyField(arg0, BCCTitleField.class);
 							BCCTitleField titleField1 = BCCBibTeXUtil.identifyField(arg1, BCCTitleField.class);
 							
-							return titleField0.getFieldValue().compareToIgnoreCase(titleField1.getFieldValue());
+							return titleField0.getFieldValueObject().getFieldValue().compareToIgnoreCase(titleField1.getFieldValueObject().getFieldValue());
 						}
 						
 						return 0;
@@ -250,7 +250,7 @@ public class BCCShortHarvardStyle {
 	}
 
 	private static String identifyEntryKey(BCCAbstractBibTeXEntry bibTeXEntry) {
-		return bibTeXEntry.getEntryBody().getEntryKey();
+		return bibTeXEntry.getEntryBody().getEntryKeyObject().getEntryKey();
 	}
 	
 	private static boolean bibTeXEntryContainsAuthorTitleAndYear(BCCAbstractBibTeXEntry bibTeXEntry) {

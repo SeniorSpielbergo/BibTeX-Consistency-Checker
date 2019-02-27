@@ -16,15 +16,16 @@ Require-Bundle: org.eclipse.xtext,
  org.eclipse.emf.common,
  de.david_wille.bibtexconsistencychecker.bibtex;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.impl,
- de.david_wille.bibtexconsistencychecker.consistencyrule.generator,
- de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.util,
- de.david_wille.bibtexconsistencychecker.consistencyrule.services,
- de.david_wille.bibtexconsistencychecker.consistencyrule.validation,
+Export-Package: de.david_wille.bibtexconsistencychecker.consistencyrule,
  de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule,
- de.david_wille.bibtexconsistencychecker.consistencyrule.serializer,
- de.david_wille.bibtexconsistencychecker.consistencyrule.parser.antlr.internal,
+ de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.impl,
+ de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.util,
+ de.david_wille.bibtexconsistencychecker.consistencyrule.generator,
  de.david_wille.bibtexconsistencychecker.consistencyrule.parser.antlr,
- de.david_wille.bibtexconsistencychecker.consistencyrule,
- de.david_wille.bibtexconsistencychecker.consistencyrule.scoping
+ de.david_wille.bibtexconsistencychecker.consistencyrule.parser.antlr.internal,
+ de.david_wille.bibtexconsistencychecker.consistencyrule.scoping,
+ de.david_wille.bibtexconsistencychecker.consistencyrule.serializer,
+ de.david_wille.bibtexconsistencychecker.consistencyrule.services,
+ de.david_wille.bibtexconsistencychecker.consistencyrule.util,
+ de.david_wille.bibtexconsistencychecker.consistencyrule.validation
 Import-Package: org.apache.log4j

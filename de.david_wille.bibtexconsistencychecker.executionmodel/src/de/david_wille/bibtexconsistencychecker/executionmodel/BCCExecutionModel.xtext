@@ -16,13 +16,17 @@ BCCExecutionModel:
 BCCSettingsEntry:
 	'settings' '{'
 		'name' name = STRING
-		('ensure' '{'
-			(
-				(ensureAlphbeticOrderActivated ?= BCCAlphabeticOrderKeyword)? &
-				(ensureShortHarvardStyleActivated ?= BCCShortHarvardStyleKeyword)?
-			)
-		'}')?
+		(ensureSettingsEntry = BCCEnsureSettingsEntry)?
 	'}';
+
+BCCEnsureSettingsEntry:
+	{BCCEnsureSettingsEntry} 'ensure' '{'
+		(
+			(ensureAlphbeticOrderActivated ?= BCCAlphabeticOrderKeyword)? &
+			(ensureShortHarvardStyleActivated ?= BCCShortHarvardStyleKeyword)?
+		)
+	'}'
+;
 
 BCCBibTeXFilesEntry:
 	{BCCBibTeXFilesEntry} BCCBibTeXFilesKeyword '{'
@@ -59,7 +63,7 @@ BCCBibTeXFilesKeyword:
 	'bibtex' 'files';
 
 terminal FILE_FOLDER_PATH:
-	(FOLDER_PATH)* (FILE_PATH)?;
+	('bibliography/' | 'rules/') (FOLDER_PATH)* (FILE_PATH)?;
 
 terminal FILE_PATH:
 	('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|'-'|'_'|'0'..'9')* ('.bib' | '.bcc_rule');

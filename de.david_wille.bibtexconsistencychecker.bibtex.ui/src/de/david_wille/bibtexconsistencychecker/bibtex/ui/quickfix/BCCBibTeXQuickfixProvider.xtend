@@ -22,7 +22,7 @@ class BCCBibTeXQuickfixProvider extends DefaultQuickfixProvider {
 		acceptor.accept(issue, 'Add opening and closing braces', 'Add opening and closing braces.', '',
 			new ISemanticModification() {
 				override apply(EObject element, IModificationContext context) throws Exception {
-					(element as BCCTitleField).fieldValue = "{" + (element as BCCTitleField).fieldValue + "}"
+					(element as BCCTitleField).fieldValueObject.fieldValue = "{" + (element as BCCTitleField).fieldValueObject.fieldValue + "}"
 				}
 		    }
 		);

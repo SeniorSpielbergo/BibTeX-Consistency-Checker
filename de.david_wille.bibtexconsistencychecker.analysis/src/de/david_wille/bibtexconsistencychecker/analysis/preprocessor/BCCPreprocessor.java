@@ -46,11 +46,11 @@ public class BCCPreprocessor {
 	}
 	
 	private boolean ensureAlphabeticOrderActivated(BCCExecutionModel executionModel) {
-		return executionModel.getSettingsEntry().isEnsureAlphbeticOrderActivated();
+		return executionModel.getSettingsEntry().getEnsureSettingsEntry().isEnsureAlphbeticOrderActivated();
 	}
 
 	private boolean ensureShortHarvardStyleActivated(BCCExecutionModel executionModel) {
-		return executionModel.getSettingsEntry().isEnsureShortHarvardStyleActivated();
+		return executionModel.getSettingsEntry().getEnsureSettingsEntry().isEnsureShortHarvardStyleActivated();
 	}
 
 }

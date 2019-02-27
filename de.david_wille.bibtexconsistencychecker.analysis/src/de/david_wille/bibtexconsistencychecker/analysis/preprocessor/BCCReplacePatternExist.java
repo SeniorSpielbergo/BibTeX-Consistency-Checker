@@ -63,13 +63,13 @@ public class BCCReplacePatternExist {
 	}
 
 	private static boolean checkReplacePatternExist(BCCAbstractGenericField field, List<BCCReplacePatternEntry> allReplacePattern) {
-		String fieldValue = field.getFieldValue();
+		String fieldValue = field.getFieldValueObject().getFieldValue();
 		
 		if (!fieldReplacePatternExists(fieldValue, allReplacePattern)) {
 			String errorMessage = "The specified replace pattern does not exist.";
 			IResource resource = BCCResourceUtil.getIFile(field);
 			
-			BCCAnalysis.createConsistencyProblemErrorMarker(resource, errorMessage, field, BCCBibTeXPackage.Literals.BCC_ABSTRACT_GENERIC_FIELD__FIELD_VALUE);
+			BCCAnalysis.createConsistencyProblemErrorMarker(resource, errorMessage, field, BCCBibTeXPackage.Literals.BCC_ABSTRACT_GENERIC_FIELD__FIELD_VALUE_OBJECT);
 			
 			return false;
 		}
@@ -79,7 +79,7 @@ public class BCCReplacePatternExist {
 
 	private static boolean fieldReplacePatternExists(String fieldValue, List<BCCReplacePatternEntry> allReplacePattern) {
 		for (BCCReplacePatternEntry replacePattern : allReplacePattern) {
-			if (replacePattern.getReplaceKey().equals(fieldValue)) {
+			if (replacePattern.getReplaceKeyObject().getReplaceKey().equals(fieldValue)) {
 				return true;
 			}
 		}
