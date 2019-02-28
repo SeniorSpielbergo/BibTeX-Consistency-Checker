@@ -1,5 +1,5 @@
 settings {
-	name "PhD Thesis BibTeX Consistency Check"
+	name "Example"
 	ensure {
 		alphabetic order
 		short harvard style
