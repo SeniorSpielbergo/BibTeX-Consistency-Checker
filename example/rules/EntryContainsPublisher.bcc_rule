@@ -1,0 +1,7 @@
+consistency rule {
+	name "Entry contains publisher"
+	applies to inproceedings, article, book and inbook
+	if (!(publisher field exists)) {
+		add error "The entry should provide information about the publisher."
+	}
+}

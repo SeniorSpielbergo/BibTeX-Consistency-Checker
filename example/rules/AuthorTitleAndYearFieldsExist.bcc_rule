@@ -1,0 +1,13 @@
+consistency rule {
+	name "Author, title and year fields exist"
+	applies to *
+	if (!(author field exists)) {
+		add error "The entry does not use the mandatory \"author\" field."
+	}
+	else if (!(title field exists)) {
+		add error "The entry does not use the mandatory \"title\" field."
+	}
+	else if (!(year field exists)) {
+		add error "The entry does not use the mandatory \"year\" field."
+	}
+}

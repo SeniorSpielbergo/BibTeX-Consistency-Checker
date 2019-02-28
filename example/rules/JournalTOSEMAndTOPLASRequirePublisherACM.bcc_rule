@@ -1,0 +1,9 @@
+consistency rule {
+	name "Journal TOSEM and TOPLAS require publisher ACM"
+	applies to article
+	if (journal field exists AND (journal equals "TOSEM" OR journal equals "TOPLAS")) {
+		if (publisher field exists AND !(publisher equals "ACM")) {
+			add error "The TOSEM or TOPLAS journals require \"ACM\"." to publisher
+		}
+	}
+}

@@ -3,11 +3,9 @@ package de.david_wille.bibtexconsistencychecker.executionmodel.ui.contentassist
 import de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.BCCBibTeXFilesEntry
 import de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.BCCConsistencyRulesEntry
 import de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.BCCFilePathEntry
-import de.david_wille.bibtexconsistencychecker.executionmodel.services.BCCExecutionModelGrammarAccess
 import de.david_wille.bibtexconsistencychecker.util.BCCResourceUtil
 import java.util.ArrayList
 import java.util.List
-import javax.inject.Inject
 import org.eclipse.core.resources.IContainer
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IResource
@@ -24,27 +22,9 @@ import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
  * on how to customize the content assistant.
  */
 class BCCExecutionModelProposalProvider extends AbstractBCCExecutionModelProposalProvider {
-	@Inject extension BCCExecutionModelGrammarAccess
-	
 	private static val String SEPARATOR = " "
 	private static val String BCC_RULE_FILE_ENDING = "bcc_rule"
 	private static val String BIB_FILE_ENDING = "bib"
-	
-	override complete_BCCAlphabeticOrderKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		BCCAlphabeticOrderKeywordAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
-	}
-	
-	override complete_BCCShortHarvardStyleKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		BCCShortHarvardStyleKeywordAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
-	}
-	
-	override complete_BCCConsistencyRulesKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		BCCConsistencyRulesKeywordAccess.group.createKeywordProposalWithTrailingSeparator(context, acceptor)
-	}
-	
-	override complete_BCCBibTeXFilesKeyword(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		BCCBibTeXFilesKeywordAccess.group.createKeywordProposalWithTrailingSeparator(context, acceptor)
-	}
 	
 	override complete_BCCValidPath(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		var IFile modelFile = BCCResourceUtil.getIFile(model)

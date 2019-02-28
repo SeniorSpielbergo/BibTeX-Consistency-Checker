@@ -27,7 +27,14 @@ class BCCExecutionModelFormatter extends AbstractFormatter2 {
 		var ISemanticRegion settingsEntryStart = settingsEntry.regionFor.keyword("{")
 		settingsEntryStart.append[newLine]
 		var ISemanticRegion settingsEntryEnd = settingsEntry.regionFor.keyword("}")
-		settingsEntryEnd.append[newLines = 2]
+		
+		var BCCExecutionModel bCCExecutionModel = settingsEntry.eContainer as BCCExecutionModel
+		if (bCCExecutionModel.getBibTeXFilesEntry !== null || bCCExecutionModel.getRulesEntry !== null) {
+			settingsEntryEnd.append[newLines = 2]
+		}
+		else {
+			settingsEntryEnd.append[newLine]
+		}
 		
 		interior(settingsEntryStart, settingsEntryEnd)[indent]
 		
@@ -44,9 +51,9 @@ class BCCExecutionModelFormatter extends AbstractFormatter2 {
 		
 		interior(ensureSettingsEntryStart, ensureSettingsEntryEnd)[indent]
 		
-		ensureSettingsEntry.regionFor.feature(BCCExecutionModelPackage.Literals.BCC_ENSURE_SETTINGS_ENTRY__ENSURE_ALPHBETIC_ORDER_ACTIVATED).append[newLine]
+		ensureSettingsEntry.regionFor.keyword(BCCEnsureSettingsEntryAccess.orderKeyword_3_0_1).append[newLine]
 		
-		ensureSettingsEntry.regionFor.feature(BCCExecutionModelPackage.Literals.BCC_ENSURE_SETTINGS_ENTRY__ENSURE_SHORT_HARVARD_STYLE_ACTIVATED).append[newLine]
+		ensureSettingsEntry.regionFor.keyword(BCCEnsureSettingsEntryAccess.styleKeyword_3_1_2).append[newLine]
 	}
 
 	def dispatch void format(BCCBibTeXFilesEntry bCCBibTeXFilesEntry, extension IFormattableDocument document) {
@@ -78,4 +85,5 @@ class BCCExecutionModelFormatter extends AbstractFormatter2 {
 	def dispatch void format(BCCFilePathEntry bCCFilePathEntry, extension IFormattableDocument document) {
 		bCCFilePathEntry.regionFor.feature(BCCExecutionModelPackage.Literals.BCC_FILE_PATH_ENTRY__PATH).append[newLine]
 	}
+	
 }

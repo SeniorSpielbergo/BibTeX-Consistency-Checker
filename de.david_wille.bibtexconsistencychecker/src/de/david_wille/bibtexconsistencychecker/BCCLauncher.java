@@ -10,9 +10,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 
 import de.david_wille.bibtexconsistencychecker.analysis.BCCAnalysis;
-import de.david_wille.bibtexconsistencychecker.bibtex.BCCBibTeXStandaloneSetup;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBibTeXFile;
-import de.david_wille.bibtexconsistencychecker.consistencyrule.BCCConsistencyRuleStandaloneSetup;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCConsistencyRule;
 import de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.BCCExecutionModel;
 import de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.BCCFilePathEntry;
@@ -88,7 +86,7 @@ public class BCCLauncher {
 		
 		BCCAnalysis.clearAllExistingConsistencyProblemMarkers(bibliographyFiles);
 		
-		return BCCResourceUtil.parseModels(new BCCBibTeXStandaloneSetup(), bibliographyFiles);
+		return BCCResourceUtil.parseModels(bibliographyFiles);
 	}
 
 	private List<BCCConsistencyRule> identifyAndParseAllRelevantConsistencyRules(BCCExecutionModel executionModel) throws CoreException {
@@ -101,7 +99,7 @@ public class BCCLauncher {
 		
 		BCCAnalysis.clearAllExistingConsistencyProblemMarkers(consistencyRuleFiles);
 		
-		return BCCResourceUtil.parseModels(new BCCConsistencyRuleStandaloneSetup(), consistencyRuleFiles);
+		return BCCResourceUtil.parseModels(consistencyRuleFiles);
 	}
 
 	private List<IFile> identifyRelevantFiles(BCCExecutionModel executionModel,

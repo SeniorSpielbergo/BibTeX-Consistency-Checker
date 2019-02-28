@@ -1,0 +1,14 @@
+consistency rule {
+	name "Correct GPCE name used"
+	applies to inproceedings
+	if (booktitle field exists AND booktitle starts with "GPCE") {
+		if (year > 2012) {
+			if (!(booktitle equals "GPCE")) {
+				add error "The entry uses the wrong GPCE replace pattern. It should use \"GPCE\"." to booktitle
+			}
+		}
+		else if (!(booktitle equals "GPCE_OLD")) {
+			add error "The entry uses the wrong GPCE replace pattern. It should use \"GPCE_OLD\"." to booktitle
+		}
+	}
+}

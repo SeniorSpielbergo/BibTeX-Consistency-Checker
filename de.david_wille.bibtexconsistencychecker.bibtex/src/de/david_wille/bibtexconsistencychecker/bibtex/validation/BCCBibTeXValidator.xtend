@@ -1,19 +1,22 @@
 package de.david_wille.bibtexconsistencychecker.bibtex.validation
 
+import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractBibTeXEntry
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractEntryBodyField
+import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractGenericField
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBibTeXFile
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBibTeXPackage
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCEntryBody
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCMonthField
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCReplaceKeyObject
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCReplacePatternEntry
-import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCTitleField
 import de.david_wille.bibtexconsistencychecker.bibtex.cache.BCCBibTeXCache
+import de.david_wille.bibtexconsistencychecker.bibtex.util.BCCBibTeXUtil
 import de.david_wille.bibtexconsistencychecker.util.BCCResourceUtil
-import de.david_wille.bibtexconsistencychecker.util.BCCSpecialCharacterHandling
 import java.util.HashMap
+import java.util.List
 import java.util.Map
 import org.eclipse.core.resources.IFile
+import org.eclipse.core.resources.IProject
 import org.eclipse.xtext.validation.Check
 
 /**
@@ -23,26 +26,61 @@ import org.eclipse.xtext.validation.Check
  */
 class BCCBibTeXValidator extends AbstractBCCBibTeXValidator {
 	
-	public static val String NO_DOUBLE_BRACES = "NO_DOUBLE_BRACES"
 	public static val String SAME_FIELD_MULTIPLE_TIMES = "SAME_FIELD_MULTIPLE_TIMES"
 	public static val String MONTH_FIELD_GREATER_TWELVE = "MONTH_FIELD_GREATER_TWELVE"
+	public static val String FILE_NOT_IN_CORRECT_FOLDER = "FILE_NOT_IN_CORRECT_FOLDER"
 	public static val String REPLACE_PATTERN_DOES_NOT_EXIST = "REPLACE_PATTERN_DOES_NOT_EXIST"
-	private static val String OPENING_BRACE = "{"
-	private static val String CLOSING_BRACE = "}"
+	public static val String ENTRY_KEY_EXISTS_MULTIPLE_TIMES = "ENTRY_KEY_EXISTS_MULTIPLE_TIMES"
+	public static val String REPLACE_KEY_EXISTS_MULTIPLE_TIMES = "REPLACE_KEY_EXISTS_MULTIPLE_TIMES"
 	
 	@Check(NORMAL)
 	def void updateBibTeXCache(BCCBibTeXFile bibTeXFile) {
 		BCCBibTeXCache.instance.cacheBibTeXFile(BCCResourceUtil.getIProject(bibTeXFile), bibTeXFile);
 	}
 	
-	@Check
-	def void checkTitleFieldStartsAndEndsWithDoubleParenthesis(BCCTitleField titleField) {
-		var String toBeCheckedValue = BCCSpecialCharacterHandling.replaceSpecialLatexCharacters(titleField.fieldValueObject.fieldValue)
+	@Check(NORMAL)
+	def void checkNoDuplicateEntryKeysExist(BCCEntryBody entryBody) {
+		var IProject project = BCCResourceUtil.getIProject(entryBody);
+		var String entryKey = entryBody.entryKeyObject.entryKey
 		
-		if (!toBeCheckedValue.startsWith(OPENING_BRACE + OPENING_BRACE) ||
-			!toBeCheckedValue.endsWith(CLOSING_BRACE + CLOSING_BRACE))
-		{
-			warning("To ensure case sensitivity of titles you should enclose them in double braces \"{{ ... }}\"", titleField.fieldValueObject, BCCBibTeXPackage.Literals.BCC_ABSTRACT_GENERIC_FIELD__FIELD_VALUE_OBJECT, NO_DOUBLE_BRACES)
+		var List<BCCAbstractBibTeXEntry> foundEntries = BCCBibTeXCache.instance.getEntries(project, entryKey)
+		
+		if (foundEntries.size() > 1) {
+			error("Multiple entries with entry key \"" + entryKey + "\" exist.", BCCBibTeXPackage.Literals.BCC_ENTRY_BODY__ENTRY_KEY_OBJECT, ENTRY_KEY_EXISTS_MULTIPLE_TIMES)
+		}
+	}
+	
+	@Check(NORMAL)
+	def void checkNoDuplicateReplacePatternExist(BCCReplacePatternEntry replacePatternEntry) {
+		var IProject project = BCCResourceUtil.getIProject(replacePatternEntry);
+		var String replaceKey = replacePatternEntry.replaceKeyObject.replaceKey
+		
+		var List<BCCReplacePatternEntry> foundEntries = BCCBibTeXCache.instance.getReplacePattern(project, replaceKey)
+		
+		if (foundEntries.size() > 1) {
+			error("Multiple entries with replace key \"" + replaceKey + "\" exist.", BCCBibTeXPackage.Literals.BCC_REPLACE_PATTERN_ENTRY__REPLACE_KEY_OBJECT, REPLACE_KEY_EXISTS_MULTIPLE_TIMES)
+		}
+	}
+	
+	@Check(NORMAL)
+	def void checkReplacePatternExist(BCCAbstractGenericField genericField) {
+		if (BCCBibTeXUtil.usesReplacePattern(genericField)) {
+			var IProject project = BCCResourceUtil.getIProject(genericField)
+			var String fieldValue = genericField.fieldValueObject.fieldValue
+			
+			if (BCCBibTeXCache.instance.getReplacePattern(project, fieldValue) === null) {
+				error("The used replace pattern was never specified.", BCCBibTeXPackage.Literals.BCC_ABSTRACT_GENERIC_FIELD__FIELD_VALUE_OBJECT, REPLACE_PATTERN_DOES_NOT_EXIST)
+			}
+		}
+	}
+	
+	@Check
+	def checkFileIsStoredInBibliographyFolder(BCCBibTeXFile bibTeXFile) {
+		var IFile file = BCCResourceUtil.getIFile(bibTeXFile)
+		var IProject project = BCCResourceUtil.getIProject(bibTeXFile)
+		
+		if (!file.fullPath.toPortableString.startsWith(project.fullPath.toPortableString + "/bibliography")) {
+			warning("This BibTeX file will never be processed as it is not a sub file of the \"bibliography\" folder.", BCCBibTeXPackage.Literals.BCC_BIB_TE_XFILE__ENTRIES, FILE_NOT_IN_CORRECT_FOLDER)
 		}
 	}
 	

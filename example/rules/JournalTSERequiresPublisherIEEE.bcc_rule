@@ -1,0 +1,9 @@
+consistency rule {
+	name "Journal TSE requires publisher IEEE"
+	applies to article
+	if (journal field exists AND journal equals "TSE") {
+		if (publisher field exists AND !(publisher equals "IEEE")) {
+			add error "The TSE journal requires IEEE." to publisher
+		}
+	}
+}

@@ -1,0 +1,7 @@
+consistency rule {
+	name "Publisher uses replace pattern"
+	applies to *
+	if (publisher field exists AND !(publisher uses replace pattern)) {
+		add error "The publisher field should use a replace pattern." to publisher
+	}
+}

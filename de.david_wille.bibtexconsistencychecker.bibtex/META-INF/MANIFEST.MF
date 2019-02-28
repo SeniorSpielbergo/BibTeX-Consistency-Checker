@@ -29,5 +29,6 @@ Export-Package: de.david_wille.bibtexconsistencychecker.bibtex,
  de.david_wille.bibtexconsistencychecker.bibtex.serializer,
  de.david_wille.bibtexconsistencychecker.bibtex.services,
  de.david_wille.bibtexconsistencychecker.bibtex.util,
- de.david_wille.bibtexconsistencychecker.bibtex.validation
+ de.david_wille.bibtexconsistencychecker.bibtex.validation,
+ de.david_wille.bibtexconsistencychecker.bibtex.formatting2
 Import-Package: org.apache.log4j

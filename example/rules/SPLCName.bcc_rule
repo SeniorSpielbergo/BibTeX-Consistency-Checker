@@ -1,0 +1,19 @@
+consistency rule {
+	name "Correct SPLC name used"
+	applies to inproceedings
+	if (booktitle field exists AND booktitle starts with "SPLC") {
+		if (year >= 2016) {
+			if (!(booktitle equals "SPLC")) {
+				add error "The entry uses the wrong SPLC replace pattern. It should use \"SPLC\"." to booktitle
+			}
+		}
+		else if (year >= 2015 AND year < 2016) {
+			if (!(booktitle equals "SPLC_OLD")) {
+				add error "The entry uses the wrong SPLC replace pattern. It should use \"SPLC_OLD\"." to booktitle
+			}
+		}
+		else if (!(booktitle equals "SPLC_OLD_OLD")) {
+			add error "The entry uses the wrong SPLC replace pattern. It should use \"SPLC_OLD_OLD\"." to booktitle
+		}
+	}
+}

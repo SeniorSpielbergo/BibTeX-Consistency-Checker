@@ -1,0 +1,7 @@
+consistency rule {
+	name "Booktitle uses replace pattern"
+	applies to *
+	if (booktitle field exists AND !(booktitle uses replace pattern)) {
+		add error "The booktitle field should use a replace pattern." to booktitle
+	}
+}

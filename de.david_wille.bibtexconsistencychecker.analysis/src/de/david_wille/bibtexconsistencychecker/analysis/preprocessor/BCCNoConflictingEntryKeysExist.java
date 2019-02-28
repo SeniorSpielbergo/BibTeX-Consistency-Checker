@@ -16,6 +16,7 @@ import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractBibTe
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBibTeXFile;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBibTeXPackage;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCEntryBody;
+import de.david_wille.bibtexconsistencychecker.statistics.BCCStatistics;
 import de.david_wille.bibtexconsistencychecker.util.BCCResourceUtil;
 
 public class BCCNoConflictingEntryKeysExist {
@@ -38,6 +39,8 @@ public class BCCNoConflictingEntryKeysExist {
 					else {
 						errorMessage = "Another entry with the same key exists in: " + generateFilesString(entry, entries);
 					}
+					
+					BCCStatistics.getInstance().increaseErrorCounter();
 					
 					IResource resource = BCCResourceUtil.getIFile(entry);
 					

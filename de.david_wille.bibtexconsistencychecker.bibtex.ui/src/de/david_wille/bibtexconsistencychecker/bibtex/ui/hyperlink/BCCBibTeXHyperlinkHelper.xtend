@@ -3,9 +3,11 @@ package de.david_wille.bibtexconsistencychecker.bibtex.ui.hyperlink
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractGenericField
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCGenericFieldValueObject
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCReplaceKeyObject
+import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCReplacePatternEntry
 import de.david_wille.bibtexconsistencychecker.bibtex.cache.BCCBibTeXCache
 import de.david_wille.bibtexconsistencychecker.bibtex.util.BCCBibTeXUtil
 import de.david_wille.bibtexconsistencychecker.util.BCCResourceUtil
+import java.util.List
 import javax.inject.Inject
 import javax.inject.Provider
 import org.eclipse.core.resources.IProject
@@ -43,9 +45,13 @@ class BCCBibTeXHyperlinkHelper extends HyperlinkHelper {
 				hyperlink.setHyperlinkText("Open containing *.bib file")
 				
 				var IProject currentProject = BCCResourceUtil.getIProject(eObject)
-				var BCCReplaceKeyObject replaceKeyObject = BCCBibTeXCache.instance.getReplacePattern(currentProject, entryKey).replaceKeyObject
+				var List<BCCReplacePatternEntry> foundReplacePattern = BCCBibTeXCache.instance.getReplacePattern(currentProject, entryKey)
 				
-				this.createHyperlinksTo(resource, new Region(node.getOffset(), node.getLength()), replaceKeyObject, acceptor);
+				if (foundReplacePattern.size() == 1) {
+					var BCCReplaceKeyObject replaceKeyObject = foundReplacePattern.get(0).replaceKeyObject
+					
+					this.createHyperlinksTo(resource, new Region(node.getOffset(), node.getLength()), replaceKeyObject, acceptor);
+				}
 			}
 		}
 	}

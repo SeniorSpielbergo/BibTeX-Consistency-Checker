@@ -13,6 +13,7 @@ import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBibTeXFile;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBibTeXPackage;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCEntryBody;
 import de.david_wille.bibtexconsistencychecker.bibtex.util.BCCBibTeXUtil;
+import de.david_wille.bibtexconsistencychecker.statistics.BCCStatistics;
 import de.david_wille.bibtexconsistencychecker.util.BCCResourceUtil;
 
 public class BCCAlphabeticOrder {
@@ -45,10 +46,12 @@ public class BCCAlphabeticOrder {
 			String foundEntryKey = entryBody.getEntryKeyObject().getEntryKey();
 			
 			if (!entryKeysAreEqual(expectedEntryKey, foundEntryKey)) {
-				String errorMessage = "The entries are not in alphabetical order. Found \"" + foundEntryKey + "\" instead of \"" + expectedEntryKey + "\".";
+				String warningMessage = "The entries are not in alphabetical order. Found \"" + foundEntryKey + "\" instead of \"" + expectedEntryKey + "\".";
 				IResource resource = BCCResourceUtil.getIFile(bibTeXFile);
 				
-				BCCAnalysis.createConsistencyProblemWarningMarker(resource, errorMessage, entryBody, BCCBibTeXPackage.Literals.BCC_ENTRY_BODY__ENTRY_KEY_OBJECT);
+				BCCStatistics.getInstance().increaseWarningCounter();
+				
+				BCCAnalysis.createConsistencyProblemWarningMarker(resource, warningMessage, entryBody, BCCBibTeXPackage.Literals.BCC_ENTRY_BODY__ENTRY_KEY_OBJECT);
 				
 				return false;
 			}

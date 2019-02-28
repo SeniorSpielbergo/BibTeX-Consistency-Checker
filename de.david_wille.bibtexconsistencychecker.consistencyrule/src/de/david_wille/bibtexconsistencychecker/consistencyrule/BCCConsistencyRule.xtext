@@ -3,20 +3,20 @@ grammar de.david_wille.bibtexconsistencychecker.consistencyrule.BCCConsistencyRu
 generate bCCConsistencyRule "http://www.david-wille.de/bibtexconsistencychecker/consistencyrule/BCCConsistencyRule"
 
 BCCConsistencyRule:
-	BCCConsistencyRuleKeyword '{'
+	'consistency' 'rule' '{'
 		ruleBody = BCCRuleBody
 	'}';
 
 BCCRuleBody:
 	'name' name = STRING
-	(BCCAppliesToKeyword appliesToBody = BCCAbstractSelectorBody (BCCExceptForKeyword exceptForBody = BCCAbstractSelectorBody)?)
-	(BCCExcludedEntryKeysKeyword excludedEntryKeysBody = BCCAbstractExcludedEntryKeyBody)?
+	('applies' 'to' appliesToBody = BCCAbstractSelectorBody ('except' 'for' exceptForBody = BCCAbstractSelectorBody)?)
+	('excluded' 'entry' 'keys' excludedEntryKeysBody = BCCAbstractExcludedEntryKeysBody)?
 	(ifThenElseExpressions += BCCIfThenElseExpression)*;
 
 BCCAbstractSelectorBody:
 	BCCSingleEntrySelectorBody | BCCMultiEntrySelectorBody;
 
-BCCAbstractExcludedEntryKeyBody:
+BCCAbstractExcludedEntryKeysBody:
 	BCCSingleEntryExcludedEntryKeysBody | BCCMultiEntryExcludedEntryKeysBody;
 
 BCCSingleEntrySelectorBody:
@@ -61,22 +61,22 @@ BCCAbstractFieldSelectionExpression:
 	BCCSingleFieldSelectionExpression | BCCMultiFieldSelectionExpression;
 
 BCCFieldExistsExpression:
-	{BCCFieldExistsExpression} BCCFieldExistsKeyword;
+	{BCCFieldExistsExpression} 'field' 'exists';
 
 BCCFieldsExistExpression:
-	{BCCFieldsExistExpression} BCCFieldsExistKeyword;
+	{BCCFieldsExistExpression} 'fields' 'exist';
 
 BCCUsesReplacePatternExpression:
-	{BCCUsesReplacePatternExpression} BCCUsesReplacePatternKeyword;
+	{BCCUsesReplacePatternExpression} 'uses' 'replace' 'pattern';
 
 BCCUseReplacePatternExpression:
-	{BCCUseReplacePatternExpression} BCCUseReplacePatternKeyword;
+	{BCCUseReplacePatternExpression} 'use' 'replace' 'pattern';
 
 BCCIsIntegerExpression:
-	{BCCIsIntegerExpression} BCCIsIntegerKeyword;
+	{BCCIsIntegerExpression} 'is' 'integer';
 
 BCCAreIntegerExpression:
-	{BCCAreIntegerExpression} BCCAreIntegerKeyword;
+	{BCCAreIntegerExpression} 'are' 'integer';
 
 BCCSingleFieldSelectionExpression:
 	selection = BCCAbstractSpecificFieldSelector;
@@ -422,33 +422,3 @@ terminal MONTH:
 
 terminal PAGES:
 	'pages';
-
-BCCConsistencyRuleKeyword:
-	'consistency' 'rule';
-
-BCCAppliesToKeyword:
-	'applies' 'to';
-
-BCCExcludedEntryKeysKeyword:
-	'excluded' 'entry' 'keys';
-
-BCCExceptForKeyword:
-	'except' 'for';
-
-BCCFieldExistsKeyword:
-	'field' 'exists';
-
-BCCFieldsExistKeyword:
-	'fields' 'exist';
-
-BCCIsIntegerKeyword:
-	'is' 'integer';
-
-BCCAreIntegerKeyword:
-	'are' 'integer';
-
-BCCUsesReplacePatternKeyword:
-	'uses' 'replace' 'pattern';
-
-BCCUseReplacePatternKeyword:
-	'use' 'replace' 'pattern';

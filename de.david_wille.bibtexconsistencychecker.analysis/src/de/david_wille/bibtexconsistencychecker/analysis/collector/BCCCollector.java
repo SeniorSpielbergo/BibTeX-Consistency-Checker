@@ -23,7 +23,7 @@ import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCStandardEntry
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCTechReportEntry;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCThesisEntry;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCUnpublishedEntry;
-import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCAbstractExcludedEntryKeyBody;
+import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCAbstractExcludedEntryKeysBody;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCAbstractSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCAbstractSelectorBody;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCAllSelector;
@@ -199,7 +199,7 @@ public class BCCCollector {
 	
 	private List<String> identifyExcludedEntryKeys(BCCRuleBody bCCRuleBody) {
 		List<String> excludedEntryKeys = new ArrayList<>();
-		BCCAbstractExcludedEntryKeyBody excludedEntryKeyBody = bCCRuleBody.getExcludedEntryKeysBody();
+		BCCAbstractExcludedEntryKeysBody excludedEntryKeyBody = bCCRuleBody.getExcludedEntryKeysBody();
 		
 		if (excludedEntryKeyBody instanceof BCCSingleEntryExcludedEntryKeysBody) {
 			BCCSingleEntryExcludedEntryKeysBody singleEntryBody = (BCCSingleEntryExcludedEntryKeysBody) excludedEntryKeyBody;

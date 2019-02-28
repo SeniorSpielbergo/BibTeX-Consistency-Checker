@@ -1,9 +1,11 @@
 package de.david_wille.bibtexconsistencychecker.consistencyrule.ui.hyperlink
 
+import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractBibTeXEntry
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCEntryKeyObject
 import de.david_wille.bibtexconsistencychecker.bibtex.cache.BCCBibTeXCache
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCEntryKeyReference
 import de.david_wille.bibtexconsistencychecker.util.BCCResourceUtil
+import java.util.List
 import javax.inject.Inject
 import javax.inject.Provider
 import org.eclipse.core.resources.IProject
@@ -40,9 +42,13 @@ class BCCConsistencyRuleHyperlinkHelper extends HyperlinkHelper {
 			hyperlink.setHyperlinkText("Open containing *.bib file")
 			
 			var IProject currentProject = BCCResourceUtil.getIProject(eObject)
-			var BCCEntryKeyObject entryKeyObject = BCCBibTeXCache.instance.getEntry(currentProject, entryKey).entryBody.entryKeyObject
+			var List<BCCAbstractBibTeXEntry> cachedBibTeXEntries = BCCBibTeXCache.instance.getEntries(currentProject, entryKey)
 			
-			this.createHyperlinksTo(resource, new Region(node.getOffset(), node.getLength()), entryKeyObject, acceptor);
+			if (cachedBibTeXEntries.size() == 1) {
+				var BCCEntryKeyObject entryKeyObject = cachedBibTeXEntries.get(0).entryBody.entryKeyObject
+				
+				this.createHyperlinksTo(resource, new Region(node.getOffset(), node.getLength()), entryKeyObject, acceptor);
+			}
 		}
 	}
 	

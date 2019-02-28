@@ -9,4 +9,12 @@ public class BCCUtil {
 		MessageDialog.openError(new Shell(), "Error", message);
 	}
 
+	public static void openWarningDialog(String message) {
+		MessageDialog.openWarning(new Shell(), "Warning", message);
+	}
+
+	public static void openInformationDialog(String title, String message) {
+		MessageDialog.openInformation(new Shell(), title, message);
+	}
+
 }

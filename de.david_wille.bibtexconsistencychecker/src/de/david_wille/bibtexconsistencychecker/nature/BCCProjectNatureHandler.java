@@ -20,8 +20,10 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.xtext.ui.XtextProjectHelper;
 
-import de.david_wille.bibtexconsistencychecker.executionmodel.BCCExecutionModelStandaloneSetup;
+import com.google.inject.Injector;
+
 import de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.BCCExecutionModel;
+import de.david_wille.bibtexconsistencychecker.executionmodel.ui.internal.ExecutionmodelActivator;
 import de.david_wille.bibtexconsistencychecker.executionmodel.util.BCCDefaultExecutionModel;
 import de.david_wille.bibtexconsistencychecker.util.BCCResourceUtil;
 
@@ -42,32 +44,7 @@ public class BCCProjectNatureHandler extends AbstractHandler {
 				IResource resource = resourceAdapter;
 				IProject project = resource.getProject();
 				try {
-					IProjectDescription description = project.getDescription();
-					String[] natures = description.getNatureIds();
-					String[] newNatures = generateAndFillNewNaturesArray(natures);
-					
-					// add Xtext builder if necessary
-					ICommand[] buildSpec = description.getBuildSpec();
-					if (!existingBuildSpecContainsXtextBuilder(description.getBuildSpec())) {
-						ICommand[] newBuildSpec = generateAndFillNewBuildSpecArray(description, buildSpec);
-						description.setBuildSpec(newBuildSpec);
-					}
-					
-					// validate the natures
-					IWorkspace workspace = ResourcesPlugin.getWorkspace();
-					IStatus status = workspace.validateNatureSet(newNatures);
-
-					// only apply new nature, if the status is ok
-					if (status.getCode() == IStatus.OK) {
-						description.setNatureIds(newNatures);
-						project.setDescription(description, null);
-					}
-					
-					if (!projectAlreadyContainsExecutionModel(project)) {
-						BCCExecutionModel executionModel = BCCDefaultExecutionModel.generate(project.getName());
-						BCCResourceUtil.storeModel(new BCCExecutionModelStandaloneSetup(), executionModel, project, project.getName(), "bcc");
-					}
-
+					IStatus status = applyBibTeXConsistencyCheckerSpecificPreferences(project);
 					return status;
 				}
 				catch (CoreException e) {
@@ -79,7 +56,41 @@ public class BCCProjectNatureHandler extends AbstractHandler {
 		return Status.OK_STATUS;
 	}
 
-	private boolean projectAlreadyContainsExecutionModel(IProject project) {
+	public static IStatus applyBibTeXConsistencyCheckerSpecificPreferences(IProject project) throws CoreException {
+		IProjectDescription description = project.getDescription();
+		String[] natures = description.getNatureIds();
+		String[] newNatures = generateAndFillNewNaturesArray(natures);
+		
+		// add Xtext builder if necessary
+		ICommand[] buildSpec = description.getBuildSpec();
+		if (!existingBuildSpecContainsXtextBuilder(description.getBuildSpec())) {
+			ICommand[] newBuildSpec = generateAndFillNewBuildSpecArray(description, buildSpec);
+			description.setBuildSpec(newBuildSpec);
+		}
+		
+		// validate the natures
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		IStatus status = workspace.validateNatureSet(newNatures);
+
+		// only apply new nature, if the status is ok
+		if (status.getCode() == IStatus.OK) {
+			description.setNatureIds(newNatures);
+			project.setDescription(description, null);
+		}
+		
+		if (!projectAlreadyContainsExecutionModel(project)) {
+			BCCExecutionModel executionModel = BCCDefaultExecutionModel.generate(project, project.getName());
+			Injector injector = ExecutionmodelActivator.getInstance().getInjector(ExecutionmodelActivator.DE_DAVID_WILLE_BIBTEXCONSISTENCYCHECKER_EXECUTIONMODEL_BCCEXECUTIONMODEL);
+			BCCResourceUtil.storeModel(injector, executionModel, project, project.getName(), "bcc");
+			
+			IFile executionModelFile = BCCResourceUtil.getIFile(executionModel);
+			BCCResourceUtil.openEditor(executionModelFile);
+		}
+		
+		return status;
+	}
+
+	private static boolean projectAlreadyContainsExecutionModel(IProject project) {
 		for (IResource resource : BCCResourceUtil.getChildResources(project)) {
 			if (resource instanceof IFile) {
 				IFile file = (IFile) resource;
@@ -91,7 +102,7 @@ public class BCCProjectNatureHandler extends AbstractHandler {
 		return false;
 	}
 
-	private ICommand[] generateAndFillNewBuildSpecArray(IProjectDescription description, ICommand[] buildSpec) {
+	private static ICommand[] generateAndFillNewBuildSpecArray(IProjectDescription description, ICommand[] buildSpec) {
 		ICommand command = description.newCommand();
 		command.setBuilderName(XtextProjectHelper.BUILDER_ID);
 		
@@ -100,7 +111,7 @@ public class BCCProjectNatureHandler extends AbstractHandler {
 		return newBuildSpec;
 	}
 
-	private String[] generateAndFillNewNaturesArray(String[] natures) {
+	private static String[] generateAndFillNewNaturesArray(String[] natures) {
 		int newArrayLength = identifyNewNaturesArrayLength(natures);
 		String[] newNatures = new String[newArrayLength];
 		System.arraycopy(natures, 0, newNatures, 0, natures.length);
@@ -116,7 +127,7 @@ public class BCCProjectNatureHandler extends AbstractHandler {
 		return newNatures;
 	}
 
-	private int identifyNewNaturesArrayLength(String[] natures) {
+	private static int identifyNewNaturesArrayLength(String[] natures) {
 		int newArrayLength = natures.length;
 		if (existingNaturesContainXtextNature(natures)) {
 			newArrayLength += 1;
@@ -128,7 +139,7 @@ public class BCCProjectNatureHandler extends AbstractHandler {
 		return newArrayLength;
 	}
 
-	private boolean existingBuildSpecContainsXtextBuilder(ICommand[] commands) {
+	private static boolean existingBuildSpecContainsXtextBuilder(ICommand[] commands) {
 		for (ICommand command : commands) {
 			if (command.getBuilderName().equals(XtextProjectHelper.BUILDER_ID)) {
 				return true;
@@ -137,7 +148,7 @@ public class BCCProjectNatureHandler extends AbstractHandler {
 		return false;
 	}
 
-	private boolean existingNaturesContainXtextNature(String[] natures) {
+	private static boolean existingNaturesContainXtextNature(String[] natures) {
 		for (String nature : natures) {
 			if (nature.equals(XtextProjectHelper.NATURE_ID)) {
 				return true;

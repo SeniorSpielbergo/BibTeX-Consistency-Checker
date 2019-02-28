@@ -1,0 +1,7 @@
+consistency rule {
+	name "Series uses replace pattern"
+	applies to *
+	if (series field exists AND !(series uses replace pattern)) {
+		add error "The series field should use a replace pattern." to series
+	}
+}

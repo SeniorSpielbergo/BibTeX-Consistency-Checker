@@ -13,6 +13,7 @@ import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBibTeXFile;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBibTeXPackage;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCReplacePatternEntry;
 import de.david_wille.bibtexconsistencychecker.bibtex.util.BCCBibTeXUtil;
+import de.david_wille.bibtexconsistencychecker.statistics.BCCStatistics;
 import de.david_wille.bibtexconsistencychecker.util.BCCResourceUtil;
 
 public class BCCReplacePatternExist {
@@ -68,6 +69,8 @@ public class BCCReplacePatternExist {
 		if (!fieldReplacePatternExists(fieldValue, allReplacePattern)) {
 			String errorMessage = "The specified replace pattern does not exist.";
 			IResource resource = BCCResourceUtil.getIFile(field);
+			
+			BCCStatistics.getInstance().increaseErrorCounter();
 			
 			BCCAnalysis.createConsistencyProblemErrorMarker(resource, errorMessage, field, BCCBibTeXPackage.Literals.BCC_ABSTRACT_GENERIC_FIELD__FIELD_VALUE_OBJECT);
 			

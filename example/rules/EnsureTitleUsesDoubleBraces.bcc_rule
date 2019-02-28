@@ -1,0 +1,9 @@
+consistency rule {
+	name "Ensure Title Uses Double Braces"
+	applies to *
+	if (title field exists) {
+		if (!(title starts with "{{" AND title ends with "}}")) {
+			add warning "To ensure case sensitivity of titles you should enclose them in double braces \"{{ ... }}\"." to title
+		}
+	}
+}

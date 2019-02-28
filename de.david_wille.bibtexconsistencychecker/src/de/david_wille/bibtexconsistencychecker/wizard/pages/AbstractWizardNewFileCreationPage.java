@@ -6,14 +6,16 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 
-public class BCCWizardNewFileCreationPage extends WizardNewFileCreationPage {
-
-	public BCCWizardNewFileCreationPage(String pageName, String pageTitle, String pageDescription, IStructuredSelection selection) {
+public abstract class AbstractWizardNewFileCreationPage extends WizardNewFileCreationPage {
+	
+	public AbstractWizardNewFileCreationPage(String fileName, String pageName, String pageTitle,
+			String pageDescription, IStructuredSelection selection)
+	{
 		super(pageName, selection);
 		setTitle(pageTitle);
 		setDescription(pageDescription);
 	}
-	
+
 	@Override
 	protected void createAdvancedControls(Composite parent) {
 		return;
@@ -28,5 +30,5 @@ public class BCCWizardNewFileCreationPage extends WizardNewFileCreationPage {
 	protected void createLinkTarget() {
 		return;
 	}
-	
+
 }

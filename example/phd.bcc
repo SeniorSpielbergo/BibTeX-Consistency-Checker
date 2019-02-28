@@ -1,0 +1,15 @@
+settings {
+	name "PhD Thesis BibTeX Consistency Check"
+	ensure {
+		alphabetic order
+		short harvard style
+	}
+}
+
+bibtex files {
+	bibliography/
+}
+
+consistency rules {
+	rules/
+}

@@ -1,0 +1,14 @@
+consistency rule {
+	name "Correct CASCON name used"
+	applies to inproceedings
+	if (booktitle field exists AND booktitle starts with "CASCON") {
+		if (year > 2014) {
+			if (!(booktitle equals "CASCON")) {
+				add error "The entry uses the wrong CASCON replace pattern. It should use \"CASCON\"." to booktitle
+			}
+		}
+		else if (!(booktitle equals "CASCON_OLD")) {
+			add error "The entry uses the wrong CASCON replace pattern. It should use \"CASCON_OLD\"." to booktitle
+		}
+	}
+}

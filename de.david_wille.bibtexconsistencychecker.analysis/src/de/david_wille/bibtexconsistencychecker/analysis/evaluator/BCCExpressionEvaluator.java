@@ -95,6 +95,7 @@ import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRul
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCVolumeFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCWarningMarkerExpression;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCYearFieldSelector;
+import de.david_wille.bibtexconsistencychecker.statistics.BCCStatistics;
 import de.david_wille.bibtexconsistencychecker.util.BCCResourceUtil;
 
 public class BCCExpressionEvaluator {
@@ -174,6 +175,8 @@ public class BCCExpressionEvaluator {
 		String message = identifyingRuleResource.getName() + ": " + markerExpression.getMessage();
 		
 		if (markerExpression instanceof BCCWarningMarkerExpression) {
+			BCCStatistics.getInstance().increaseWarningCounter();
+			
 			if (fieldSelectionExpression == null) {
 				BCCAnalysis.createConsistencyProblemWarningMarker(problematicResource, message, causingEntryBody, BCCBibTeXPackage.Literals.BCC_ENTRY_BODY__ENTRY_KEY_OBJECT);
 			}
@@ -184,6 +187,8 @@ public class BCCExpressionEvaluator {
 			}
 		}
 		else if (markerExpression instanceof BCCErrorMarkerExpression) {
+			BCCStatistics.getInstance().increaseErrorCounter();
+			
 			if (fieldSelectionExpression == null) {
 				BCCAnalysis.createConsistencyProblemErrorMarker(problematicResource, message, causingEntryBody, BCCBibTeXPackage.Literals.BCC_ENTRY_BODY__ENTRY_KEY_OBJECT);
 			}

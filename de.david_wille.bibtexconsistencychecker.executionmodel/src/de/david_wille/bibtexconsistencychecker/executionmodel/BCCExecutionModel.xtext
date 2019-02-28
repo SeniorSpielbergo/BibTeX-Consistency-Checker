@@ -22,20 +22,20 @@ BCCSettingsEntry:
 BCCEnsureSettingsEntry:
 	{BCCEnsureSettingsEntry} 'ensure' '{'
 		(
-			(ensureAlphbeticOrderActivated ?= BCCAlphabeticOrderKeyword)? &
-			(ensureShortHarvardStyleActivated ?= BCCShortHarvardStyleKeyword)?
+			(ensureAlphbeticOrderActivated ?= 'alphabetic' 'order')? &
+			(ensureShortHarvardStyleActivated ?= 'short' 'harvard' 'style')?
 		)
 	'}'
 ;
 
 BCCBibTeXFilesEntry:
-	{BCCBibTeXFilesEntry} BCCBibTeXFilesKeyword '{'
+	{BCCBibTeXFilesEntry} 'bibtex' 'files' '{'
 		entries += BCCFilePathEntry
 		(',' entries += BCCFilePathEntry)*
 	'}';
 
 BCCConsistencyRulesEntry:
-	{BCCConsistencyRulesEntry} BCCConsistencyRulesKeyword '{'
+	{BCCConsistencyRulesEntry} 'consistency' 'rules' '{'
 		entries += BCCFilePathEntry
 		(',' entries += BCCFilePathEntry)*
 	'}';
@@ -49,18 +49,6 @@ BCCValidPath:
 BCCUsedKeyword:
 	'alphabetic' | 'order' | 'short' | 'harvard' | 'style' | 'consistency' |
 	'rules' | 'bibtex' | 'files' | 'settings' | 'name' | 'ensure';
-
-BCCAlphabeticOrderKeyword:
-	'alphabetic' 'order';
-
-BCCShortHarvardStyleKeyword:
-	'short' 'harvard' 'style';
-
-BCCConsistencyRulesKeyword:
-	'consistency' 'rules';
-
-BCCBibTeXFilesKeyword:
-	'bibtex' 'files';
 
 terminal FILE_FOLDER_PATH:
 	('bibliography/' | 'rules/') (FOLDER_PATH)* (FILE_PATH)?;

@@ -24,7 +24,14 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.xtext.ISetup;
+import org.eclipse.ui.IEditorDescriptor;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.xtext.resource.XtextResourceSet;
 
 import com.google.inject.Injector;
 
@@ -54,10 +61,24 @@ public class BCCResourceUtil {
 		}
 		
 		return selectionPaths;
-}
+	}
+	
+	public static void openEditor(IFile file) {
+		IWorkbench wb = PlatformUI.getWorkbench();
+		IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
+		IWorkbenchPage page = win.getActivePage();
+		IEditorDescriptor desc = PlatformUI.getWorkbench().
+				getEditorRegistry().getDefaultEditor(file.getName());
+		try {
+			page.openEditor(new FileEditorInput(file), desc.getId());
+		}
+		catch (PartInitException e) {
+			e.printStackTrace();
+		}
+	}
 
 	@SuppressWarnings("unchecked")
-	public static <T extends EObject> T parseModel(ISetup setup, IFile file) {
+	public static <T extends EObject> T parseModel(IFile file) {
 		Resource resource = getResource(file);
 		
 		if (resource.getContents().size() > 0) {
@@ -68,9 +89,8 @@ public class BCCResourceUtil {
 		return null;
 	}
 	
-	public static <T extends EObject> void storeModel(ISetup setup, T model, IContainer target, String modelName, String fileExtension) {
-		Injector injector = setup.createInjectorAndDoEMFRegistration();
-		ResourceSet resourceSet = injector.getInstance(ResourceSet.class);
+	public static <T extends EObject> void storeModel(Injector injector, T model, IContainer target, String modelName, String fileExtension) {
+		ResourceSet resourceSet = injector.getInstance(XtextResourceSet.class);
 		
 		String location = "platform:/resource/"
 				+ target.getFullPath().toPortableString() + "/"
@@ -177,10 +197,10 @@ public class BCCResourceUtil {
 		return resource;
 	}
 
-	public static <T extends EObject> List<T> parseModels(ISetup setup, List<IFile> files) {
+	public static <T extends EObject> List<T> parseModels(List<IFile> files) {
 		List<T> parsedModels = new ArrayList<>();
 		for (IFile file : files) {
-			T parsedModel = parseModel(setup, file);
+			T parsedModel = parseModel(file);
 			if (parsedModel != null) {
 				parsedModels.add(parsedModel);
 			}
@@ -228,16 +248,16 @@ public class BCCResourceUtil {
 		return relevantFiles;
 	}
 
-	public static boolean fileIsExecutionModel(IFile selectedFile) {
-		return selectedFile.getFileExtension().equals(BCC_FILE_EXTENSION);
+	public static boolean fileIsExecutionModel(IFile file) {
+		return file.getFileExtension().equals(BCC_FILE_EXTENSION);
 	}
 
-	public static boolean fileIsBibTeXFile(IFile selectedFile) {
-		return selectedFile.getFileExtension().equals(BIB_FILE_EXTENSION);
+	public static boolean fileIsBibTeXFile(IFile file) {
+		return file.getFileExtension().equals(BIB_FILE_EXTENSION);
 	}
 
-	public static boolean fileIsConsistencyRule(IFile selectedFile) {
-		return selectedFile.getFileExtension().equals(BCC_RULE_FILE_EXTENSION);
+	public static boolean fileIsConsistencyRule(IFile file) {
+		return file.getFileExtension().equals(BCC_RULE_FILE_EXTENSION);
 	}
 
 	public static void createFolder(IProject project, String folderName) throws CoreException
@@ -262,5 +282,5 @@ public class BCCResourceUtil {
 	{
 		resource.refreshLocal(IResource.DEPTH_INFINITE, null);
 	}
-	
+
 }

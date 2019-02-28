@@ -2,6 +2,9 @@ package de.david_wille.bibtexconsistencychecker.executionmodel.util;
 
 import java.util.List;
 
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IProject;
+
 import de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.BCCBibTeXFilesEntry;
 import de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.BCCConsistencyRulesEntry;
 import de.david_wille.bibtexconsistencychecker.executionmodel.bCCExecutionModel.BCCEnsureSettingsEntry;
@@ -15,7 +18,7 @@ public class BCCDefaultExecutionModel {
 	public static final String RULES_FOLDER = "rules";
 	public static final String BIBLIOGRAPHY_FOLDER = "bibliography";
 	
-	public static BCCExecutionModel generate(String name) {
+	public static BCCExecutionModel generate(IContainer parentContainer, String name) {
 		BCCExecutionModelFactory executionModelFactory = BCCExecutionModelFactory.eINSTANCE;
 		
 		BCCExecutionModel executionModel = executionModelFactory.createBCCExecutionModel();
@@ -23,11 +26,13 @@ public class BCCDefaultExecutionModel {
 		BCCSettingsEntry settingsEntry = generateDefaultSettingsEntry(executionModelFactory, name);
 		executionModel.setSettingsEntry(settingsEntry);
 		
-		BCCBibTeXFilesEntry bibTeXFilesEntry = generateDefaultBibTeXFilesEntry(executionModelFactory);
-		executionModel.setBibTeXFilesEntry(bibTeXFilesEntry);
-		
-		BCCConsistencyRulesEntry consistencyRulesEntry = generateDefaultConsistencyRulesEntry(executionModelFactory);
-		executionModel.setRulesEntry(consistencyRulesEntry);
+		if (parentContainer instanceof IProject) {
+			BCCBibTeXFilesEntry bibTeXFilesEntry = generateDefaultBibTeXFilesEntry(executionModelFactory);
+			executionModel.setBibTeXFilesEntry(bibTeXFilesEntry);
+			
+			BCCConsistencyRulesEntry consistencyRulesEntry = generateDefaultConsistencyRulesEntry(executionModelFactory);
+			executionModel.setRulesEntry(consistencyRulesEntry);
+		}
 		
 		return executionModel;
 	}

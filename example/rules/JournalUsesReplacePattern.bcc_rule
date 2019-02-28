@@ -1,0 +1,7 @@
+consistency rule {
+	name "Journal uses replace pattern"
+	applies to *
+	if (journal field exists AND !(journal uses replace pattern)) {
+		add error "The journal field should use a replace pattern." to journal
+	}
+}

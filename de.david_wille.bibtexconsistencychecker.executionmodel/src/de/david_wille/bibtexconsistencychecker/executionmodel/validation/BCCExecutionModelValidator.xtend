@@ -28,6 +28,61 @@ class BCCExecutionModelValidator extends AbstractBCCExecutionModelValidator {
 	public static val String INVALID_FILE_PATH = "INVALID_FILE_PATH"
 	public static val String RULES_FOLDER_DOES_NOT_EXIST = "RULES_FOLDER_DOES_NOT_EXIST"
 	public static val String BIBLIOGRAPHY_FOLDER_DOES_NOT_EXIST = "BIBLIOGRAPHY_FOLDER_DOES_NOT_EXIST"
+	public static val String EXECUTION_MODEL_STORED_IN_PROJECT_ROOT = "EXECUTION_MODEL_STORED_IN_PROJECT_ROOT"
+	public static val String ONLY_SINGLE_EXECUTION_MODEL_EXISTS = "ONLY_SINGLE_EXECUTION_MODEL_EXISTS"
+	public static val String WRONG_FOLDER = "WRONG_FOLDER"
+	
+	@Check
+	def checkFileIsStoredInProjectRoot(BCCExecutionModel executionModel) {
+		var IFile file = BCCResourceUtil.getIFile(executionModel)
+		var IProject project = BCCResourceUtil.getIProject(executionModel)
+		
+		if (!file.parent.equals(project)) {
+			warning("This BibTeX Consistency Checker Execution file will never be executed as it is not stored in the project root.", BCCExecutionModelPackage.Literals.BCC_EXECUTION_MODEL__SETTINGS_ENTRY, EXECUTION_MODEL_STORED_IN_PROJECT_ROOT)
+		}
+	}
+	
+	@Check
+	def checkFileIsStoredInProjectRoot(BCCConsistencyRulesEntry consistencyRulesEntry) {
+		var int i = 0
+		for (BCCFilePathEntry entry : consistencyRulesEntry.entries) {
+			if (!entry.path.startsWith(RULES_FOLDER)) {
+				error("You can only reference the complete \"rules\" folder or its sub files.", BCCExecutionModelPackage.Literals.BCC_CONSISTENCY_RULES_ENTRY__ENTRIES, i, WRONG_FOLDER)
+			}
+			i++
+		}
+	}
+	
+	@Check
+	def checkFileIsStoredInProjectRoot(BCCBibTeXFilesEntry bibTeXFilesEntry) {
+		var int i = 0
+		for (BCCFilePathEntry entry : bibTeXFilesEntry.entries) {
+			if (!entry.path.startsWith(BIBLIOGRAPHY_FOLDER)) {
+				error("You can only reference the complete \"bibliography\" folder or its sub files.", BCCExecutionModelPackage.Literals.BCC_BIB_TE_XFILES_ENTRY__ENTRIES, i, WRONG_FOLDER)
+			}
+			i++
+		}
+	}
+	
+	@Check
+	def onlySingleExecutionModelExists(BCCExecutionModel executionModel) {
+		var IProject project = BCCResourceUtil.getIProject(executionModel)
+		var boolean previouslyFoundExecutionModel = false
+		
+		for (IResource resource : BCCResourceUtil.getChildResources(project)) {
+			if (resource instanceof IFile) {
+				if (BCCResourceUtil.fileIsExecutionModel(resource)) {
+					if (!previouslyFoundExecutionModel) {
+						previouslyFoundExecutionModel = true
+					}
+					else {
+						error("There can only exist a single BibTeX Consistency Checker Execution file in the project root.", BCCExecutionModelPackage.Literals.BCC_EXECUTION_MODEL__SETTINGS_ENTRY, ONLY_SINGLE_EXECUTION_MODEL_EXISTS)
+						return
+					}
+				}
+			}
+		}
+	}
 	
 	@Check
 	def checkMandatoryFoldersExist(BCCExecutionModel executionModel) {
@@ -55,7 +110,7 @@ class BCCExecutionModelValidator extends AbstractBCCExecutionModelValidator {
 		}
 	}
 
-	@Check(NORMAL)
+	@Check
 	def checkForInvalidFilePaths(BCCFilePathEntry filePathEntry) {
 		if (!pathExists(filePathEntry)) {
 			if (isBibTeXFile(filePathEntry)) {

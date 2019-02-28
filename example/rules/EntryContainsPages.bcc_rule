@@ -1,0 +1,7 @@
+consistency rule {
+	name "Entry contains pages"
+	applies to * except for book, thesis, report, standard and incollection
+	if (!(pages field exists)) {
+		add error "The entry should provide information about the pages."
+	}
+}
