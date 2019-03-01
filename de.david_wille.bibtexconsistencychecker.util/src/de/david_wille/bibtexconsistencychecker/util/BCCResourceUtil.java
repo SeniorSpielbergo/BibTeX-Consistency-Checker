@@ -1,6 +1,5 @@
 package de.david_wille.bibtexconsistencychecker.util;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,7 +24,6 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IEditorDescriptor;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
@@ -64,8 +62,7 @@ public class BCCResourceUtil {
 	}
 	
 	public static void openEditor(IFile file) {
-		IWorkbench wb = PlatformUI.getWorkbench();
-		IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
+		IWorkbenchWindow win = BCCUtil.getWorkbenchWindow();
 		IWorkbenchPage page = win.getActivePage();
 		IEditorDescriptor desc = PlatformUI.getWorkbench().
 				getEditorRegistry().getDefaultEditor(file.getName());
@@ -87,6 +84,17 @@ public class BCCResourceUtil {
 		}
 		
 		return null;
+	}
+
+	public static <T extends EObject> List<T> parseModels(List<IFile> files) {
+		List<T> parsedModels = new ArrayList<>();
+		for (IFile file : files) {
+			T parsedModel = parseModel(file);
+			if (parsedModel != null) {
+				parsedModels.add(parsedModel);
+			}
+		}
+		return parsedModels;
 	}
 	
 	public static <T extends EObject> void storeModel(Injector injector, T model, IContainer target, String modelName, String fileExtension) {
@@ -130,12 +138,6 @@ public class BCCResourceUtil {
 			return null;
 		}
 		
-		if (resourceURI.isFile()) {
-			String fileString = resourceURI.toFileString();
-			File file = new File(fileString);
-			return javaIOFileToIFile(file);
-		}
-		
 		if (resourceURI.isPlatformResource()) {
 			String platformString = resourceURI.toPlatformString(true);
 			return makeIFileRelativeToWorkspace(platformString);
@@ -144,34 +146,11 @@ public class BCCResourceUtil {
 		return null;
 	}
 
-	private static IFile javaIOFileToIFile(File file) {
-		IWorkspaceRoot workspaceRoot = getWorkspaceRoot();
-		IPath workspaceLocation = workspaceRoot.getLocation();
-		IPath filePath = new Path(file.getPath());
-		
-		if (!fileIsContainedInWorkspace(file)) {
-			return null;
-		}
-		
-		IPath relativeFilePath = filePath.makeRelativeTo(workspaceLocation);
-		return workspaceRoot.getFile(relativeFilePath);
-	}
-	
 	public static IWorkspaceRoot getWorkspaceRoot() {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		return workspace.getRoot();
 	}
 
-	public static boolean fileIsContainedInWorkspace(File file) {
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		IWorkspaceRoot workspaceRoot = workspace.getRoot();
-		IPath workspaceLocation = workspaceRoot.getLocation();
-		
-		IPath filePath = new Path(file.getPath());
-		
-		return workspaceLocation.isPrefixOf(filePath);
-	}
-	
 	private static IFile makeIFileRelativeToWorkspace(String rawFilePath) {
 		IPath filePath = new Path(rawFilePath);
 		return makePathRelativeToWorkspace(filePath);
@@ -195,17 +174,6 @@ public class BCCResourceUtil {
 		final ResourceSet resourceSet = new ResourceSetImpl();
 		final Resource resource = resourceSet.getResource(uri, true);
 		return resource;
-	}
-
-	public static <T extends EObject> List<T> parseModels(List<IFile> files) {
-		List<T> parsedModels = new ArrayList<>();
-		for (IFile file : files) {
-			T parsedModel = parseModel(file);
-			if (parsedModel != null) {
-				parsedModels.add(parsedModel);
-			}
-		}
-		return parsedModels;
 	}
 
 	public static List<IResource> getChildResources(IResource resource) {
