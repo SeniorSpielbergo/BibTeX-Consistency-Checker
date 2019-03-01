@@ -43,7 +43,7 @@ public class BCCStatistics {
 	}
 
 	public void increaseWarningCounter() {
-		
+		warningCounter++;
 	}
 	
 	public void reset() {
