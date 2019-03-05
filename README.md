@@ -89,7 +89,7 @@ They basically follow standard BibTeX file syntax with a few problem-specific ex
 Most important feature is probably the `@string` feature, which allows definition of replacements for strings in BibTeX entries that do not use surrounding braces.
 Please also refer to the _Known Limitations_ section.
 
-```
+```TeX
 @book{Duc91,
 	author = {Duck, Darkwing},
 	year = {1991},
@@ -122,7 +122,7 @@ Optionally, users can use a `to` selector to add the warnings and errors to a sp
 
 The example project contains a number of sensible examples what checks can be achieved using these files.
 
-```
+```Java
 consistency rule {
 	name "Ensure Case Sensitivity of Titles"
 	applies to *
