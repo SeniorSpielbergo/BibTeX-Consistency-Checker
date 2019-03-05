@@ -68,7 +68,7 @@ settings {
     name "Example"
     ensure {
         alphabetic order
-	    short harvard style
+        short harvard style
     }
 }
 
