@@ -1,7 +1,7 @@
 # BibTeX Consistency Checker
 
 I developed this model-based BibTeX analysis tool based on a small string-based tool that was core of my workflow to ensure consistency of BibTeX entries during my PhD thesis.
-The general idea is to have tooling to ensure uniformity and consistency of entries in BibTeX files by defining rules that allow extension of the _BibTeX Consistency Checker_.
+The general idea is to ensure uniformity and consistency of entries in BibTeX files by defining rules that allow extension of the _BibTeX Consistency Checker_.
 
 The _BibTeX Consistency Checker_ provides the following main features:
 - Parsing of BibTeX files
