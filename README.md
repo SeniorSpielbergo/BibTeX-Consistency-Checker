@@ -65,19 +65,19 @@ If these blocks do not exist, the default folders  `bibliography/` and `rules/` 
 
 ```
 settings {
-	name "Example"
-	ensure {
-		alphabetic order
-		short harvard style
+  name "Example"
+  ensure {
+    alphabetic order
+	short harvard style
 	}
 }
 
 bibtex files {
-	bibliography/
+  bibliography/
 }
 
 consistency rules {
-	rules/
+  rules/
 }
 ```
 
@@ -91,10 +91,10 @@ Please also refer to the _Known Limitations_ section.
 
 ```TeX
 @book{Duc91,
-	author = {Duck, Darkwing},
-	year = {1991},
-	title = {{The Dangerous Live of a Duck}},
-	publisher = ABC
+  author = {Duck, Darkwing},
+  year = {1991},
+  title = {{The Dangerous Live of a Duck}},
+  publisher = ABC
 }
 
 @string{ABC = "American Broadcasting Company"}
@@ -124,13 +124,13 @@ The example project contains a number of sensible examples what checks can be ac
 
 ```Java
 consistency rule {
-	name "Ensure Case Sensitivity of Titles"
-	applies to *
-	if (title field exists) {
-		if (!(title starts with "{{" AND title ends with "}}")) {
-			add warning "To ensure case sensitivity of titles you should enclose them in double braces \"{{ ... }}\"" to title
-		}
+  name "Ensure Case Sensitivity of Titles"
+  applies to *
+  if (title field exists) {
+    if (!(title starts with "{{" AND title ends with "}}")) {
+	  add warning "To ensure case sensitivity of titles you should enclose them in double braces \"{{ ... }}\"" to title
 	}
+  }
 }
 ```
 
