@@ -10,7 +10,7 @@ import de.david_wille.bibtexconsistencychecker.executionmodel.BCCExecutionModelS
 import de.david_wille.bibtexconsistencychecker.executionmodel.ui.internal.ExecutionmodelActivator;
 import de.david_wille.bibtexconsistencychecker.executionmodel.util.BCCDefaultExecutionModel;
 
-public class BCCNewExecutionFileWizard extends BCCAbstractSingleFileInProjectRootCreationWizard {
+public class BCCNewExecutionFileWizard extends AbstractSingleFileInProjectRootCreationWizard {
 	
 	private static final String FILE_EXTENSION = "bcc";
 	private static final String FILE_NAME = "BibTeX Consistency Checker Execution";

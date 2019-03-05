@@ -14,7 +14,7 @@ import org.eclipse.xtext.validation.DiagnosticConverterImpl;
 
 public class BCCProblemMarkerHandling extends DiagnosticConverterImpl {
 
-	public void createCustomProblemErrorMarker(String markerId, IResource resource, String message, EObject eObject,
+	public IMarker createCustomProblemErrorMarker(String markerId, IResource resource, String message, EObject eObject,
 			EStructuralFeature eStructuralFeature)
 	{
 		try {
@@ -24,29 +24,37 @@ public class BCCProblemMarkerHandling extends DiagnosticConverterImpl {
 			map.put(IMarker.SEVERITY, IMarker.PRIORITY_HIGH);
 			map.put(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 			marker.setAttributes(map);
+			
+			return marker;
 		}
 		catch (CoreException e) {
 			e.printStackTrace();
 		}
+		
+		return null;
 	}
 
-	public void createCustomProblemErrorMarker(String markerId, IResource resource, String message, EObject eObject,
+	public IMarker createCustomProblemErrorMarker(String markerId, IResource resource, String message, EObject eObject,
 			EStructuralFeature eStructuralFeature, int index)
 	{
 		try {
 			IMarker marker = createCustomProblemMarker(markerId, resource, message, eObject, eStructuralFeature, index);
 			
-			Map<String, ? super Object> map = marker.getAttributes();
+			Map<String, Object> map = marker.getAttributes();
 			map.put(IMarker.SEVERITY, IMarker.PRIORITY_HIGH);
 			map.put(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 			marker.setAttributes(map);
+			
+			return marker;
 		}
 		catch (CoreException e) {
 			e.printStackTrace();
 		}
+		
+		return null;
 	}
 
-	public void createCustomProblemWarningMarker(String markerId, IResource resource, String message, EObject eObject,
+	public IMarker createCustomProblemWarningMarker(String markerId, IResource resource, String message, EObject eObject,
 			EStructuralFeature eStructuralFeature)
 	{
 		try {
@@ -56,13 +64,17 @@ public class BCCProblemMarkerHandling extends DiagnosticConverterImpl {
 			map.put(IMarker.SEVERITY, IMarker.PRIORITY_LOW);
 			map.put(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
 			marker.setAttributes(map);
+			
+			return marker;
 		}
 		catch (CoreException e) {
 			e.printStackTrace();
 		}
+		
+		return null;
 	}
 
-	public void createCustomProblemWarningMarker(String markerId, IResource resource, String message, EObject eObject,
+	public IMarker createCustomProblemWarningMarker(String markerId, IResource resource, String message, EObject eObject,
 			EStructuralFeature eStructuralFeature, int index)
 	{
 		try {
@@ -72,10 +84,14 @@ public class BCCProblemMarkerHandling extends DiagnosticConverterImpl {
 			map.put(IMarker.SEVERITY, IMarker.PRIORITY_LOW);
 			map.put(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
 			marker.setAttributes(map);
+			
+			return marker;
 		}
 		catch (CoreException e) {
 			e.printStackTrace();
 		}
+		
+		return null;
 	}
 	
 	public IMarker createCustomProblemMarker(String markerId, IResource resource, String message, EObject eObject,

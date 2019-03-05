@@ -10,7 +10,7 @@ import de.david_wille.bibtexconsistencychecker.bibtex.BCCBibTeXStandaloneSetup;
 import de.david_wille.bibtexconsistencychecker.bibtex.ui.internal.BibtexActivator;
 import de.david_wille.bibtexconsistencychecker.bibtex.util.BCCDefaultBibTeXFile;
 
-public class BCCNewBibTeXFileWizard extends BCCAbstractFileInSpecificFolderCreationWizard {
+public class BCCNewBibTeXFileWizard extends AbstractFileInSpecificFolderCreationWizard {
 
 	private static final String FILE_EXTENSION = "bib";
 	private static final String FILE_NAME = "BibTeX";

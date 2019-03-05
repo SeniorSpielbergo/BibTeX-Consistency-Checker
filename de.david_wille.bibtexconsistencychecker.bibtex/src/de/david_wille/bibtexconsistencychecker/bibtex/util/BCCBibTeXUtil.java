@@ -8,6 +8,7 @@ import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractBibTe
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractEntryBodyField;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractGenericField;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBibTeXFile;
+import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCGenericFieldValueObject;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCReplacePatternEntry;
 import de.david_wille.bibtexconsistencychecker.util.BCCSpecialCharacterHandling;
 
@@ -50,6 +51,13 @@ public class BCCBibTeXUtil {
 	
 	public static boolean usesReplacePattern(BCCAbstractGenericField genericField) {
 		String fieldValue = genericField.getFieldValueObject().getFieldValue();
+		BCCSpecialCharacterHandling.replaceSpecialLatexCharacters(fieldValue);
+		
+		return !fieldValue.startsWith(OPENING_BRACE) && !fieldValue.endsWith(CLOSING_BRACE);
+	}
+	
+	public static boolean usesReplacePattern(BCCGenericFieldValueObject fieldValueObject) {
+		String fieldValue = fieldValueObject.getFieldValue();
 		BCCSpecialCharacterHandling.replaceSpecialLatexCharacters(fieldValue);
 		
 		return !fieldValue.startsWith(OPENING_BRACE) && !fieldValue.endsWith(CLOSING_BRACE);

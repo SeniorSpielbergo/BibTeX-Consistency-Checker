@@ -1,5 +1,6 @@
 package de.david_wille.bibtexconsistencychecker.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,8 +65,8 @@ public class BCCResourceUtil {
 	public static void openEditor(IFile file) {
 		IWorkbenchWindow win = BCCUtil.getWorkbenchWindow();
 		IWorkbenchPage page = win.getActivePage();
-		IEditorDescriptor desc = PlatformUI.getWorkbench().
-				getEditorRegistry().getDefaultEditor(file.getName());
+		IEditorDescriptor desc = PlatformUI.getWorkbench().getEditorRegistry().getDefaultEditor(file.getName());
+		
 		try {
 			page.openEditor(new FileEditorInput(file), desc.getId());
 		}
@@ -138,12 +139,62 @@ public class BCCResourceUtil {
 			return null;
 		}
 		
+		if (resourceURI.isFile()) {
+			String fileString = resourceURI.toFileString();
+			File file = new File(fileString);
+			return javaFileToIFile(file);
+		}
+		
 		if (resourceURI.isPlatformResource()) {
 			String platformString = resourceURI.toPlatformString(true);
 			return makeIFileRelativeToWorkspace(platformString);
 		}
 		
 		return null;
+	}
+	
+	public static IFile javaFileToIFile(File file) {
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		IWorkspaceRoot workspaceRoot = workspace.getRoot();
+		IPath workspaceLocation = workspaceRoot.getLocation();
+		IPath filePath = new Path(file.toString());
+		
+		boolean isWorkspaceResource = workspaceLocation.isPrefixOf(filePath);
+
+		if (!isWorkspaceResource) {
+			return null;
+		}
+		
+		IPath relativeFilePath = filePath.makeRelativeTo(workspaceLocation);
+		return workspaceRoot.getFile(relativeFilePath);
+	}
+
+	public static boolean isWorkspaceFile(EObject eObject) {
+		Resource resource = eObject.eResource();
+		
+		URI resourceURI = resource.getURI();
+		
+		if (resourceURI.isFile()) {
+			String fileString = resourceURI.toFileString();
+			File file = new File(fileString);
+			
+			IWorkspace workspace = ResourcesPlugin.getWorkspace();
+			IWorkspaceRoot workspaceRoot = workspace.getRoot();
+			IPath workspaceLocation = workspaceRoot.getLocation();
+			IPath filePath = new Path(file.toString());
+			
+			return workspaceLocation.isPrefixOf(filePath);
+		}
+		
+		if (resourceURI.isPlatformResource()) {
+			return true;
+		}
+		
+		return false;
+	}
+
+	public static boolean isLinked(IFile file) {
+		return file.isLinked();
 	}
 
 	public static IWorkspaceRoot getWorkspaceRoot() {
@@ -203,7 +254,9 @@ public class BCCResourceUtil {
 				IFile file = (IFile) resource;
 				
 				if (file.getFileExtension().equals(fileExtension)) {
-					relevantFiles.add(file);
+					if (!BCCResourceUtil.isLinked(file)) {
+						relevantFiles.add(file);
+					}
 				}
 			}
 			else if (resource instanceof IFolder) {

@@ -23,6 +23,9 @@ public class BCCBibTeXStartup implements IStartup {
 		BCCBibTeXCache.getInstance().clearCache();
 		
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		
+		workspace.addResourceChangeListener(new BCCBibTeXFileResourceChangeListener());
+		
 		try {
 			for (IResource resource : workspace.getRoot().members()) {
 				if (resource instanceof IProject) {

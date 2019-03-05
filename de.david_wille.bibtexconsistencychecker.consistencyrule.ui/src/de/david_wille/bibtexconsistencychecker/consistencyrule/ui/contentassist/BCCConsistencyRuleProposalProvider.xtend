@@ -30,24 +30,12 @@ class BCCConsistencyRuleProposalProvider extends AbstractBCCConsistencyRulePropo
 		BCCFieldExistsExpressionAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
 	}
 	
-	override complete_BCCFieldsExistExpression(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		BCCFieldsExistExpressionAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
-	}
-	
 	override complete_BCCUsesReplacePatternExpression(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		BCCUsesReplacePatternExpressionAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
 	}
 	
-	override complete_BCCUseReplacePatternExpression(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		BCCUseReplacePatternExpressionAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
-	}
-	
 	override complete_BCCIsIntegerExpression(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		BCCIsIntegerExpressionAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
-	}
-	
-	override complete_BCCAreIntegerExpression(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		BCCAreIntegerExpressionAccess.group.createKeywordProposalWithoutTrailingSeparator(context, acceptor)
 	}
 	
 	override complete_BCCEntryKeyReference(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {

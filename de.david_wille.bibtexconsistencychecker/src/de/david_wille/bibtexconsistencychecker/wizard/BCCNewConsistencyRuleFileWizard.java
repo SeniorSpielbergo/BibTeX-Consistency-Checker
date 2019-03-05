@@ -10,7 +10,7 @@ import de.david_wille.bibtexconsistencychecker.consistencyrule.BCCConsistencyRul
 import de.david_wille.bibtexconsistencychecker.consistencyrule.ui.internal.ConsistencyruleActivator;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.util.BCCDefaultConsistencyRule;
 
-public class BCCNewConsistencyRuleFileWizard extends BCCAbstractFileInSpecificFolderCreationWizard {
+public class BCCNewConsistencyRuleFileWizard extends AbstractFileInSpecificFolderCreationWizard {
 	
 	private static final String FILE_EXTENSION = "bcc_rule";
 	private static final String FILE_NAME = "BibTeX Consistency Rule";

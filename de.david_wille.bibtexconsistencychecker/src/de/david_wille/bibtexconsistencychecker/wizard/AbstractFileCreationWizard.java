@@ -18,7 +18,7 @@ import com.google.inject.Injector;
 import de.david_wille.bibtexconsistencychecker.util.BCCResourceUtil;
 import de.david_wille.bibtexconsistencychecker.wizard.pages.AbstractWizardNewFileCreationPage;
 
-public abstract class BCCAbstractFileCreationWizard extends Wizard implements INewWizard {
+public abstract class AbstractFileCreationWizard extends Wizard implements INewWizard {
 
 	private WizardNewFileCreationPage newFileCreationPage;
 

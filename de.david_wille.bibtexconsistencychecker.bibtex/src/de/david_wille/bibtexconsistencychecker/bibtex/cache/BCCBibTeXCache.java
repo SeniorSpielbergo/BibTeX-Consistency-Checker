@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCAbstractBibTeXEntry;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCBibTeXFile;
@@ -39,6 +40,23 @@ public class BCCBibTeXCache {
 		else {
 			updateProjectCache(project, bibTeXFile);
 		}
+	}
+
+	public void removeBibTeXFile(IProject project, IResource bibTeXResource) {
+		String projectIdentifier = getProjectIdentifier(project);
+		String bibTeXFileIdentifier = BCCBibTeXProjectCache.getBibTeXFileIdentifier(bibTeXResource);
+		
+		BCCBibTeXProjectCache projectCache = cachedProjects.get(projectIdentifier);
+		projectCache.removeBibTeXFile(bibTeXFileIdentifier);
+		
+		if (projectCache.getCachedBibTeXFiles() == 0) {
+			removeProject(project);
+		}
+	}
+
+	public void removeProject(IProject project) {
+		String projectIdentifier = getProjectIdentifier(project);
+		cachedProjects.remove(projectIdentifier);
 	}
 
 	private void initializeProjectCache(IProject project, BCCBibTeXFile bibTeXFile) {

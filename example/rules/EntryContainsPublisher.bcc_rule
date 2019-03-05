@@ -1,6 +1,7 @@
 consistency rule {
 	name "Entry contains publisher"
-	applies to inproceedings, article, book and inbook
+	applies to inproceedings, article, book, inbook
+	excluded entry keys RW11
 	if (!(publisher field exists)) {
 		add error "The entry should provide information about the publisher."
 	}

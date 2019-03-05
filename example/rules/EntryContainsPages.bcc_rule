@@ -1,6 +1,7 @@
 consistency rule {
 	name "Entry contains pages"
-	applies to * except for book, thesis, report, standard and incollection
+	applies to * except for book, thesis, report, standard, incollection
+	excluded entry keys BOJ04, CDA14, EEM10, Kos07, RW11, WK06, WM95
 	if (!(pages field exists)) {
 		add error "The entry should provide information about the pages."
 	}

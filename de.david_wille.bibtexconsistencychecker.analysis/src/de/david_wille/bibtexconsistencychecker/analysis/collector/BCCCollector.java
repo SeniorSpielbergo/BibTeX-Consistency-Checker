@@ -23,9 +23,7 @@ import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCStandardEntry
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCTechReportEntry;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCThesisEntry;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCUnpublishedEntry;
-import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCAbstractExcludedEntryKeysBody;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCAbstractSelector;
-import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCAbstractSelectorBody;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCAllSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCArticleEntrySelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCBookEntrySelector;
@@ -33,20 +31,18 @@ import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRul
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCConferenceEntrySelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCConsistencyRule;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCEntryKeyReference;
+import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCEntrySelectorBody;
+import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCExcludedEntryKeysBody;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCInBookEntrySelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCInCollectionEntrySelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCInProceedingsEntrySelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCManualEntrySelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCMasterthesisEntrySelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCMiscEntrySelector;
-import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCMultiEntryExcludedEntryKeysBody;
-import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCMultiEntrySelectorBody;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCPhdThesisEntrySelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCProceedingsEntrySelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCReportEntrySelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCRuleBody;
-import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCSingleEntryExcludedEntryKeysBody;
-import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCSingleEntrySelectorBody;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCStandardEntrySelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCTechReportEntrySelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCThesisEntrySelector;
@@ -89,12 +85,13 @@ public class BCCCollector {
 
 	private boolean ruleSelectsEntry(BCCConsistencyRule consistencyRule, BCCAbstractBibTeXEntry bibTeXEntry) {
 		BCCRuleBody bCCRuleBody = consistencyRule.getRuleBody();
-		BCCAbstractSelectorBody appliesToBody = bCCRuleBody.getAppliesToBody();
-		BCCAbstractSelectorBody exceptForBody = bCCRuleBody.getExceptForBody();
+		BCCEntrySelectorBody appliesToBody = bCCRuleBody.getAppliesToBody();
+		BCCEntrySelectorBody exceptForBody = bCCRuleBody.getExceptForBody();
+		BCCExcludedEntryKeysBody exludedEntryKeyBody = bCCRuleBody.getExcludedEntryKeysBody();
 		
 		List<BCCAbstractSelector> appliesToSelectors = identifyAllSelectors(appliesToBody);
 		List<BCCAbstractSelector> exceptForSelectors = identifyAllSelectors(exceptForBody);
-		List<String> excludedEntryKeys = identifyExcludedEntryKeys(bCCRuleBody);
+		List<String> excludedEntryKeys = identifyExcludedEntryKeys(exludedEntryKeyBody);
 		
 		for (BCCAbstractSelector appliesToSelector : appliesToSelectors) {
 			boolean selectedByRule = ruleSelectsEntry(bibTeXEntry, appliesToSelector, exceptForSelectors, excludedEntryKeys);
@@ -197,39 +194,26 @@ public class BCCCollector {
 		return false;
 	}
 	
-	private List<String> identifyExcludedEntryKeys(BCCRuleBody bCCRuleBody) {
-		List<String> excludedEntryKeys = new ArrayList<>();
-		BCCAbstractExcludedEntryKeysBody excludedEntryKeyBody = bCCRuleBody.getExcludedEntryKeysBody();
-		
-		if (excludedEntryKeyBody instanceof BCCSingleEntryExcludedEntryKeysBody) {
-			BCCSingleEntryExcludedEntryKeysBody singleEntryBody = (BCCSingleEntryExcludedEntryKeysBody) excludedEntryKeyBody;
-			excludedEntryKeys.add(singleEntryBody.getExcludedEntryKey().getEntryKey());
-		}
-		else if (excludedEntryKeyBody instanceof BCCMultiEntryExcludedEntryKeysBody) {
-			BCCMultiEntryExcludedEntryKeysBody multiEntryBody = (BCCMultiEntryExcludedEntryKeysBody) excludedEntryKeyBody;
-			for (BCCEntryKeyReference entryKeyReference : multiEntryBody.getExcludedEntryKeys()) {
-				excludedEntryKeys.add(entryKeyReference.getEntryKey());
+	private List<String> identifyExcludedEntryKeys(BCCExcludedEntryKeysBody exludedEntryKeyBody) {
+		if (exludedEntryKeyBody != null) {
+			List<String> exludedEntryKeys = new ArrayList<>();
+			for (BCCEntryKeyReference entryKeyReference : exludedEntryKeyBody.getExcludedEntryKeys()) {
+				exludedEntryKeys.add(entryKeyReference.getEntryKey());
 			}
+			return exludedEntryKeys;
 		}
-		
-		return excludedEntryKeys;
+		else  {
+			return new ArrayList<>();
+		}
 	}
 
-	private List<BCCAbstractSelector> identifyAllSelectors(BCCAbstractSelectorBody appliesToBody) {
-		List<BCCAbstractSelector> selectors = new ArrayList<>();
-		
-		if (appliesToBody instanceof BCCSingleEntrySelectorBody) {
-			BCCSingleEntrySelectorBody singleBody = (BCCSingleEntrySelectorBody) appliesToBody;
-			BCCAbstractSelector selector = singleBody.getSelector();
-			
-			selectors.add(selector);
+	private List<BCCAbstractSelector> identifyAllSelectors(BCCEntrySelectorBody selectorBody) {
+		if (selectorBody != null) {
+			return selectorBody.getSelectors();
 		}
-		else if (appliesToBody instanceof BCCMultiEntrySelectorBody) {
-			BCCMultiEntrySelectorBody multiBody = (BCCMultiEntrySelectorBody) appliesToBody;
-			return multiBody.getSelectors();
+		else  {
+			return new ArrayList<>();
 		}
-		
-		return selectors;
 	}
 
 }

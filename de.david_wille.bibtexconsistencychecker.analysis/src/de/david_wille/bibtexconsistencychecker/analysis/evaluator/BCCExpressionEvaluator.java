@@ -37,12 +37,10 @@ import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCVersionField;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCVolumeField;
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCYearField;
 import de.david_wille.bibtexconsistencychecker.bibtex.util.BCCBibTeXUtil;
-import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCAbstractFieldSelectionExpression;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCAbstractMarkerExpression;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCAbstractSpecificFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCAddressFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCAndExpression;
-import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCAreIntegerExpression;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCAuthorFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCBooktitleFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCChapterFieldSelector;
@@ -54,7 +52,7 @@ import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRul
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCErrorMarkerExpression;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCEvaluationExpression;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCExpression;
-import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCFieldExistsExpression;
+import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCFieldSelectionExpression;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCFieldsExistExpression;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCHowPublishedFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCIfThenElseExpression;
@@ -68,7 +66,6 @@ import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRul
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCJournalFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCKeywordsFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCMonthFieldSelector;
-import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCMultiFieldSelectionExpression;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCNoKeywordExpression;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCNotExpression;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCNoteFieldSelector;
@@ -82,7 +79,6 @@ import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRul
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCRevisionFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCSchoolFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCSeriesFieldSelector;
-import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCSingleFieldSelectionExpression;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCStringExpression;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCStringRelationalExpression;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCStringRelationalOperator;
@@ -90,7 +86,6 @@ import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRul
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCTypeFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCUrlFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCUseReplacePatternExpression;
-import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCUsesReplacePatternExpression;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCVersionFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCVolumeFieldSelector;
 import de.david_wille.bibtexconsistencychecker.consistencyrule.bCCConsistencyRule.BCCWarningMarkerExpression;
@@ -170,7 +165,7 @@ public class BCCExpressionEvaluator {
 	{
 		IResource problematicResource = BCCResourceUtil.getIFile(bibTeXEntry);
 		IResource identifyingRuleResource = BCCResourceUtil.getIFile(evaluatedConsistencyRule);
-		BCCSingleFieldSelectionExpression fieldSelectionExpression = markerExpression.getCausingElement();
+		BCCFieldSelectionExpression fieldSelectionExpression = markerExpression.getCausingElement();
 		BCCEntryBody causingEntryBody = bibTeXEntry.getEntryBody();
 		String message = identifyingRuleResource.getName() + ": " + markerExpression.getMessage();
 		
@@ -242,20 +237,16 @@ public class BCCExpressionEvaluator {
 		BCCExpression leftExpression = noKeywordExpression.getLeft();
 		BCCExpression rightExpression = noKeywordExpression.getRight();
 		
-		if (leftExpression instanceof BCCAbstractFieldSelectionExpression) {
-			if (rightExpression instanceof BCCFieldExistsExpression || rightExpression instanceof BCCFieldsExistExpression) {
-				BCCAbstractFieldSelectionExpression fieldSelectionExpression = (BCCAbstractFieldSelectionExpression) leftExpression;
-				
+		if (leftExpression instanceof BCCFieldSelectionExpression) {
+			BCCFieldSelectionExpression fieldSelectionExpression = (BCCFieldSelectionExpression) leftExpression;
+			
+			if (rightExpression instanceof BCCFieldsExistExpression) {
 				return evaluateFieldSelectionExpression(fieldSelectionExpression, bibTeXEntry);
 			}
-			else if (rightExpression instanceof BCCUsesReplacePatternExpression || rightExpression instanceof BCCUseReplacePatternExpression) {
-				BCCAbstractFieldSelectionExpression fieldSelectionExpression = (BCCAbstractFieldSelectionExpression) leftExpression;
-				
+			else if (rightExpression instanceof BCCUseReplacePatternExpression) {
 				return evaluateUsesReplacePatternExpression(fieldSelectionExpression, bibTeXEntry);
 			}
-			else if (rightExpression instanceof BCCIsIntegerExpression || rightExpression instanceof BCCAreIntegerExpression) {
-				BCCAbstractFieldSelectionExpression fieldSelectionExpression = (BCCAbstractFieldSelectionExpression) leftExpression;
-				
+			else if (rightExpression instanceof BCCIsIntegerExpression) {
 				return evaluateIsDigitExpression(fieldSelectionExpression, bibTeXEntry);
 			}
 		}
@@ -296,11 +287,12 @@ public class BCCExpressionEvaluator {
 		BCCExpression leftExpression = integerRelationalExpression.getLeft();
 		BCCExpression rightExpression = integerRelationalExpression.getRight();
 		
-		if (leftExpression instanceof BCCSingleFieldSelectionExpression && rightExpression instanceof BCCIntegerExpression) {
-			BCCSingleFieldSelectionExpression singleFieldSelectionExpression = (BCCSingleFieldSelectionExpression) leftExpression;
+		if (leftExpression instanceof BCCFieldSelectionExpression && rightExpression instanceof BCCIntegerExpression) {
+			BCCFieldSelectionExpression fieldSelectionExpression = (BCCFieldSelectionExpression) leftExpression;
+			
 			BCCIntegerExpression integerExpression = (BCCIntegerExpression) rightExpression;
 			
-			BCCAbstractSpecificFieldSelector fieldSelector = singleFieldSelectionExpression.getSelection();
+			BCCAbstractSpecificFieldSelector fieldSelector = fieldSelectionExpression.getSelection();
 			if (identifyField(fieldSelector, bibTeXEntry) != null) {
 				int leftSideInteger = identifyIntegerFieldValue(fieldSelector, bibTeXEntry);
 				int rightSideInteger = integerExpression.getValue();
@@ -318,11 +310,12 @@ public class BCCExpressionEvaluator {
 		BCCExpression leftExpression = stringRelationalExpression.getLeft();
 		BCCExpression rightExpression = stringRelationalExpression.getRight();
 		
-		if (leftExpression instanceof BCCSingleFieldSelectionExpression && rightExpression instanceof BCCStringExpression) {
-			BCCSingleFieldSelectionExpression singleFieldSelectionExpression = (BCCSingleFieldSelectionExpression) leftExpression;
+		if (leftExpression instanceof BCCFieldSelectionExpression && rightExpression instanceof BCCStringExpression) {
+			BCCFieldSelectionExpression fieldSelectionExpression = (BCCFieldSelectionExpression) leftExpression;
+			
 			BCCStringExpression stringExpression = (BCCStringExpression) rightExpression;
 			
-			BCCAbstractSpecificFieldSelector fieldSelector = singleFieldSelectionExpression.getSelection();
+			BCCAbstractSpecificFieldSelector fieldSelector = fieldSelectionExpression.getSelection();
 			if (identifyField(fieldSelector, bibTeXEntry) != null) {
 				String leftSideString = identifyStringFieldValue(fieldSelector, bibTeXEntry);
 				String rightSideString = stringExpression.getValue();
@@ -334,79 +327,28 @@ public class BCCExpressionEvaluator {
 		throw new UnsupportedOperationException("Encountered a situation that was not yet implemented!");
 	}
 
-	private boolean evaluateFieldSelectionExpression(BCCAbstractFieldSelectionExpression leftExpression,
+	private boolean evaluateFieldSelectionExpression(BCCFieldSelectionExpression leftExpression,
 			BCCAbstractBibTeXEntry bibTeXEntry)
 	{
-		if (leftExpression instanceof BCCSingleFieldSelectionExpression) {
-			BCCSingleFieldSelectionExpression singleSelectionElement = (BCCSingleFieldSelectionExpression) leftExpression;
-			BCCAbstractSpecificFieldSelector selector = singleSelectionElement.getSelection();
-			
-			return evaluateSelectedFieldExistsInBibTeXEntry(selector, bibTeXEntry);
-		}
-		else if (leftExpression instanceof BCCMultiFieldSelectionExpression) {
-			BCCMultiFieldSelectionExpression multiSelectionElement = (BCCMultiFieldSelectionExpression) leftExpression;
-			
-			boolean returnValue = true;
-			for (BCCAbstractSpecificFieldSelector selector : multiSelectionElement.getSelections()) {
-				returnValue = returnValue && evaluateSelectedFieldExistsInBibTeXEntry(selector, bibTeXEntry);
-			}
-			
-			return returnValue;
-		}
+		BCCAbstractSpecificFieldSelector selector = leftExpression.getSelection();
 		
-		throw new UnsupportedOperationException("Encountered a situation that was not yet implemented!");
-	}
-
-	private boolean evaluateUsesReplacePatternExpression(BCCAbstractFieldSelectionExpression leftExpression,
-			BCCAbstractBibTeXEntry bibTeXEntry)
-	{
-		if (leftExpression instanceof BCCSingleFieldSelectionExpression) {
-			BCCSingleFieldSelectionExpression singleSelectionElement = (BCCSingleFieldSelectionExpression) leftExpression;
-			BCCAbstractSpecificFieldSelector selector = singleSelectionElement.getSelection();
-			
-			return evaluateUsesReplacePatternExpression(selector, bibTeXEntry);
-		}
-		else if (leftExpression instanceof BCCMultiFieldSelectionExpression) {
-			BCCMultiFieldSelectionExpression multiSelectionElement = (BCCMultiFieldSelectionExpression) leftExpression;
-			
-			boolean returnValue = true;
-			for (BCCAbstractSpecificFieldSelector selector : multiSelectionElement.getSelections()) {
-				returnValue = returnValue && evaluateUsesReplacePatternExpression(selector, bibTeXEntry);
-			}
-			
-			return returnValue;
-		}
-		
-		throw new UnsupportedOperationException("Encountered a situation that was not yet implemented!");
-	}
-
-	private boolean evaluateIsDigitExpression(BCCAbstractFieldSelectionExpression leftExpression,
-			BCCAbstractBibTeXEntry bibTeXEntry)
-	{
-		if (leftExpression instanceof BCCSingleFieldSelectionExpression) {
-			BCCSingleFieldSelectionExpression singleSelectionElement = (BCCSingleFieldSelectionExpression) leftExpression;
-			BCCAbstractSpecificFieldSelector selector = singleSelectionElement.getSelection();
-			
-			return evaluateIsDigitExpression(selector, bibTeXEntry);
-		}
-		else if (leftExpression instanceof BCCMultiFieldSelectionExpression) {
-			BCCMultiFieldSelectionExpression multiSelectionElement = (BCCMultiFieldSelectionExpression) leftExpression;
-			
-			boolean returnValue = true;
-			for (BCCAbstractSpecificFieldSelector selector : multiSelectionElement.getSelections()) {
-				returnValue = returnValue && evaluateIsDigitExpression(selector, bibTeXEntry);
-			}
-			
-			return returnValue;
-		}
-		
-		throw new UnsupportedOperationException("Encountered a situation that was not yet implemented!");
-	}
-
-	private boolean evaluateSelectedFieldExistsInBibTeXEntry(BCCAbstractSpecificFieldSelector selector,
-			BCCAbstractBibTeXEntry bibTeXEntry)
-	{
 		return identifyWhetherSelectedFieldExists(selector, bibTeXEntry);
+	}
+
+	private boolean evaluateUsesReplacePatternExpression(BCCFieldSelectionExpression leftExpression,
+			BCCAbstractBibTeXEntry bibTeXEntry)
+	{
+		BCCAbstractSpecificFieldSelector selector = leftExpression.getSelection();
+		
+		return evaluateUsesReplacePatternExpression(selector, bibTeXEntry);
+	}
+
+	private boolean evaluateIsDigitExpression(BCCFieldSelectionExpression leftExpression,
+			BCCAbstractBibTeXEntry bibTeXEntry)
+	{
+		BCCAbstractSpecificFieldSelector selector = leftExpression.getSelection();
+		
+		return evaluateIsDigitExpression(selector, bibTeXEntry);
 	}
 
 	private boolean evaluateUsesReplacePatternExpression(BCCAbstractSpecificFieldSelector selector,

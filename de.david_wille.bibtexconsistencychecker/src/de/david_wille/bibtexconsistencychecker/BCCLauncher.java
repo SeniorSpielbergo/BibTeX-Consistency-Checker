@@ -131,14 +131,18 @@ public class BCCLauncher {
 				List<IFile> foundFiles = identifyFiles(executionModel, referencedFolder, fileExtension);
 				
 				for (IFile foundFile : foundFiles) {
-					if (!relevantFiles.contains(foundFile)) {
-						relevantFiles.add(foundFile);
+					if (!BCCResourceUtil.isLinked(foundFile)) {
+						if (!relevantFiles.contains(foundFile)) {
+							relevantFiles.add(foundFile);
+						}
 					}
 				}
 			}
 			else if (referencedResource instanceof IFile){
 				IFile referencedFile = (IFile) referencedResource;
-				relevantFiles.add(referencedFile);
+				if (!BCCResourceUtil.isLinked(referencedFile)) {
+					relevantFiles.add(referencedFile);
+				}
 			}
 		}
 		

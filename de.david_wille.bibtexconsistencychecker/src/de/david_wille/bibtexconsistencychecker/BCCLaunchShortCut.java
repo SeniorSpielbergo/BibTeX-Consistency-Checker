@@ -73,6 +73,7 @@ public class BCCLaunchShortCut implements ILaunchShortcut {
 				}
 			}
 			else {
+				System.out.println(resource);
 				if (resource instanceof IProject) {
 					BCCUtil.openErrorDialog("The selected project does not represent a valid BibTeX Consistency Checker project!");
 				}
@@ -87,6 +88,10 @@ public class BCCLaunchShortCut implements ILaunchShortcut {
 		}
 		catch (CoreException e) {
 			e.printStackTrace();
+		}
+		
+		if (!foundExecutionModelFile) {
+			BCCUtil.openErrorDialog("No BibTeX Consistency Checker Execution file found!");
 		}
 		
 		if (!foundBibliographyFolder) {
@@ -151,8 +156,14 @@ public class BCCLaunchShortCut implements ILaunchShortcut {
 			BCCStatistics statistics = BCCStatistics.getInstance();
 			statistics.reset();
 			
-			BCCLauncher launcher = new BCCLauncher(executionModel);
-			launcher.launch();
+			if (BCCResourceUtil.isWorkspaceFile(executionModel)) {
+				BCCLauncher launcher = new BCCLauncher(executionModel);
+				launcher.launch();
+			}
+			else {
+				BCCUtil.openErrorDialog("The analyzed files have to be contained in the workspace!");
+				return;
+			}
 			
 			printResult(statistics);
 		}

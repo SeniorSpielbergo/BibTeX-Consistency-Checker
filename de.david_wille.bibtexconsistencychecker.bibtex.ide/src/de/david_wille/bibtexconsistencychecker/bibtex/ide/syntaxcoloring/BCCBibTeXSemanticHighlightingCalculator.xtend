@@ -8,6 +8,7 @@ import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCEntryKeyObjec
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCMonthField
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCPages
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCPagesField
+import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCReplaceKeyObject
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCReplacePatternEntry
 import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCYearField
 import de.david_wille.bibtexconsistencychecker.bibtex.services.BCCBibTeXGrammarAccess
@@ -59,6 +60,10 @@ class BCCBibTeXSemanticHighlightingCalculator extends DefaultSemanticHighlightin
 			}
 			BCCEntryKeyObject: {
 				highlightFeature(acceptor, object, BCCBibTeXPackage.eINSTANCE.BCCEntryKeyObject_EntryKey, HighlightingStyles.DEFAULT_ID)
+				return true
+			}
+			BCCReplaceKeyObject: {
+				highlightFeature(acceptor, object, BCCBibTeXPackage.eINSTANCE.BCCReplaceKeyObject_ReplaceKey, HighlightingStyles.DEFAULT_ID)
 				return true
 			}
 			default: false

@@ -9,27 +9,15 @@ BCCConsistencyRule:
 
 BCCRuleBody:
 	'name' name = STRING
-	('applies' 'to' appliesToBody = BCCAbstractSelectorBody ('except' 'for' exceptForBody = BCCAbstractSelectorBody)?)
-	('excluded' 'entry' 'keys' excludedEntryKeysBody = BCCAbstractExcludedEntryKeysBody)?
+	('applies' 'to' appliesToBody = BCCEntrySelectorBody ('except' 'for' exceptForBody = BCCEntrySelectorBody)?)
+	('excluded' 'entry' 'keys' excludedEntryKeysBody = BCCExcludedEntryKeysBody)?
 	(ifThenElseExpressions += BCCIfThenElseExpression)*;
 
-BCCAbstractSelectorBody:
-	BCCSingleEntrySelectorBody | BCCMultiEntrySelectorBody;
+BCCEntrySelectorBody:
+	selectors += BCCAbstractSelector (',' selectors += BCCAbstractSelector)*;
 
-BCCAbstractExcludedEntryKeysBody:
-	BCCSingleEntryExcludedEntryKeysBody | BCCMultiEntryExcludedEntryKeysBody;
-
-BCCSingleEntrySelectorBody:
-	selector = BCCAbstractSelector;
-
-BCCMultiEntrySelectorBody:
-	selectors += BCCAbstractSelector (',' selectors += BCCAbstractSelector)* 'and' selectors += BCCAbstractSelector;
-
-BCCSingleEntryExcludedEntryKeysBody:
-	excludedEntryKey = BCCEntryKeyReference;
-
-BCCMultiEntryExcludedEntryKeysBody:
-	excludedEntryKeys += BCCEntryKeyReference (',' excludedEntryKeys += BCCEntryKeyReference)* 'and' excludedEntryKeys += BCCEntryKeyReference;
+BCCExcludedEntryKeysBody:
+	excludedEntryKeys += BCCEntryKeyReference (',' excludedEntryKeys += BCCEntryKeyReference)*;
 
 BCCEntryKeyReference:
 	entryKey = BCCEntryKey;
@@ -53,37 +41,22 @@ BCCNoKeywordExpression returns Expression:
 	BCCUnaryExpression ({BCCNoKeywordExpression.left = current} right = BCCUnaryExpression)*;
 	
 BCCUnaryExpression returns Expression:
-	BCCAbstractFieldSelectionExpression | BCCFieldExistsExpression | BCCFieldsExistExpression | BCCStringExpression |
-	BCCIntegerExpression | BCCUsesReplacePatternExpression | BCCUseReplacePatternExpression | BCCIsIntegerExpression |
-	BCCAreIntegerExpression | BCCNotExpression | BCCParenthesesExpression;
-
-BCCAbstractFieldSelectionExpression:
-	BCCSingleFieldSelectionExpression | BCCMultiFieldSelectionExpression;
+	BCCFieldSelectionExpression | BCCFieldExistsExpression | BCCStringExpression |
+	BCCIntegerExpression | BCCUsesReplacePatternExpression | BCCIsIntegerExpression |
+	BCCNotExpression | BCCParenthesesExpression;
 
 BCCFieldExistsExpression:
-	{BCCFieldExistsExpression} 'field' 'exists';
-
-BCCFieldsExistExpression:
-	{BCCFieldsExistExpression} 'fields' 'exist';
+	{BCCFieldsExistExpression} 'field' 'exists';
 
 BCCUsesReplacePatternExpression:
-	{BCCUsesReplacePatternExpression} 'uses' 'replace' 'pattern';
-
-BCCUseReplacePatternExpression:
-	{BCCUseReplacePatternExpression} 'use' 'replace' 'pattern';
+	{BCCUseReplacePatternExpression} 'uses' 'replace' 'pattern';
 
 BCCIsIntegerExpression:
 	{BCCIsIntegerExpression} 'is' 'integer';
 
-BCCAreIntegerExpression:
-	{BCCAreIntegerExpression} 'are' 'integer';
-
-BCCSingleFieldSelectionExpression:
+BCCFieldSelectionExpression:
 	selection = BCCAbstractSpecificFieldSelector;
-
-BCCMultiFieldSelectionExpression:
-	selections += BCCAbstractSpecificFieldSelector (',' selections += BCCAbstractSpecificFieldSelector)* 'and' selections += BCCAbstractSpecificFieldSelector;
-
+	
 BCCParenthesesExpression:
 	'(' expression = BCCExpression ')';
 
@@ -112,10 +85,10 @@ BCCAbstractMarkerExpression:
 	BCCWarningMarkerExpression | BCCErrorMarkerExpression;
 
 BCCWarningMarkerExpression:
-	'add' 'warning' message = STRING ('to' causingElement = BCCSingleFieldSelectionExpression)?;
+	'add' 'warning' message = STRING ('to' causingElement = BCCFieldSelectionExpression)?;
 
 BCCErrorMarkerExpression:
-	'add' 'error' message = STRING ('to' causingElement = BCCSingleFieldSelectionExpression)?;
+	'add' 'error' message = STRING ('to' causingElement = BCCFieldSelectionExpression)?;
 
 BCCAbstractSelector:
 	BCCAllSelector | BCCAbstractSpecificBibTeXEntrySelector;

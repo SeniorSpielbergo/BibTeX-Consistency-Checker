@@ -36,7 +36,7 @@ public class BCCProjectNatureHandler extends AbstractHandler {
 		if (currentSelection instanceof IStructuredSelection) {
 			Object firstElement = ((IStructuredSelection) currentSelection).getFirstElement();
 
-			// Get an IResource as an adapter from the current selection
+			// get an IResource as an adapter from the current selection
 			IAdapterManager adapterManager = Platform.getAdapterManager();
 			IResource resourceAdapter = adapterManager.getAdapter(firstElement, IResource.class);
 

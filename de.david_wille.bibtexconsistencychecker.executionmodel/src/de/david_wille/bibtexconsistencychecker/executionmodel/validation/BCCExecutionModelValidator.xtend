@@ -43,7 +43,7 @@ class BCCExecutionModelValidator extends AbstractBCCExecutionModelValidator {
 	}
 	
 	@Check
-	def checkFileIsStoredInProjectRoot(BCCConsistencyRulesEntry consistencyRulesEntry) {
+	def correctFolderOrFilesReferenced(BCCConsistencyRulesEntry consistencyRulesEntry) {
 		var int i = 0
 		for (BCCFilePathEntry entry : consistencyRulesEntry.entries) {
 			if (!entry.path.startsWith(RULES_FOLDER)) {
@@ -54,7 +54,7 @@ class BCCExecutionModelValidator extends AbstractBCCExecutionModelValidator {
 	}
 	
 	@Check
-	def checkFileIsStoredInProjectRoot(BCCBibTeXFilesEntry bibTeXFilesEntry) {
+	def correctFolderOrFilesReferenced(BCCBibTeXFilesEntry bibTeXFilesEntry) {
 		var int i = 0
 		for (BCCFilePathEntry entry : bibTeXFilesEntry.entries) {
 			if (!entry.path.startsWith(BIBLIOGRAPHY_FOLDER)) {

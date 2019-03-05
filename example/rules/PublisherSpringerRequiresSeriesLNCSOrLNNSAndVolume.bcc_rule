@@ -1,8 +1,8 @@
 consistency rule {
 	name "Journal TSE requires publisher IEEE"
-	applies to * except for book and inbook
+	applies to * except for book, inbook
 	if (publisher field exists AND publisher equals "SPRINGER" AND !(journal field exists)) {
-		if (!(volume and series fields exist)) {
+		if (!(volume field exists AND series field exists)) {
 			add error "Publications using the publisher SPRINGER require a volume and series field."
 		}
 		else if (!(series equals "LNCS" OR series equals "LNNS")) {

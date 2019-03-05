@@ -26,7 +26,7 @@ public class BCCAnalysis {
 	public BCCAnalysis(BCCExecutionModel executionModel, List<BCCConsistencyRule> parsedConsistencyRules, List<BCCBibTeXFile> parsedBibTeXFiles) {
 		this.parsedConsistencyRules = parsedConsistencyRules;
 		
-		preprocessor = new BCCPreprocessor(executionModel, parsedBibTeXFiles, parsedConsistencyRules);
+		preprocessor = new BCCPreprocessor(executionModel, parsedBibTeXFiles);
 		collector = new BCCCollector(parsedBibTeXFiles);
 	}
 

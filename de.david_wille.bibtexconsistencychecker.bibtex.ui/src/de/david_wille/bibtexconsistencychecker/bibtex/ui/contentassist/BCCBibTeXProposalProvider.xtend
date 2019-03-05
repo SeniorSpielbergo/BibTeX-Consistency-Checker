@@ -13,6 +13,7 @@ import org.eclipse.xtext.RuleCall
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
+import de.david_wille.bibtexconsistencychecker.bibtex.bCCBibTeX.BCCGenericFieldValueObject
 
 /**
  * See https://www.eclipse.org/Xtext/documentation/304_ide_concepts.html#content-assist
@@ -32,6 +33,15 @@ class BCCBibTeXProposalProvider extends AbstractBCCBibTeXProposalProvider {
 					acceptor.accept(createCompletionProposal(proposalString, proposalString, null, context))
 				}
 			}
+		}
+		else if (contextNode instanceof BCCGenericFieldValueObject) {
+			var String fieldValue = contextNode.fieldValue
+				var List<BCCReplacePatternEntry> relevantReplacePattern = identifyAllReplacePatternContainingValue(model, fieldValue)
+				
+				for (BCCReplacePatternEntry replacePattern : relevantReplacePattern) {
+					val proposalString = replacePattern.replaceKeyObject.replaceKey
+					acceptor.accept(createCompletionProposal(proposalString, proposalString, null, context))
+				}
 		}
 	}
 	
