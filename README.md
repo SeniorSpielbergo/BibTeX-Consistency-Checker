@@ -58,9 +58,9 @@ The following three general file types are used by the _BibTeX Consistency Check
 These files have the file extension *.bcc and define how the execution is performed.
 Below you can find an example for such a file.
 
-The settings block defines a `name` and whether the `alphabetic order` and `short harvard style` for entry keys should be ensured.
+The settings block defines a `name` and whether the `alphabetic order` and `short harvard style` (cf. the corresponding section below) for entry keys should be ensured.
 
-The optional blocks `bibtex files` and `consistency rules` allow to select specific sub files and sub folders for the analysis.
+The optional blocks `bibtex files` and `consistency rules` allow to select specific sub files (i.e., *.bib or *.bcc_rule files) and complete sub folders for the analysis.
 If these blocks do not exist, the default folders  `bibliography/` and `rules/` are selected, respectively.
 
 ```
@@ -121,6 +121,7 @@ In case errors or warnings have to be assigned to an entry or a specific field i
 Optionally, users can use a `to` selector to add the warnings and errors to a specific field.
 
 The example project contains a number of sensible examples what checks can be achieved using these files.
+Please refer to the grammar `de.david_wille.bibtexconsistencychecker.consistencyrule/src/de.david_wille.bibtexconsistencychecker.consistencyrule/BCCConsistencyRule.xtext` for the full details.
 
 ```Java
 consistency rule {
@@ -134,6 +135,14 @@ consistency rule {
 }
 ```
 
+## Short Harvard Style
+
+The `short harvard style` abbreviates author names and years according to a specific schema:
+
+1. Single authors are abbreviated to the first three letters of their lastname with the last two digits of the publication's year. For example, a publication by `Darkwing Duck` in `1991` is abbreviated to `Duc91`.
+2. For two to three authors, the abbreviation style uses the first letter of the authors' lastname with the last two digits of the publication's year. For example, a publication by `Darkwing Duck` and `Bart Simpson` in `1991` is abbreviated to `DS91`.
+2. For more than three authors, the abbreviation style uses the first letter of the first three authors' lastname, adds a `+` and the last two digits of the publication's year. For example, a publication by `Darkwing Duck`, `Bart Simpson`, `Homer Simpson` and `Marge Simpson` in `1991` is abbreviated to `DSS+91`.
+
 ## Known Limitations
 
 1. All files have to be contained in the workspace. Files that are contained in a folder outside the workspace or linked from such a location cannot be analyzed. Unexpected behavior might occur.
@@ -142,4 +151,4 @@ consistency rule {
    - No quotes are allowed to define the value of fields. For example,`publisher = "Example"` would be an illegal field definition.
    - All fields (e.g., the title field) use either surrounding braces `publisher = {Example}` or non at all `publisher = EXAMPLE`. In case no surrounding braces are used, the _BibTeX Consistency Checker_ assumes that a corresponding string replacement was defined (e.g., `@string{EXAMPLE = "example"}`).
    - All entries have to be defined using lower case (e.g., `@book` for books).
-   - Please refer to the grammare `de.david_wille.bibtexconsistencychecker.bibtex/src/de.david_wille.bibtexconsistencychecker.bibtex/BCCBibTeX.xtext` for the full details.
+   - Please refer to the grammar `de.david_wille.bibtexconsistencychecker.bibtex/src/de.david_wille.bibtexconsistencychecker.bibtex/BCCBibTeX.xtext` for the full details.
