@@ -44,9 +44,9 @@ The tool was developed using the following languages, environments and framework
   1. To enable it, right click on any project and select _Configure_ > _Convert to BibTeX Consistency Checker Project_. This automatically transforms the selected project into a _BibTeX Consistency Checker_ project.
   2. Create a new _BibTeX Consistency Checker_ project using the _New_ Wizard by right clicking into the workspace and selecting _New_ > _Other..._ > _BibTeX Consistency Checker_ > _New BibTeX Consistency Checker Project_
 - _BibTeX Consistency Checker_ projects always have to follow the following structure:
-  1. _*.bcc file in the project root_: Defining the execution behavior for the analysis. Important: There can only exist one *.bcc file in the project root. Otherwise the execution will not start.
-  2. _rules_ folder in the project root: This folder should contain all custom rules.
-  3. _bibliography_ folder in the project root: This folder should contain all analyzed BibTeX files.
+  1. __*.bcc file in the project root__: Defining the execution behavior for the analysis. Important: There can only exist one *.bcc file in the project root. Otherwise the execution will not start.
+  2. **`rules` folder in the project root**: This folder should contain all custom rules.
+  3. **`bibliography` folder in the project root**: This folder should contain all analyzed BibTeX files.
 
 ## File Structure
 
@@ -58,7 +58,7 @@ These files have the file extension *.bcc and define how the execution is perfor
 Below you can find an example for such a file.
 The settings block defines a `name` and whether the `alphabetic order` and `short harvard style` for entry keys should be ensured.
 The optional blocks `bibtex files` and `consistency rules` allow to select specific sub files and sub folders for the analysis.
-If these blocks do not exist, the default folders  `bibliography` and ``rules` are selected, respectively.
+If these blocks do not exist, the default folders  `bibliography/` and `rules/` are selected, respectively.
 
 ```
 settings {
