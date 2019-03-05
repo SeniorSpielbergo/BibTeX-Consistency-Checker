@@ -1,6 +1,7 @@
 # BibTeX Consistency Checker
 
-I developed this model-based BibTeX analysis tool based on a small string-based tool that was core of my workflow to ensure consistency of BibTeX entries during my PhD thesis. The general idea is to have tooling to ensure uniformity and consistency of entries in BibTeX files by defining rules that allow extension of the _BibTeX Consistency Checker_.
+I developed this model-based BibTeX analysis tool based on a small string-based tool that was core of my workflow to ensure consistency of BibTeX entries during my PhD thesis.
+The general idea is to have tooling to ensure uniformity and consistency of entries in BibTeX files by defining rules that allow extension of the _BibTeX Consistency Checker_.
 
 The _BibTeX Consistency Checker_ provides the following main features:
 - Parsing of BibTeX files
@@ -45,8 +46,8 @@ The tool was developed using the following languages, environments and framework
   2. Create a new _BibTeX Consistency Checker_ project using the _New_ Wizard by right clicking into the workspace and selecting _New_ > _Other..._ > _BibTeX Consistency Checker_ > _New BibTeX Consistency Checker Project_
 - _BibTeX Consistency Checker_ projects always have to follow the following structure:
   1. __*.bcc file in the project root__: Defining the execution behavior for the analysis. Important: There can only exist one *.bcc file in the project root. Otherwise the execution will not start.
-  2. **`rules` folder in the project root**: This folder should contain all custom rules.
-  3. **`bibliography` folder in the project root**: This folder should contain all analyzed BibTeX files.
+  2. **_rules_ folder in the project root**: This folder should contain all custom rules.
+  3. **_bibliography_ folder in the project root**: This folder should contain all analyzed BibTeX files.
 
 ## File Structure
 
@@ -56,13 +57,15 @@ The following three general file types are used by the _BibTeX Consistency Check
 
 These files have the file extension *.bcc and define how the execution is performed.
 Below you can find an example for such a file.
+
 The settings block defines a `name` and whether the `alphabetic order` and `short harvard style` for entry keys should be ensured.
+
 The optional blocks `bibtex files` and `consistency rules` allow to select specific sub files and sub folders for the analysis.
 If these blocks do not exist, the default folders  `bibliography/` and `rules/` are selected, respectively.
 
 ```
 settings {
-	name "PhD Thesis BibTeX Consistency Check"
+	name "Example"
 	ensure {
 		alphabetic order
 		short harvard style
@@ -75,6 +78,59 @@ bibtex files {
 
 consistency rules {
 	rules/
+}
+```
+
+### BibTeX Files
+
+These files are later analyzed by the _BibTeX Consistency Checker Rules_.
+They basically follow standard BibTeX file syntax with a few problem-specific exceptions that were introduced to ease parsing and support all features that were required for my PhD thesis.
+
+Most important feature is probably the `@string` feature, which allows definition of replacements for strings in BibTeX entries that do not use surrounding braces.
+Please also refer to the _Known Limitations_ section.
+
+```
+@book{Duc91,
+	author = {Duck, Darkwing},
+	year = {1991},
+	title = {{The Dangerous Live of a Duck}},
+	publisher = ABC
+}
+
+@string{ABC = "American Broadcasting Company"}
+```
+
+### BibTeX Consistency Checker Rules
+
+These rules allow to specify custom analysis rules and to assign warning or error markers to identified inconsistencies.
+Below you can find an example for such a file.
+
+Each rule has to define a `name` and an `applies to` section defining, which entry types are analyzed by the rule.
+The `*` symbol defines that a rule is applied to all entries.
+
+Optionally, users can exclude certain entry types or specific entries by defining additional `except for` and `excluded entry keys` blocks with corresponding entries.
+
+To assign functionality to a rule, the user has to define corresponding behavior using `if-else` constructs.
+Furthermore, it is possible to use `else if` blocks.
+
+Before executing the actual checks, it is important to ensure that the analyzed fields exist.
+For example `if (title field exists)` ensures that a analyzed entries contain a `title` field.
+Afterwards, it is possible to perform the concrete checks using further `if-else` constructs.
+
+In case errors or warnings have to be assigned to an entry or a specific field it is possible to use `add error` or `add warning` constructs with a corresponding message.
+Optionally, users can use a `to` selector to add the warnings and errors to a specific field.
+
+The example project contains a number of sensible examples what checks can be achieved using these files.
+
+```
+consistency rule {
+	name "Ensure Case Sensitivity of Titles"
+	applies to *
+	if (title field exists) {
+		if (!(title starts with "{{" AND title ends with "}}")) {
+			add warning "To ensure case sensitivity of titles you should enclose them in double braces \"{{ ... }}\"" to title
+		}
+	}
 }
 ```
 
