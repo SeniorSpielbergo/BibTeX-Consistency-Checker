@@ -25,8 +25,7 @@ BCCEnsureSettingsEntry:
 			(ensureAlphbeticOrderActivated ?= 'alphabetic' 'order')? &
 			(ensureShortHarvardStyleActivated ?= 'short' 'harvard' 'style')?
 		)
-	'}'
-;
+	'}';
 
 BCCBibTeXFilesEntry:
 	{BCCBibTeXFilesEntry} 'bibtex' 'files' '{'
